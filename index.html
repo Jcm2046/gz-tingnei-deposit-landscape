@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<title>厅内充值 · 横版演示 v4</title>
+<title>厅内充值 · 横版演示 v5</title>
 <style>
 :root{--f:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro","Helvetica Neue",Roboto,"Segoe UI","PingFang SC",Arial,sans-serif;--gold:#eac070;--red:#de4444}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -64,11 +64,11 @@ img{display:block}
 /* ---------- 蒙层 + 右侧抽屉 ---------- */
 .mask{position:absolute;inset:0;background:rgba(0,0,0,.6);opacity:0;pointer-events:none;transition:opacity .3s;z-index:10}
 .mask.on{opacity:1;pointer-events:auto}
-.drawer{position:absolute;top:0;right:0;bottom:0;width:390px;background:#2f3542;border-radius:20px 0 0 20px;transform:translateX(105%);transition:transform .3s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;overflow:hidden;z-index:20}
-.drawer.on{transform:none;box-shadow:-6px 0 24px rgba(0,0,0,.35)}
+.drawer{position:absolute;top:0;bottom:0;left:calc(50% - 370px);width:740px;background:#2f3542;border-radius:20px 20px 0 0;transform:translateY(105%);transition:transform .3s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;overflow:hidden;z-index:20}
+.drawer.on{transform:none;box-shadow:0 -6px 24px rgba(0,0,0,.35)}
 .pane{display:none;flex-direction:column;flex:1;min-height:0}
 .pane.on{display:flex}
-.hd{height:56px;flex:none;display:flex;align-items:center;padding:0 16px}
+.hd{height:44px;flex:none;display:flex;align-items:center;padding:0 16px}
 .hd .ttl{flex:1;text-align:center;font:600 16px/24px var(--f);color:#fff;padding:0 10px}
 .ib{width:24px;height:24px;display:grid;place-items:center;flex:none}
 .ib img{width:12px;height:12px}
@@ -92,8 +92,8 @@ img{display:block}
 .lg .ip img{position:absolute;height:135.55%;width:115.98%;left:-9.72%;top:-17.28%;max-width:none}
 .card{background:#242933;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:12px}
 .card-t{font:500 14px/22px var(--f);color:#fff}
-.amts{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
-.amt{height:48px;border-radius:10px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.14);display:grid;place-items:center;font:600 15px/20px var(--f);white-space:nowrap;color:#fff;position:relative}
+.amts{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.amt{height:48px;border-radius:10px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.14);display:grid;place-items:center;font:600 16px/24px var(--f);white-space:nowrap;color:#fff;position:relative}
 .amt.on{background:var(--gold);color:#181b21;box-shadow:none}
 .amt .bd{position:absolute;top:-6px;right:-1px;height:16px;padding:0 6px;border-radius:99px;background:var(--red);color:#fff;font:600 12px/16px var(--f)}
 .inp{height:44px;background:#181b21;border-radius:12px;padding:8px 12px;display:flex;align-items:center;gap:4px}
@@ -104,7 +104,7 @@ img{display:block}
 .trust{display:flex;gap:10px;justify-content:center;padding:4px 0 12px}
 .tb{height:90px;border:1px solid #484c56;border-radius:12px;padding:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
 .tb p{margin:0;font:500 11px/14px var(--f);color:#8f98a6;text-align:center}
-.ft{flex:none;background:#2a2f3b;border-top:1px solid rgba(255,255,255,.1);padding:12px;display:flex;flex-direction:column;gap:12px}
+.ft{flex:none;background:#2a2f3b;border-top:1px solid rgba(255,255,255,.1);padding:10px 12px;display:flex;flex-direction:column;gap:8px}
 .ft-row{display:flex;align-items:center;justify-content:space-between}
 .ft-amt{font:700 24px/32px var(--f);color:#fff}
 .btn-red{height:44px;padding:0 20px;border-radius:12px;background:linear-gradient(90deg,#de4444,#f95858);display:flex;align-items:center;justify-content:center;gap:4px;color:#fff;font:600 16px/24px var(--f)}
@@ -154,10 +154,11 @@ img{display:block}
 .row .open{background:#444b58;border:.5px solid var(--gold);border-radius:20px;padding:4px 16px;font:400 12px/18px var(--f);color:var(--gold)}
 /* 教程（抽屉内） */
 .pane.guide{background:#181b21}
-.tut-hd{position:relative;flex:none;height:48px}
+.tut-hd{position:relative;flex:none;height:48px;background:#21262e}
 .tut-hd img{width:390px;height:48px}
 .tut-hd button{position:absolute;left:0;top:0;width:56px;height:48px}
-.pane.guide .body img{width:390px;height:auto}
+.pane.guide .body{display:flex;justify-content:center}
+.pane.guide .body img{width:390px;height:auto;align-self:flex-start}
 /* Tips 弹窗 */
 .dmask{position:absolute;inset:0;background:rgba(0,0,0,.6);z-index:40;display:none;align-items:center;justify-content:center}
 .dmask.on{display:flex}
@@ -215,13 +216,22 @@ img{display:block}
 .ok-lic span{font:400 10.4px/1 "Arial Rounded MT Bold",var(--f);color:#cacaca}
 .ok-lic .pg{width:32.07px;height:33.23px}
 .ok-lic .rg{width:105px;height:33.28px;margin-left:5.4px}
+/* v5：内嵌付款页两栏（沿用 v3） */
+.qcols{flex:1;min-height:0;display:flex;gap:12px;padding:4px 12px 12px}
+.q-l{width:260px;flex:none;background:#242933 url(assets/qr_card_mask.svg) center/cover no-repeat;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:12px}
+.q-r{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:8px;padding-bottom:16px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none;-webkit-mask-image:linear-gradient(180deg,#000 calc(100% - 18px),transparent);mask-image:linear-gradient(180deg,#000 calc(100% - 18px),transparent)}
+.q-r::-webkit-scrollbar{display:none}
+.q-r .qr-logo{flex:none}
+.q-r .qr-amt{flex:none;height:22px;margin-top:0}
+.q-r .scan-t{margin-top:6px}
+.q-r .row{flex:none;width:100%}
 </style>
 </head>
 <body>
 <div class="top">
-  <h1>【充提】厅内充值改造 · 横版演示 v4</h1>
-  <span class="sub">基于 v1：去掉两个标题，6 档金额一排</span>
-  <a class="vl" href="v3/">v3<span class="lt">（底部居中两栏）</span></a><a class="vl" href="v2/">v2<span class="lt">（右侧宽抽屉）</span></a><a class="vl" href="v1/">v1<span class="lt">（只换容器）</span></a>
+  <h1>【充提】厅内充值改造 · 横版演示 v5</h1>
+  <span class="sub">居中加宽：金额按钮恢复原宽度，一排 6 个</span>
+  <a class="vl" href="v4/">v4<span class="lt">（右侧窄抽屉）</span></a><a class="vl" href="v3/">v3<span class="lt">（底部居中两栏）</span></a><a class="vl" href="v2/">v2<span class="lt">（右侧宽抽屉）</span></a><a class="vl" href="v1/">v1<span class="lt">（只换容器）</span></a>
   <div class="ctl">
     <label title="模拟 iOS Safari 拦截新标签页"><input type="checkbox" id="iosT"> 模拟 iOS 拦截新标签页</label>
     <button class="pri" id="arrive" disabled>模拟到账（当前订单）</button>
@@ -257,12 +267,12 @@ img{display:block}
               </div>
               <div class="card">
                                 <div class="amts" id="amts">
-                  <button class="amt on" data-v="100">100<i class="bd">+24</i></button>
-                  <button class="amt" data-v="200">200<i class="bd">+24</i></button>
-                  <button class="amt" data-v="300">300<i class="bd">+24</i></button>
-                  <button class="amt" data-v="500">500<i class="bd">+24</i></button>
-                  <button class="amt" data-v="1000">1,000<i class="bd">+24</i></button>
-                  <button class="amt" data-v="2000">2,000<i class="bd">+24</i></button>
+                  <button class="amt on" data-v="100">₱ 100<i class="bd">+24</i></button>
+                  <button class="amt" data-v="200">₱ 200<i class="bd">+24</i></button>
+                  <button class="amt" data-v="300">₱ 300<i class="bd">+24</i></button>
+                  <button class="amt" data-v="500">₱ 500<i class="bd">+24</i></button>
+                  <button class="amt" data-v="1000">₱ 1,000<i class="bd">+24</i></button>
+                  <button class="amt" data-v="2000">₱ 2,000<i class="bd">+24</i></button>
                 </div>
                 <div class="inp"><img src="assets/icon_peso.svg" alt=""><input id="amtIn" inputmode="decimal" value="100" aria-label="Deposit amount"><button class="clr" data-act="clear" aria-label="清空"><img src="assets/icon_clear.svg" alt=""></button></div>
               </div>
@@ -281,19 +291,16 @@ img{display:block}
         <!-- 内嵌式付款页：沿用竖版「内嵌式渠道半浮层」 -->
         <section class="pane" data-pane="qr">
           <div class="hd"><button class="ib" data-act="back" aria-label="返回"><span class="chev"><span><img src="assets/back.svg" alt=""></span></span></button><span class="ttl"></span><button class="ib" data-act="close" aria-label="关闭"><img src="assets/close.svg" alt=""></button></div>
-          <div class="body" id="qrBody">
-            <div class="qr-w"><div class="qr-card">
-              <img src="assets/qr_card_bg.svg" alt=""><img src="assets/qr_card_mask.svg" alt="">
-              <div class="qr-in">
-                <div class="qr-logo"><span><img src="assets/logo_qrph.png" alt="QR Ph"></span></div>
-                <div class="qr-amt" id="qrAmt">Amount: ₱ 100.00</div>
-                <div class="qr-note"><b>IMPORTANT NOTE:</b>Please make sure to use this QR code only Once and deposit the exact amount shown as above</div>
-                <div class="qr-box"><i class="wb"></i><span class="code"><img src="assets/qr_code_src.png" alt="QR"></span><i class="cw"></i><span class="cl"><img src="assets/qr_center_src.png" alt=""></span></div>
-                <div class="qr-pw">powered by<span><img src="assets/qr_allbank.png" alt="AllBank"></span></div>
-                <div class="qr-tx">Transaction: <b id="qrTx">202505131133043193543997D</b></div>
-              </div>
-            </div></div>
-            <div class="scan">
+          <div class="qcols">
+            <div class="q-l">
+              <div class="qr-box"><i class="wb"></i><span class="code"><img src="assets/qr_code_src.png" alt="QR"></span><i class="cw"></i><span class="cl"><img src="assets/qr_center_src.png" alt=""></span></div>
+              <div class="qr-pw">powered by<span><img src="assets/qr_allbank.png" alt="AllBank"></span></div>
+            </div>
+            <div class="q-r sc" id="qR">
+              <div class="qr-logo"><span><img src="assets/logo_qrph.png" alt="QR Ph"></span></div>
+              <div class="qr-amt" id="qrAmt">Amount: ₱ 100.00</div>
+              <div class="qr-note"><b>IMPORTANT NOTE:</b>Please make sure to use this QR code only Once and deposit the exact amount shown as above</div>
+              <div class="qr-tx">Transaction: <b id="qrTx">202505131133043193543997D</b></div>
               <div class="scan-t">Scan with app to deposit</div>
               <div class="row"><span class="l"><img src="assets/app_g.png" alt="">Deposit using Gcash</span><span class="open">Open</span></div>
               <div class="row"><span class="l"><img src="assets/app_bank.png" alt="">Deposit using Gcash</span><span class="open">Open</span></div>
@@ -355,12 +362,13 @@ img{display:block}
   </div>
 </div>
 <div class="notes">
-  <h2>v4：在 v1（右侧抽屉，宽 390，只换容器）基础上改两处</h2>
+  <h2>v5：面板居中加宽（宽度 = 一排 6 个原宽金额按钮）</h2>
   <ol>
-    <li><b>去掉两个标题</b>：「Payment Methods」和「Deposit Amount」。「How To Deposit？」是帮助入口，挪到表头左侧保留。</li>
-    <li><b>6 档金额改成一排</b>：每个按钮约 52×48。原来的「₱ 2,000」16px 放不下，按钮里只写数字、字号 15px；₱ 仍显示在输入框和底部金额里。</li>
-    <li><b>效果</b>：内容高度少了 122px（两个标题 66px + 金额少一行 56px），打开就能看到支付方式和全部 6 档金额（v1 首屏看不到金额）；自定义金额输入框和保障标识要往下滑。</li>
-    <li><b>其余同 v1</b>：右侧抽屉、表头和底部 Deposit 区固定、点蒙层不关、内嵌付款页在抽屉里、iOS Tips 和教程、成功页按钮吸底。</li>
+    <li><b>面板居中、加宽到 740</b>：从底部弹起，左右各露出约 61px 游戏。宽度按金额按钮原宽（约 108.7px）一排 6 个算：6×108.7 + 5 个间距 8 + 两层左右边距 48 = 740。</li>
+    <li><b>金额按钮恢复原样</b>：「₱ 2,000」16px；6 个支付方式也能一排放下，不用横滑。</li>
+    <li><b>一屏看完</b>：协议文字在 740 宽里只占一行，表头 56 → 44，底栏内边距略收；支付方式、金额、输入框、₱ 金额 + Deposit、协议都在首屏，保障标识要往下滑。</li>
+    <li><b>内嵌付款页</b>：740 宽里改用 v3 的左右两栏（左二维码，右说明和 App 列表），二维码打开就完整可见。</li>
+    <li><b>其余同 v4</b>：没有两个标题，How To Deposit？在表头左侧；点蒙层不关；到账关面板并刷新余额；新开标签页、Tips、教程、成功页不变。</li>
   </ol>
   <p class="dim">演示说明：底图是安卓 Chrome 横屏真机截图，网页可视区约 863×318；内嵌式渠道的付款页都用 QRPh 页示意；第三方付款页是示意页；余额高亮只是演示提示，真实产品只刷新数字。勾选上方「模拟 iOS 拦截新标签页」可看 Tips 弹窗和教程。</p>
 </div>
@@ -426,7 +434,7 @@ img{display:block}
       case 'deposit':{
         if(!(S.amt>0)){$('#amtIn').focus();return;}
         const c=CH[S.ch];
-        if(c.emb){S.pending={ch:S.ch,amt:S.amt,emb:true,paid:false,sess:S.sess};$('#qrAmt').textContent='Amount: ₱ '+fmt(S.amt,2);$('#qrTx').textContent=txId();S.pane='qr';$('#qrBody').scrollTop=0;}
+        if(c.emb){S.pending={ch:S.ch,amt:S.amt,emb:true,paid:false,sess:S.sess};$('#qrAmt').textContent='Amount: ₱ '+fmt(S.amt,2);$('#qrTx').textContent=txId();S.pane='qr';$('#qR').scrollTop=0;}
         else if($('#iosT').checked){$('#tips').classList.add('on');}
         else{S.pending={ch:S.ch,amt:S.amt,emb:false,paid:false,sess:S.sess};$('#payLogo').innerHTML=$(`.chip[data-ch=${S.ch}] .lg`).innerHTML;$('#payAmt').textContent='₱ '+fmt(S.amt,2);S.tab='pay';}
         break;}
