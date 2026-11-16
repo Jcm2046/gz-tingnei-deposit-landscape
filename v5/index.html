@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>厅内充值 · 横版演示 v5（居中加宽 740）</title>
+<style>
+:root{--f:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro","Helvetica Neue",Roboto,"Segoe UI","PingFang SC",Arial,sans-serif;--gold:#eac070;--red:#de4444}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:#15171c;color:#dfe3ea;font-family:var(--f)}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+img{display:block}
+/* ---------- 页面外壳 ---------- */
+.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 16px 8px}
+.top h1{font-size:16px;margin:0;font-weight:600;color:#fff}
+.top .sub{font-size:12px;color:#8f98a6}
+.top .vl{font-size:12px;color:var(--gold);white-space:nowrap}
+@media (orientation:landscape) and (max-height:520px){.top .lt{display:none}}
+.hd.g3{display:grid;grid-template-columns:1fr auto 1fr}
+.hd.g3 .hlp{justify-self:start;font:500 12px/18px var(--f);color:#dce3ec;white-space:nowrap}
+.hd.g3 .ib{justify-self:end}
+.ctl{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-left:auto}
+.ctl button{height:30px;padding:0 12px;border-radius:8px;background:#2a2f3b;border:1px solid #3a4150;font-size:13px;color:#dfe3ea}
+.ctl button:hover:not(:disabled){border-color:var(--gold);color:#fff}
+.ctl button:disabled{opacity:.4;cursor:not-allowed}
+.ctl button.pri{background:#4a3b1c;border-color:var(--gold);color:var(--gold)}
+.ctl label{display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;user-select:none}
+.ctl input{accent-color:var(--gold)}
+.status{padding:0 16px 6px;font-size:12px;color:#8f98a6;min-height:18px}
+.status b{color:var(--gold);font-weight:500}
+.stage{position:relative;width:100%;height:min(calc(100vh - 96px),calc((100vw - 24px)*.4492));min-height:220px}
+.notes{max-width:1100px;margin:6px auto 28px;padding:0 16px;font-size:13px;line-height:1.7;color:#b8c0cc}
+.notes h2{font-size:14px;color:#fff;margin:14px 0 4px}
+.notes ol{margin:0;padding-left:20px}
+.notes .dim{color:#8f98a6}
+.rot{display:none;text-align:center;font-size:12px;color:var(--gold);padding:4px 0}
+@media (orientation:portrait) and (max-width:600px){.rot{display:block}}
+.stage{overflow:hidden}
+/* 手机横屏：只显示网页可视区，接近 1:1 */
+@media (orientation:landscape) and (max-height:520px){
+  .top{padding:4px 10px;gap:8px;flex-wrap:nowrap}
+  .top h1{font-size:13px;white-space:nowrap}
+  .top .sub,.status{display:none}
+  .ctl{gap:6px;flex-wrap:nowrap}
+  .ctl button{height:26px;padding:0 8px;font-size:12px;white-space:nowrap}
+  .ctl label{font-size:12px;white-space:nowrap}
+  .stage{height:calc(100vh - 36px);height:calc(100dvh - 36px)}
+  .device.crop{border-radius:0;box-shadow:none}
+}
+/* ---------- 设备（整张横屏截图，含状态栏、地址栏、导航键） ---------- */
+.device{position:absolute;left:50%;top:50%;width:969.7px;height:435.61px;transform-origin:center;background:url(../assets/lobby.jpg) 0 0/100% 100% no-repeat;border-radius:18px;overflow:hidden;box-shadow:0 0 0 6px #050608,0 12px 40px rgba(0,0,0,.6)}
+.addr{position:absolute;left:113.6px;top:66.6px;width:600px;height:37.9px;background:#333439;color:#e3e3e3;font:400 19.3px/37.9px Roboto,var(--f);padding-left:3.8px;white-space:nowrap;overflow:hidden;display:none}
+.tabn{position:absolute;left:822.3px;top:76.5px;width:13.6px;height:14.4px;background:#121318;color:#fff;font:700 11px/14.4px Roboto,var(--f);text-align:center;display:none}
+.newtab .addr,.newtab .tabn{display:block}
+/* 网页可视区：1139×420 截图像素 ÷ 1.32 = 862.9×318.2 CSS px */
+.web{position:absolute;left:50.76px;top:117.42px;width:862.88px;height:318.18px;overflow:hidden;font-family:var(--f)}
+.hot{position:absolute;left:190px;top:269px;width:73px;height:49px;border-radius:12px}
+.hot:hover{box-shadow:0 0 0 2px rgba(234,192,112,.8)}
+.ring{position:absolute;left:204px;top:265px;width:44px;height:44px;border-radius:50%;border:2px solid var(--gold);pointer-events:none;animation:ring 1.6s ease-out infinite}
+@keyframes ring{0%{transform:scale(.7);opacity:1}100%{transform:scale(1.5);opacity:0}}
+.bal{position:absolute;left:98.5px;top:296.2px;font:600 14px/16px var(--f);color:#e4dfe9;letter-spacing:.2px;white-space:nowrap;transition:color .3s,text-shadow .3s}
+.bal.flash{color:#ffe7a8;text-shadow:0 0 8px rgba(234,192,112,.9)}
+/* ---------- 蒙层 + 右侧抽屉 ---------- */
+.mask{position:absolute;inset:0;background:rgba(0,0,0,.6);opacity:0;pointer-events:none;transition:opacity .3s;z-index:10}
+.mask.on{opacity:1;pointer-events:auto}
+.drawer{position:absolute;top:0;bottom:0;left:calc(50% - 370px);width:740px;background:#2f3542;border-radius:20px 20px 0 0;transform:translateY(105%);transition:transform .3s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;overflow:hidden;z-index:20}
+.drawer.on{transform:none;box-shadow:0 -6px 24px rgba(0,0,0,.35)}
+.pane{display:none;flex-direction:column;flex:1;min-height:0}
+.pane.on{display:flex}
+.hd{height:44px;flex:none;display:flex;align-items:center;padding:0 16px}
+.hd .ttl{flex:1;text-align:center;font:600 16px/24px var(--f);color:#fff;padding:0 10px}
+.ib{width:24px;height:24px;display:grid;place-items:center;flex:none}
+.ib img{width:12px;height:12px}
+.body{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none}
+.body::-webkit-scrollbar{display:none}
+/* 充值表单 */
+.fm{display:flex;flex-direction:column;gap:12px;padding:4px 12px 12px}
+.pm-t{display:flex;align-items:center;gap:8px}
+.pm-t b{flex:1;font:600 16px/24px var(--f);color:#fff}
+.pm-t a{font:500 12px/18px var(--f);color:#dce3ec}
+.chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;height:45px;padding:4px 12px;border-radius:10px;background:#383f4d;position:relative;overflow:hidden;display:flex;align-items:center}
+.chip.on{background:#48453f;box-shadow:inset 0 0 0 1.5px var(--gold)}
+.chip .lg{width:84px;height:32px;position:relative;display:flex;align-items:center;justify-content:center;gap:2px;overflow:hidden}
+.chip .ck{display:none;position:absolute;right:0;bottom:0;width:16px;height:16px;background:var(--gold);border-radius:10px 0 10px 0;place-items:center}
+.chip.on .ck{display:grid}
+.chip .ck img{width:12px;height:12px}
+.lg .otc{font:700 14px/20px var(--f);color:#fff}
+.lg .ip{position:absolute;left:4px;right:3px;top:6.67px;bottom:6.67px;overflow:hidden}
+.lg .ip img{position:absolute;height:135.55%;width:115.98%;left:-9.72%;top:-17.28%;max-width:none}
+.card{background:#242933;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:12px}
+.card-t{font:500 14px/22px var(--f);color:#fff}
+.amts{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.amt{height:48px;border-radius:10px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.14);display:grid;place-items:center;font:600 16px/24px var(--f);white-space:nowrap;color:#fff;position:relative}
+.amt.on{background:var(--gold);color:#181b21;box-shadow:none}
+.amt .bd{position:absolute;top:-6px;right:-1px;height:16px;padding:0 6px;border-radius:99px;background:var(--red);color:#fff;font:600 12px/16px var(--f)}
+.inp{height:44px;background:#181b21;border-radius:12px;padding:8px 12px;display:flex;align-items:center;gap:4px}
+.inp>img{width:24px;height:24px;flex:none}
+.inp input{flex:1;min-width:0;background:none;border:0;outline:0;color:#fff;font:600 20px/28px var(--f);caret-color:var(--red);padding:0}
+.inp .clr{width:24px;height:24px;flex:none}
+.inp .clr img{width:24px;height:24px}
+.trust{display:flex;gap:10px;justify-content:center;padding:4px 0 12px}
+.tb{height:90px;border:1px solid #484c56;border-radius:12px;padding:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.tb p{margin:0;font:500 11px/14px var(--f);color:#8f98a6;text-align:center}
+.ft{flex:none;background:#2a2f3b;border-top:1px solid rgba(255,255,255,.1);padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.ft-row{display:flex;align-items:center;justify-content:space-between}
+.ft-amt{font:700 24px/32px var(--f);color:#fff}
+.btn-red{height:44px;padding:0 20px;border-radius:12px;background:linear-gradient(90deg,#de4444,#f95858);display:flex;align-items:center;justify-content:center;gap:4px;color:#fff;font:600 16px/24px var(--f)}
+.btn-red:active{filter:brightness(.92)}
+.bolt{width:24px;height:24px;display:grid;place-items:center}
+.bolt img{width:20px;height:20px}
+.agree{display:flex;gap:4px;align-items:flex-start;text-align:left;cursor:pointer}
+.cb{padding-top:2px;flex:none}
+.cb i{display:block;width:20px;height:20px;position:relative}
+.cb i::after{content:"";position:absolute;inset:12.5%;background:#21262e;border:.833px solid rgba(255,255,255,.1);border-radius:5px}
+.agree.on .cb i::after{background:var(--gold);border-color:var(--gold)}
+.cb i img{position:absolute;left:4px;top:4px;width:12px;height:12px;z-index:1;display:none}
+.agree.on .cb i img{display:block}
+.agree p{margin:0;font:400 13px/22px var(--f);color:#8f98a6}
+.agree u{color:#fff;font-weight:500;line-height:20px}
+/* 内嵌式付款页（QRPh） */
+.chev{width:13.44px;height:13.44px;display:grid;place-items:center}
+.chev span{display:block;position:relative;width:9.5px;height:9.5px;transform:rotate(45deg)}
+.chev img{position:absolute;top:0;right:0;bottom:-7.89%;left:-7.89%;width:auto;height:auto}
+.qr-w{padding:0 12px 12px}
+.qr-card{position:relative;width:366px;height:477px}
+.qr-card>img{position:absolute;inset:0;width:366px;height:477px}
+.qr-in{position:absolute;left:12px;top:12px;width:342px;display:flex;flex-direction:column;align-items:center;gap:12px;padding-bottom:16px}
+.qr-logo{width:126px;height:48px;position:relative}
+.qr-logo span{position:absolute;left:12.75px;top:6px;width:100.5px;height:36px}
+.qr-logo img{position:absolute;left:0;right:0;top:20.83%;bottom:12.5%;width:100%;height:66.67%}
+.qr-amt{height:18px;display:flex;align-items:center;justify-content:center;font:600 18px/28px var(--f);color:var(--gold);margin-top:4px}
+.qr-note{font:400 14px/22px var(--f);color:#8f98a6;text-align:center}
+.qr-note b{display:block;font-weight:500;color:#fff}
+.qr-box{position:relative;width:200px;height:200px;flex:none}
+.qr-box .wb{position:absolute;inset:0;background:#fff;border-radius:10.909px}
+.qr-box .code{position:absolute;left:5.45px;top:6.36px;width:188.18px;height:188.18px;border-radius:14.545px;overflow:hidden}
+.qr-box .code img{position:absolute;height:383.64%;width:177.45%;left:-38.91%;top:-79.27%;max-width:none}
+.qr-box .cw{position:absolute;left:86.36px;top:86.36px;width:27.27px;height:27.27px;background:#fff;border-radius:4.545px}
+.qr-box .cl{position:absolute;inset:45%;overflow:hidden}
+.qr-box .cl img{position:absolute;height:106.54%;width:450.19%;left:-2.02%;top:0;max-width:none}
+.qr-pw{display:flex;gap:4px;align-items:flex-start;font:400 14px/22px var(--f);color:#fff}
+.qr-pw span{position:relative;width:50px;height:20px}
+.qr-pw span img{position:absolute;left:0;top:3.37px;width:50px;height:16.27px}
+.qr-tx{font:400 14px/22px var(--f);color:#fff;text-align:center}
+.qr-tx b{font-weight:500}
+.scan{display:flex;flex-direction:column;gap:12px;padding:12px 12px 16px}
+.scan-t{text-align:center;font:600 16px/24px var(--f);color:var(--gold);text-transform:uppercase}
+.row{height:52px;background:#242933;border-radius:12px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between}
+.row .l{display:flex;align-items:center;gap:8px;font:400 14px/22px var(--f);color:#fff}
+.row img{width:32px;height:32px}
+.row .open{background:#444b58;border:.5px solid var(--gold);border-radius:20px;padding:4px 16px;font:400 12px/18px var(--f);color:var(--gold)}
+/* 教程（抽屉内） */
+.pane.guide{background:#181b21}
+.tut-hd{position:relative;flex:none;height:48px;background:#21262e}
+.tut-hd img{width:390px;height:48px}
+.tut-hd button{position:absolute;left:0;top:0;width:56px;height:48px}
+.pane.guide .body{display:flex;justify-content:center}
+.pane.guide .body img{width:390px;height:auto;align-self:flex-start}
+/* Tips 弹窗 */
+.dmask{position:absolute;inset:0;background:rgba(0,0,0,.6);z-index:40;display:none;align-items:center;justify-content:center}
+.dmask.on{display:flex}
+.tips{width:292px;border-radius:16px;background:#2f3542;position:relative}
+.tips .t{height:56px;display:flex;align-items:center;justify-content:center;font:600 16px/24px var(--f);color:#fff}
+.tips .ib{position:absolute;left:252px;top:16px}
+.tips .tx{padding:4px 16px;font:400 14px/22px Inter,var(--f);color:#fff;text-align:center}
+.tips .rd{height:34px;display:flex;align-items:center;justify-content:center;gap:4px;font:400 14px/22px Inter,var(--f);color:#a5a5a5;width:100%}
+.tips .rd i{position:relative;width:18px;height:20px}
+.tips .rd i img{width:18px;height:20px}
+.tips .rd.on i::after{content:"";position:absolute;left:5px;top:6px;width:8px;height:8px;border-radius:50%;background:var(--gold)}
+.tips .bt{display:flex;gap:12px;padding:16px}
+.tips .bt button{flex:1;height:44px;border-radius:12px;font:600 16px/24px var(--f)}
+.b-out{border:1.5px solid var(--red)!important;color:#f25555!important}
+/* 新标签页：第三方付款页（示意）与充值成功页 */
+.tab{position:absolute;inset:0;z-index:60;display:none}
+.tab.on{display:block}
+.tab-pay{background:#f3f5f9;color:#1c2333}
+.pay-top{height:44px;background:#0b1b3a;display:flex;align-items:center;gap:10px;padding:0 16px;color:#cfd8ea;font-size:12px}
+.pay-top .lg{width:84px;height:32px;display:flex;align-items:center;justify-content:center;gap:2px;position:relative;overflow:hidden}
+.pay-body{display:flex;flex-direction:column;align-items:center;justify-content:center;height:calc(100% - 44px);gap:8px}
+.pay-m{font-size:13px;color:#5b6475}
+.pay-amt{font-size:30px;font-weight:700}
+.pay-btn{margin-top:6px;height:42px;padding:0 28px;border-radius:21px;background:#1a5cff;color:#fff;font-weight:600;font-size:15px}
+.pay-back{font-size:12px;color:#5b6475;text-decoration:underline;margin-top:2px}
+.pay-tip{font-size:11px;color:#98a1b2}
+.tab-ok{background:linear-gradient(179.4deg,#090b12 .24%,#141a2a 33.2%,#141a2a 63.3%,#090b12 95.8%)}
+.ok-s{position:absolute;inset:0;overflow-y:auto;scrollbar-width:none}
+.ok-s::-webkit-scrollbar{display:none}
+.ok-c{width:100%;padding-top:36px;display:flex;flex-direction:column;align-items:center}
+.ok-logo{width:135.2px;height:83.2px}
+.shield{position:relative;width:188px;height:188px;margin-top:10.8px;overflow:hidden;filter:drop-shadow(0 14px 11px rgba(43,200,145,.04))}
+.shield img{position:absolute}
+.sh-v1{left:14px;top:14px;width:160px;height:160px}
+.sh-v2{left:34px;top:34px;width:120px;height:120px}
+.sh-s1{left:120px;top:35px;width:19px;height:19px}
+.sh-s2{left:159px;top:58px;width:14px;height:14px}
+.sh-s3{left:42px;top:127px;width:14px;height:14px}
+.sh-b{left:47.75px;top:50.24px;width:94.34px;height:102px}
+.sh-i{left:59px;top:54px;width:64px;height:75.73px;mix-blend-mode:overlay}
+.sh-c{left:72.35px;top:73.29px;width:51.71px;height:40.79px}
+.ok-t{margin-top:8px;font:700 24px/32px var(--f);color:#fff}
+.ok-amt{margin-top:12px;font:700 42px/50px var(--f);color:var(--gold)}
+.ok-card{margin-top:16px;width:358px;border:1px solid rgba(255,255,255,.28);border-radius:12px;background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.4)),rgba(255,255,255,.1);padding:2px 16px}
+.ok-r{height:52px;display:flex;align-items:center;gap:8px}
+.ok-r+.ok-r{border-top:1px solid rgba(255,255,255,.12)}
+.ok-r .ic{width:20px;height:20px;display:grid;place-items:center;flex:none}
+.ok-r .k{width:100px;font:400 13px/20px var(--f);color:#abbbc6}
+.ok-r .v{margin-left:auto;font:600 14px/20px var(--f);color:#f2f6f9;white-space:nowrap}
+.ok-r .pill{height:28px;padding:0 10px;border-radius:8px;background:rgba(251,252,255,.24);display:flex;align-items:center;color:#fff}
+.ok-r .tm{font-weight:400;font-size:13px}
+.ok-bw{position:sticky;bottom:0;width:100%;display:flex;justify-content:center;padding:16.64px;margin-top:16px;background:linear-gradient(180deg,rgba(9,11,18,0) 0%,rgba(9,11,18,.85) 45%,#090b12 100%)}
+.ok-bw .btn-red{width:356.72px;height:45.76px;border-radius:12.48px;font-size:16.64px}
+.ok-lic{display:flex;align-items:center;gap:6.24px;padding:4px 0 28px}
+.ok-lic span{font:400 10.4px/1 "Arial Rounded MT Bold",var(--f);color:#cacaca}
+.ok-lic .pg{width:32.07px;height:33.23px}
+.ok-lic .rg{width:105px;height:33.28px;margin-left:5.4px}
+/* v5：内嵌付款页两栏（沿用 v3） */
+.qcols{flex:1;min-height:0;display:flex;gap:12px;padding:4px 12px 12px}
+.q-l{width:260px;flex:none;background:#242933 url(../assets/qr_card_mask.svg) center/cover no-repeat;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:12px}
+.q-r{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:8px;padding-bottom:16px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none;-webkit-mask-image:linear-gradient(180deg,#000 calc(100% - 18px),transparent);mask-image:linear-gradient(180deg,#000 calc(100% - 18px),transparent)}
+.q-r::-webkit-scrollbar{display:none}
+.q-r .qr-logo{flex:none}
+.q-r .qr-amt{flex:none;height:22px;margin-top:0}
+.q-r .scan-t{margin-top:6px}
+.q-r .row{flex:none;width:100%}
+</style>
+</head>
+<body>
+<div class="top">
+  <h1>【充提】厅内充值改造 · 横版演示 v5</h1>
+  <span class="sub">居中加宽：金额按钮恢复原宽度，一排 6 个</span>
+  <a class="vl" href="../v4/">v4<span class="lt">（右侧窄抽屉）</span></a><a class="vl" href="../v3/">v3<span class="lt">（底部居中两栏）</span></a><a class="vl" href="../v2/">v2<span class="lt">（右侧宽抽屉）</span></a><a class="vl" href="../v1/">v1<span class="lt">（只换容器）</span></a><a class="vl" href="../">最新版<span class="lt"> →</span></a>
+  <div class="ctl">
+    <label title="模拟 iOS Safari 拦截新标签页"><input type="checkbox" id="iosT"> 模拟 iOS 拦截新标签页</label>
+    <button class="pri" id="arrive" disabled>模拟到账（当前订单）</button>
+    <button id="reset">重置</button>
+  </div>
+</div>
+<div class="status" id="status"></div>
+<div class="rot">手机请横屏，或用电脑打开</div>
+<div class="stage" id="stage">
+  <div class="device" id="device">
+    <div class="addr" id="addr"></div>
+    <div class="tabn">2</div>
+    <div class="web" id="web">
+      <span class="bal" id="bal">59.14</span>
+      <i class="ring" id="ring"></i>
+      <button class="hot" data-act="open" aria-label="Deposit" title="点这里打开充值"></button>
+      <div class="mask" id="mask"></div>
+      <aside class="drawer" id="drawer">
+        <!-- 充值表单：沿用竖版 01.A -->
+        <section class="pane on" data-pane="form">
+          <div class="hd g3"><a class="hlp">How To Deposit？</a><span class="ttl">Deposit</span><button class="ib" data-act="close" aria-label="关闭"><img src="../assets/close.svg" alt=""></button></div>
+          <div class="body">
+            <div class="fm">
+              <div>
+                                <div class="chips" id="chips">
+                  <button class="chip on" data-ch="gcash"><span class="lg"><img src="../assets/logo_gcash.svg" style="width:73px;height:18px" alt="GCash"></span><i class="ck"><img src="../assets/chip_check.svg" alt=""></i></button>
+                  <button class="chip" data-ch="bankcard"><span class="lg" style="gap:5.8px"><img src="../assets/logo_bankcard_icon.svg" style="width:23.7px;height:18px" alt=""><img src="../assets/logo_bankcard_word.svg" style="width:53.58px;height:10.72px" alt="Bankcard"></span><i class="ck"><img src="../assets/chip_check.svg" alt=""></i></button>
+                  <button class="chip" data-ch="otc"><span class="lg"><img src="../assets/logo_otc_icon.svg" style="width:20px;height:20px" alt=""><span class="otc">OTC</span></span><i class="ck"><img src="../assets/chip_check.svg" alt=""></i></button>
+                  <button class="chip" data-ch="qrph"><span class="lg"><img src="../assets/logo_qrph.png" style="width:66px;height:15.7px" alt="QRPh"></span><i class="ck"><img src="../assets/chip_check.svg" alt=""></i></button>
+                  <button class="chip" data-ch="grabpay"><span class="lg"><img src="../assets/logo_grabpay.svg" style="width:79.2px;height:17.73px" alt="GrabPay"></span><i class="ck"><img src="../assets/chip_check.svg" alt=""></i></button>
+                  <button class="chip" data-ch="instapay"><span class="lg"><span class="ip"><img src="../assets/logo_x31221.png" alt="InstaPay"></span></span><i class="ck"><img src="../assets/chip_check.svg" alt=""></i></button>
+                </div>
+              </div>
+              <div class="card">
+                                <div class="amts" id="amts">
+                  <button class="amt on" data-v="100">₱ 100<i class="bd">+24</i></button>
+                  <button class="amt" data-v="200">₱ 200<i class="bd">+24</i></button>
+                  <button class="amt" data-v="300">₱ 300<i class="bd">+24</i></button>
+                  <button class="amt" data-v="500">₱ 500<i class="bd">+24</i></button>
+                  <button class="amt" data-v="1000">₱ 1,000<i class="bd">+24</i></button>
+                  <button class="amt" data-v="2000">₱ 2,000<i class="bd">+24</i></button>
+                </div>
+                <div class="inp"><img src="../assets/icon_peso.svg" alt=""><input id="amtIn" inputmode="decimal" value="100" aria-label="Deposit amount"><button class="clr" data-act="clear" aria-label="清空"><img src="../assets/icon_clear.svg" alt=""></button></div>
+              </div>
+              <div class="trust">
+                <div class="tb" style="width:92px"><img src="../assets/badge_philfirst.png" style="width:72px;height:20.7px" alt="PhilFirst"><p>Fund 100%<br>Protected</p></div>
+                <div class="tb" style="width:160px"><span style="width:80px;height:25px;display:grid;place-items:center"><img src="../assets/badge_kantar.png" style="width:70px;height:13.82px" alt="KANTAR"></span><p style="width:154px">#1 for Fastest Cash In &amp; Cash Out—Kantar, 2026</p></div>
+                <div class="tb" style="width:92px"><span style="width:80px;height:25px;display:grid;place-items:center"><img src="../assets/badge_pagcor.png" style="width:24px;height:25px" alt="PAGCOR"></span><p style="width:88px">Safe, Licensed,<br>Regulated</p></div>
+              </div>
+            </div>
+          </div>
+          <div class="ft">
+            <div class="ft-row"><span class="ft-amt" id="ftAmt">₱ 100</span><button class="btn-red" data-act="deposit"><span class="bolt"><img src="../assets/icon_bolt.svg" alt=""></span>Deposit</button></div>
+            <div class="agree" id="agree" data-act="agree"><span class="cb"><i><img src="../assets/chip_check.svg" alt=""></i></span><p>I agree with the <u>Terms of Use</u> &amp; <u>Privacy Policy</u>, and confirm that I am at least 21 years old.</p></div>
+          </div>
+        </section>
+        <!-- 内嵌式付款页：沿用竖版「内嵌式渠道半浮层」 -->
+        <section class="pane" data-pane="qr">
+          <div class="hd"><button class="ib" data-act="back" aria-label="返回"><span class="chev"><span><img src="../assets/back.svg" alt=""></span></span></button><span class="ttl"></span><button class="ib" data-act="close" aria-label="关闭"><img src="../assets/close.svg" alt=""></button></div>
+          <div class="qcols">
+            <div class="q-l">
+              <div class="qr-box"><i class="wb"></i><span class="code"><img src="../assets/qr_code_src.png" alt="QR"></span><i class="cw"></i><span class="cl"><img src="../assets/qr_center_src.png" alt=""></span></div>
+              <div class="qr-pw">powered by<span><img src="../assets/qr_allbank.png" alt="AllBank"></span></div>
+            </div>
+            <div class="q-r sc" id="qR">
+              <div class="qr-logo"><span><img src="../assets/logo_qrph.png" alt="QR Ph"></span></div>
+              <div class="qr-amt" id="qrAmt">Amount: ₱ 100.00</div>
+              <div class="qr-note"><b>IMPORTANT NOTE:</b>Please make sure to use this QR code only Once and deposit the exact amount shown as above</div>
+              <div class="qr-tx">Transaction: <b id="qrTx">202505131133043193543997D</b></div>
+              <div class="scan-t">Scan with app to deposit</div>
+              <div class="row"><span class="l"><img src="../assets/app_g.png" alt="">Deposit using Gcash</span><span class="open">Open</span></div>
+              <div class="row"><span class="l"><img src="../assets/app_bank.png" alt="">Deposit using Gcash</span><span class="open">Open</span></div>
+              <div class="row"><span class="l"><img src="../assets/app_maya.png" alt="">Deposit using Gcash</span><span class="open">Open</span></div>
+              <div class="row"><span class="l"><img src="../assets/app_g.png" alt="">Deposit using Gcash</span><span class="open">Open</span></div>
+              <div class="row"><span class="l"><img src="../assets/app_g.png" alt="">Deposit using Gcash</span><span class="open">Open</span></div>
+              <div class="row"><span class="l"><img src="../assets/app_g.png" alt="">Deposit using Gcash</span><span class="open">Open</span></div>
+            </div>
+          </div>
+        </section>
+        <!-- 教程：竖版是整页，横版放进抽屉 -->
+        <section class="pane guide" data-pane="guide">
+          <div class="tut-hd"><img src="../assets/tut_header.png" alt="How to Allow Pop-ups in Safari"><button data-act="guide-back" aria-label="返回"></button></div>
+          <div class="body"><img src="../assets/tut_cards.jpg" alt="教程"></div>
+        </section>
+      </aside>
+      <!-- iOS 拦截新标签页时的 Tips 弹窗：沿用竖版，居中 -->
+      <div class="dmask" id="tips">
+        <div class="tips">
+          <div class="t">Tips</div>
+          <button class="ib" data-act="tips-close" aria-label="关闭"><img src="../assets/tips_close.svg" alt=""></button>
+          <div class="tx">To ensure a smooth login and deposit experience, please enable pop-ups in your Safari settings.</div>
+          <button class="rd" id="noShow" data-act="noshow"><i><img src="../assets/tips_radio.svg" alt=""></i>Don't show this again</button>
+          <div class="bt"><button class="b-out" data-act="guide">View Guides</button><button class="btn-red" data-act="tips-close">Got It</button></div>
+        </div>
+      </div>
+      <!-- 新标签页 1：第三方付款页（示意） -->
+      <div class="tab tab-pay" id="tabPay">
+        <div class="pay-top"><span class="lg" id="payLogo"></span><span>第三方付款页（示意，非真实页面）</span></div>
+        <div class="pay-body">
+          <div class="pay-m">Pay to GameZone</div>
+          <div class="pay-amt" id="payAmt">₱ 100.00</div>
+          <button class="pay-btn" data-act="pay-ok">模拟付款成功</button>
+          <button class="pay-back" data-act="pay-back">不付款，直接切回游戏标签页</button>
+          <div class="pay-tip">新标签页打开，原游戏标签页保留</div>
+        </div>
+      </div>
+      <!-- 新标签页 2：充值成功页（方案 C） -->
+      <div class="tab tab-ok" id="tabOk">
+        <div class="ok-s" id="okScroll"><div class="ok-c">
+          <img class="ok-logo" src="../assets/ok_gz_logo.svg" alt="GameZone">
+          <div class="shield">
+            <img class="sh-v1" src="../assets/ok_v1.svg" alt=""><img class="sh-v2" src="../assets/ok_v2.svg" alt="">
+            <img class="sh-s1" src="../assets/ok_spark1.svg" alt=""><img class="sh-s2" src="../assets/ok_spark2.svg" alt=""><img class="sh-s3" src="../assets/ok_spark3.svg" alt="">
+            <img class="sh-b" src="../assets/ok_shield.svg" alt=""><img class="sh-i" src="../assets/ok_intersect.svg" alt=""><img class="sh-c" src="../assets/ok_check.svg" alt="">
+          </div>
+          <div class="ok-t">Deposit Successful</div>
+          <div class="ok-amt" id="okAmt">₱ 100.00</div>
+          <div class="ok-card">
+            <div class="ok-r"><span class="ic"><img src="../assets/ok_ic_pay.svg" alt=""></span><span class="k">Type</span><span class="v pill" id="okType">GCash</span></div>
+            <div class="ok-r"><span class="ic"><img src="../assets/ok_ic_user.svg" alt=""></span><span class="k">User account</span><span class="v">Matteo</span></div>
+            <div class="ok-r"><span class="ic"><img src="../assets/ok_ic_time.svg" alt=""></span><span class="k">Time</span><span class="v tm" id="okTime"></span></div>
+          </div>
+          <div class="ok-bw"><button class="btn-red" data-act="back-gz">Back to GameZone</button></div>
+          <div class="ok-lic"><span>Officially Licensed by</span><img class="pg" src="../assets/ok_pagcor.png" alt="PAGCOR"><img class="rg" src="../assets/ok_21.png" alt="21+"></div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="notes">
+  <h2>v5：面板居中加宽（宽度 = 一排 6 个原宽金额按钮）</h2>
+  <ol>
+    <li><b>面板居中、加宽到 740</b>：从底部弹起，左右各露出约 61px 游戏。宽度按金额按钮原宽（约 108.7px）一排 6 个算：6×108.7 + 5 个间距 8 + 两层左右边距 48 = 740。</li>
+    <li><b>金额按钮恢复原样</b>：「₱ 2,000」16px；6 个支付方式也能一排放下，不用横滑。</li>
+    <li><b>一屏看完</b>：协议文字在 740 宽里只占一行，表头 56 → 44，底栏内边距略收；支付方式、金额、输入框、₱ 金额 + Deposit、协议都在首屏，保障标识要往下滑。</li>
+    <li><b>内嵌付款页</b>：740 宽里改用 v3 的左右两栏（左二维码，右说明和 App 列表），二维码打开就完整可见。</li>
+    <li><b>其余同 v4</b>：没有两个标题，How To Deposit？在表头左侧；点蒙层不关；到账关面板并刷新余额；新开标签页、Tips、教程、成功页不变。</li>
+  </ol>
+  <p class="dim">演示说明：底图是安卓 Chrome 横屏真机截图，网页可视区约 863×318；内嵌式渠道的付款页都用 QRPh 页示意；第三方付款页是示意页；余额高亮只是演示提示，真实产品只刷新数字。勾选上方「模拟 iOS 拦截新标签页」可看 Tips 弹窗和教程。</p>
+</div>
+<script>
+(function(){
+  const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+  const dev=$('#device'), stage=$('#stage');
+  const DW=969.7, DH=435.61;
+  const WX=50.76, WY=117.42, WW=862.88, WH=318.18, mq=matchMedia('(orientation:landscape) and (max-height:520px)');
+  function fit(){
+    const W=stage.clientWidth, H=stage.clientHeight;
+    if(mq.matches){ // 手机横屏：裁掉状态栏和地址栏，网页区铺满
+      const s=Math.min(W/WW, H/WH);
+      Object.assign(dev.style,{transformOrigin:'0 0',left:(W/2-(WX+WW/2)*s)+'px',top:(-WY*s)+'px',transform:`scale(${s})`});
+      dev.classList.add('crop');
+    }else{
+      const s=Math.min(W/DW, H/DH)*.98;
+      Object.assign(dev.style,{transformOrigin:'',left:'',top:'',transform:`translate(-50%,-50%) scale(${s})`});
+      dev.classList.remove('crop');
+    }
+  }
+  new ResizeObserver(fit).observe(stage); fit();
+
+  const CH={gcash:{n:'GCash',emb:false,url:'m.gcash.com/payment/checkout'},bankcard:{n:'Bankcard',emb:true},otc:{n:'OTC',emb:true},qrph:{n:'QRPh',emb:true},grabpay:{n:'GrabPay',emb:false,url:'pay.grab.com/checkout'},instapay:{n:'InstaPay',emb:true}};
+  const S0={bal:59.14,ch:'gcash',amt:100,agree:false,open:false,pane:'form',pending:null,tab:'game',noShow:false};
+  let S=JSON.parse(JSON.stringify(S0));
+  const fmt=(v,d)=>v.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+  const short=v=>Number.isInteger(v)?fmt(v,0):fmt(v,2);
+  const txId=()=>{const d=new Date(),p=n=>String(n).padStart(2,'0');let r='';for(let i=0;i<10;i++)r+=Math.floor(Math.random()*10);return d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+p(d.getHours())+p(d.getMinutes())+p(d.getSeconds())+r+'D';};
+
+  function render(){
+    $('#mask').classList.toggle('on',S.open);
+    $('#drawer').classList.toggle('on',S.open);
+    $$('.pane').forEach(p=>p.classList.toggle('on',p.dataset.pane===S.pane));
+    $$('.chip').forEach(c=>c.classList.toggle('on',c.dataset.ch===S.ch));
+    $$('.amt').forEach(a=>a.classList.toggle('on',+a.dataset.v===S.amt));
+    $('#ftAmt').textContent='₱ '+(S.amt>0?short(S.amt):'0');
+    $('#agree').classList.toggle('on',S.agree);
+    $('#noShow').classList.toggle('on',S.noShow);
+    $('#bal').textContent=fmt(S.bal,2);
+    $('#tabPay').classList.toggle('on',S.tab==='pay');
+    $('#tabOk').classList.toggle('on',S.tab==='ok');
+    dev.classList.toggle('newtab',S.tab!=='game');
+    $('#addr').textContent=S.tab==='pay'?CH[S.pending?.ch||S.ch].url:'gzone.ph/deposit/result';
+    const p=S.pending;
+    $('#arrive').disabled=!(p&&p.emb&&!p.paid&&S.tab==='game');
+    const where=S.tab==='game'?'游戏标签页':(S.tab==='pay'?'新标签页 · 第三方付款页':'新标签页 · 充值成功页');
+    const dr=S.open?('抽屉打开（'+({form:'充值表单',qr:'内嵌付款页',guide:'教程'})[S.pane]+'）'):'抽屉关闭';
+    $('#status').innerHTML=`当前：<b>${where}</b> · ${dr} · 余额 ₱${fmt(S.bal,2)}`+(p&&!p.paid?` · 待到账订单 <b>₱${fmt(p.amt,2)}（${CH[p.ch].n}）</b>`:'');
+  }
+  function flash(){const b=$('#bal');b.classList.remove('flash');void b.offsetWidth;b.classList.add('flash');setTimeout(()=>b.classList.remove('flash'),1400);}
+  function credit(p){p.paid=true;S.bal=Math.round((S.bal+p.amt)*100)/100;}
+
+  document.addEventListener('click',e=>{
+    const chip=e.target.closest('.chip'); if(chip){S.ch=chip.dataset.ch;render();return;}
+    const amt=e.target.closest('.amt'); if(amt){S.amt=+amt.dataset.v;$('#amtIn').value=String(S.amt);render();return;}
+    const el=e.target.closest('[data-act]'); if(!el)return;
+    switch(el.dataset.act){
+      case 'open': S.open=true;S.pane='form';S.sess=(S.sess||0)+1;$('#ring').style.display='none';$('.pane[data-pane=form] .body').scrollTop=0;break;
+      case 'close': S.open=false;break;
+      case 'clear': S.amt=0;$('#amtIn').value='';$('#amtIn').focus();break;
+      case 'agree': S.agree=!S.agree;break;
+      case 'deposit':{
+        if(!(S.amt>0)){$('#amtIn').focus();return;}
+        const c=CH[S.ch];
+        if(c.emb){S.pending={ch:S.ch,amt:S.amt,emb:true,paid:false,sess:S.sess};$('#qrAmt').textContent='Amount: ₱ '+fmt(S.amt,2);$('#qrTx').textContent=txId();S.pane='qr';$('#qR').scrollTop=0;}
+        else if($('#iosT').checked){$('#tips').classList.add('on');}
+        else{S.pending={ch:S.ch,amt:S.amt,emb:false,paid:false,sess:S.sess};$('#payLogo').innerHTML=$(`.chip[data-ch=${S.ch}] .lg`).innerHTML;$('#payAmt').textContent='₱ '+fmt(S.amt,2);S.tab='pay';}
+        break;}
+      case 'back': S.pane='form';break;
+      case 'tips-close': $('#tips').classList.remove('on');break;
+      case 'noshow': S.noShow=!S.noShow;break;
+      case 'guide': $('#tips').classList.remove('on');S.pane='guide';$('.pane.guide .body').scrollTop=0;break;
+      case 'guide-back': S.pane='form';break;
+      case 'pay-ok':{const p=S.pending;credit(p);if(S.open&&p.sess===S.sess){S.open=false;S.pane='form';}
+        $('#okAmt').textContent='₱ '+fmt(p.amt,2);$('#okType').textContent=CH[p.ch].n;
+        const d=new Date(),q=n=>String(n).padStart(2,'0');let h=d.getHours();const ap=h>=12?'PM':'AM';h=h%12||12;
+        $('#okTime').textContent=`${q(d.getMonth()+1)}/${q(d.getDate())}/${d.getFullYear()} ${q(h)}:${q(d.getMinutes())}:${q(d.getSeconds())}${ap}`;
+        $('#okScroll').scrollTop=0;S.tab='ok';break;}
+      case 'pay-back': S.tab='game';S.open=false;S.pane='form';break;
+      case 'back-gz': S.tab='game';setTimeout(flash,350);break;
+    }
+    render();
+  });
+  $('#amtIn').addEventListener('input',e=>{let v=e.target.value.replace(/[^\d.]/g,'');const i=v.indexOf('.');if(i>=0)v=v.slice(0,i+1)+v.slice(i+1).replace(/\./g,'').slice(0,2);e.target.value=v;S.amt=parseFloat(v)||0;render();});
+  $('#arrive').addEventListener('click',()=>{const p=S.pending;if(!p||p.paid)return;credit(p);if(S.open&&p.sess===S.sess)S.open=false;render();setTimeout(flash,300);});
+  $('#reset').addEventListener('click',()=>{S=JSON.parse(JSON.stringify(S0));$('#amtIn').value='100';$('#tips').classList.remove('on');$('#iosT').checked=false;$('#ring').style.display='';render();});
+  $('#iosT').addEventListener('change',render);
+  const chips=$('#chips'); // 电脑上用滚轮横向滑动支付方式
+  chips.addEventListener('wheel',e=>{if(Math.abs(e.deltaY)>Math.abs(e.deltaX)){chips.scrollLeft+=e.deltaY;e.preventDefault();}},{passive:false});
+  render();
+})();
+</script>
+</body>
+</html>

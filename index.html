@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<title>厅内充值 · 横版演示 v5</title>
+<title>厅内充值 · 横版演示 v6</title>
 <style>
 :root{--f:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro","Helvetica Neue",Roboto,"Segoe UI","PingFang SC",Arial,sans-serif;--gold:#eac070;--red:#de4444}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -16,6 +16,8 @@ img{display:block}
 .top h1{font-size:16px;margin:0;font-weight:600;color:#fff}
 .top .sub{font-size:12px;color:#8f98a6}
 .top .vl{font-size:12px;color:var(--gold);white-space:nowrap}
+.top .ver{height:26px;border-radius:6px;background:#2a2f3b;color:var(--gold);border:1px solid #3a4150;font-size:12px;padding:0 4px}
+@media (orientation:landscape) and (max-height:520px){.top .ver{width:80px}}
 @media (orientation:landscape) and (max-height:520px){.top .lt{display:none}}
 .hd.g3{display:grid;grid-template-columns:1fr auto 1fr}
 .hd.g3 .hlp{justify-self:start;font:500 12px/18px var(--f);color:#dce3ec;white-space:nowrap}
@@ -79,7 +81,13 @@ img{display:block}
 .pm-t{display:flex;align-items:center;gap:8px}
 .pm-t b{flex:1;font:600 16px/24px var(--f);color:#fff}
 .pm-t a{font:500 12px/18px var(--f);color:#dce3ec}
-.chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+.chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -12px;padding:0 12px;scroll-padding:0 12px;scroll-snap-type:x proximity;overscroll-behavior-x:contain;cursor:grab}
+.chips .chip{scroll-snap-align:start}
+.chips.fr{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 36px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 36px),transparent)}
+.chips.fl{-webkit-mask-image:linear-gradient(90deg,transparent,#000 36px);mask-image:linear-gradient(90deg,transparent,#000 36px)}
+.chips.fl.fr{-webkit-mask-image:linear-gradient(90deg,transparent,#000 36px,#000 calc(100% - 36px),transparent);mask-image:linear-gradient(90deg,transparent,#000 36px,#000 calc(100% - 36px),transparent)}
+.chips.drag{cursor:grabbing;scroll-snap-type:none}
+.lg .ins{font:700 12px/16px var(--f);color:#fff;white-space:nowrap}
 .chips::-webkit-scrollbar{display:none}
 .chip{flex:none;height:45px;padding:4px 12px;border-radius:10px;background:#383f4d;position:relative;overflow:hidden;display:flex;align-items:center}
 .chip.on{background:#48453f;box-shadow:inset 0 0 0 1.5px var(--gold)}
@@ -229,9 +237,9 @@ img{display:block}
 </head>
 <body>
 <div class="top">
-  <h1>【充提】厅内充值改造 · 横版演示 v5</h1>
-  <span class="sub">居中加宽：金额按钮恢复原宽度，一排 6 个</span>
-  <a class="vl" href="v4/">v4<span class="lt">（右侧窄抽屉）</span></a><a class="vl" href="v3/">v3<span class="lt">（底部居中两栏）</span></a><a class="vl" href="v2/">v2<span class="lt">（右侧宽抽屉）</span></a><a class="vl" href="v1/">v1<span class="lt">（只换容器）</span></a>
+  <h1>【充提】厅内充值改造 · 横版演示 v6</h1>
+  <span class="sub">去掉 How To Deposit？，支付方式可左右滑动</span>
+  <select class="ver" aria-label="对比旧版本" onchange="if(this.value)location.href=this.value"><option value="">对比旧版本</option><option value="v5/">v5 居中加宽</option><option value="v4/">v4 右侧窄抽屉 + 金额一排</option><option value="v3/">v3 底部居中两栏</option><option value="v2/">v2 右侧宽抽屉两栏</option><option value="v1/">v1 只换容器</option></select>
   <div class="ctl">
     <label title="模拟 iOS Safari 拦截新标签页"><input type="checkbox" id="iosT"> 模拟 iOS 拦截新标签页</label>
     <button class="pri" id="arrive" disabled>模拟到账（当前订单）</button>
@@ -252,7 +260,7 @@ img{display:block}
       <aside class="drawer" id="drawer">
         <!-- 充值表单：沿用竖版 01.A -->
         <section class="pane on" data-pane="form">
-          <div class="hd g3"><a class="hlp">How To Deposit？</a><span class="ttl">Deposit</span><button class="ib" data-act="close" aria-label="关闭"><img src="assets/close.svg" alt=""></button></div>
+          <div class="hd g3"><span></span><span class="ttl">Deposit</span><button class="ib" data-act="close" aria-label="关闭"><img src="assets/close.svg" alt=""></button></div>
           <div class="body">
             <div class="fm">
               <div>
@@ -263,6 +271,8 @@ img{display:block}
                   <button class="chip" data-ch="qrph"><span class="lg"><img src="assets/logo_qrph.png" style="width:66px;height:15.7px" alt="QRPh"></span><i class="ck"><img src="assets/chip_check.svg" alt=""></i></button>
                   <button class="chip" data-ch="grabpay"><span class="lg"><img src="assets/logo_grabpay.svg" style="width:79.2px;height:17.73px" alt="GrabPay"></span><i class="ck"><img src="assets/chip_check.svg" alt=""></i></button>
                   <button class="chip" data-ch="instapay"><span class="lg"><span class="ip"><img src="assets/logo_x31221.png" alt="InstaPay"></span></span><i class="ck"><img src="assets/chip_check.svg" alt=""></i></button>
+                  <button class="chip" data-ch="dpay"><span class="lg"><img src="assets/logo_dpay.svg" style="width:48.63px;height:13px" alt="DPAY"></span><i class="ck"><img src="assets/chip_check.svg" alt=""></i></button>
+                  <button class="chip" data-ch="instore"><span class="lg" style="gap:3px"><img src="assets/logo_gz_instore.svg" style="width:30px;height:16.67px" alt=""><span class="ins">In-Store</span></span><i class="ck"><img src="assets/chip_check.svg" alt=""></i></button>
                 </div>
               </div>
               <div class="card">
@@ -362,13 +372,11 @@ img{display:block}
   </div>
 </div>
 <div class="notes">
-  <h2>v5：面板居中加宽（宽度 = 一排 6 个原宽金额按钮）</h2>
+  <h2>v6：在 v5 基础上去掉 How To Deposit？，支付方式可左右滑动</h2>
   <ol>
-    <li><b>面板居中、加宽到 740</b>：从底部弹起，左右各露出约 61px 游戏。宽度按金额按钮原宽（约 108.7px）一排 6 个算：6×108.7 + 5 个间距 8 + 两层左右边距 48 = 740。</li>
-    <li><b>金额按钮恢复原样</b>：「₱ 2,000」16px；6 个支付方式也能一排放下，不用横滑。</li>
-    <li><b>一屏看完</b>：协议文字在 740 宽里只占一行，表头 56 → 44，底栏内边距略收；支付方式、金额、输入框、₱ 金额 + Deposit、协议都在首屏，保障标识要往下滑。</li>
-    <li><b>内嵌付款页</b>：740 宽里改用 v3 的左右两栏（左二维码，右说明和 App 列表），二维码打开就完整可见。</li>
-    <li><b>其余同 v4</b>：没有两个标题，How To Deposit？在表头左侧；点蒙层不关；到账关面板并刷新余额；新开标签页、Tips、教程、成功页不变。</li>
+    <li><b>去掉「How To Deposit？」</b>：表头只留居中的 Deposit 和右上 ✕。</li>
+    <li><b>支付方式增加到 8 个</b>（补上设计稿里的 DPAY、GameZone In-Store），一屏放 6 个，其余左右滑动：手机上手指滑，电脑上按住拖动或用滚轮。后面还有内容时右边缘渐隐，滑过去后左边缘渐隐；第一次打开会轻轻往左带一下再回来，提示可以滑。</li>
+    <li><b>其余同 v5</b>：面板 740 居中、金额按钮原宽一排 6 个、输入框和协议在首屏、二维码页两栏；DPAY、In-Store 的付款页按内嵌式示意。</li>
   </ol>
   <p class="dim">演示说明：底图是安卓 Chrome 横屏真机截图，网页可视区约 863×318；内嵌式渠道的付款页都用 QRPh 页示意；第三方付款页是示意页；余额高亮只是演示提示，真实产品只刷新数字。勾选上方「模拟 iOS 拦截新标签页」可看 Tips 弹窗和教程。</p>
 </div>
@@ -392,7 +400,7 @@ img{display:block}
   }
   new ResizeObserver(fit).observe(stage); fit();
 
-  const CH={gcash:{n:'GCash',emb:false,url:'m.gcash.com/payment/checkout'},bankcard:{n:'Bankcard',emb:true},otc:{n:'OTC',emb:true},qrph:{n:'QRPh',emb:true},grabpay:{n:'GrabPay',emb:false,url:'pay.grab.com/checkout'},instapay:{n:'InstaPay',emb:true}};
+  const CH={gcash:{n:'GCash',emb:false,url:'m.gcash.com/payment/checkout'},bankcard:{n:'Bankcard',emb:true},otc:{n:'OTC',emb:true},qrph:{n:'QRPh',emb:true},grabpay:{n:'GrabPay',emb:false,url:'pay.grab.com/checkout'},instapay:{n:'InstaPay',emb:true},dpay:{n:'DPAY',emb:true},instore:{n:'In-Store',emb:true}};
   const S0={bal:59.14,ch:'gcash',amt:100,agree:false,open:false,pane:'form',pending:null,tab:'game',noShow:false};
   let S=JSON.parse(JSON.stringify(S0));
   const fmt=(v,d)=>v.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
@@ -427,7 +435,7 @@ img{display:block}
     const amt=e.target.closest('.amt'); if(amt){S.amt=+amt.dataset.v;$('#amtIn').value=String(S.amt);render();return;}
     const el=e.target.closest('[data-act]'); if(!el)return;
     switch(el.dataset.act){
-      case 'open': S.open=true;S.pane='form';S.sess=(S.sess||0)+1;$('#ring').style.display='none';$('.pane[data-pane=form] .body').scrollTop=0;break;
+      case 'open': S.open=true;S.pane='form';S.sess=(S.sess||0)+1;setTimeout(fade,0);nudge();$('#ring').style.display='none';$('.pane[data-pane=form] .body').scrollTop=0;break;
       case 'close': S.open=false;break;
       case 'clear': S.amt=0;$('#amtIn').value='';$('#amtIn').focus();break;
       case 'agree': S.agree=!S.agree;break;
@@ -458,6 +466,15 @@ img{display:block}
   $('#reset').addEventListener('click',()=>{S=JSON.parse(JSON.stringify(S0));$('#amtIn').value='100';$('#tips').classList.remove('on');$('#iosT').checked=false;$('#ring').style.display='';render();});
   $('#iosT').addEventListener('change',render);
   const chips=$('#chips'); // 电脑上用滚轮横向滑动支付方式
+  const fade=()=>{const m=chips.scrollWidth-chips.clientWidth;chips.classList.toggle('fl',chips.scrollLeft>2);chips.classList.toggle('fr',chips.scrollLeft<m-2);};
+  chips.addEventListener('scroll',fade,{passive:true});
+  let drag=null,moved=false; // 电脑上按住拖动横滑
+  chips.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse'||e.button!==0)return;drag={x:e.clientX,sl:chips.scrollLeft,k:chips.getBoundingClientRect().width/chips.offsetWidth};moved=false;});
+  window.addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-drag.x;if(!moved&&Math.abs(dx)>4){moved=true;chips.classList.add('drag');}if(moved)chips.scrollLeft=drag.sl-dx/drag.k;});
+  window.addEventListener('pointerup',()=>{if(!drag)return;drag=null;chips.classList.remove('drag');});
+  chips.addEventListener('click',e=>{if(moved){e.stopPropagation();e.preventDefault();moved=false;}},true);
+  let nudged=false; // 首次打开轻轻往左带一下再回来，提示可左右滑
+  function nudge(){if(nudged)return;nudged=true;setTimeout(()=>{chips.scrollTo({left:96,behavior:'smooth'});setTimeout(()=>chips.scrollTo({left:0,behavior:'smooth'}),700);},500);}
   chips.addEventListener('wheel',e=>{if(Math.abs(e.deltaY)>Math.abs(e.deltaX)){chips.scrollLeft+=e.deltaY;e.preventDefault();}},{passive:false});
   render();
 })();
