@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<title>厅内充值 · 横版演示 v2</title>
+<title>厅内充值 · 横版演示 v3</title>
 <style>
 :root{--f:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro","Helvetica Neue",Roboto,"Segoe UI","PingFang SC",Arial,sans-serif;--gold:#eac070;--red:#de4444}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -57,11 +57,11 @@ img{display:block}
 @keyframes ring{0%{transform:scale(.7);opacity:1}100%{transform:scale(1.5);opacity:0}}
 .bal{position:absolute;left:98.5px;top:296.2px;font:600 14px/16px var(--f);color:#e4dfe9;letter-spacing:.2px;white-space:nowrap;transition:color .3s,text-shadow .3s}
 .bal.flash{color:#ffe7a8;text-shadow:0 0 8px rgba(234,192,112,.9)}
-/* ---------- 蒙层 + 右侧宽抽屉（v2：640 宽，两栏） ---------- */
+/* ---------- 蒙层 + 底部居中面板（v3：640 宽居中，左右各露约 110px 游戏，顶部留 8px） ---------- */
 .mask{position:absolute;inset:0;background:rgba(0,0,0,.6);opacity:0;pointer-events:none;transition:opacity .3s;z-index:10}
 .mask.on{opacity:1;pointer-events:auto}
-.drawer{position:absolute;top:0;right:0;bottom:0;width:640px;max-width:100%;background:#2f3542;border-radius:20px 0 0 20px;transform:translateX(105%);transition:transform .3s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;overflow:hidden;z-index:20}
-.drawer.on{transform:none;box-shadow:-6px 0 24px rgba(0,0,0,.35)}
+.drawer{position:absolute;top:8px;left:calc(50% - 320px);bottom:0;width:640px;background:#2f3542;border-radius:20px 20px 0 0;transform:translateY(105%);transition:transform .3s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;overflow:hidden;z-index:20}
+.drawer.on{transform:none;box-shadow:0 -6px 24px rgba(0,0,0,.35)}
 .pane{display:none;flex-direction:column;flex:1;min-height:0}
 .pane.on{display:flex}
 .hd{height:44px;flex:none;display:flex;align-items:center;padding:0 16px}
@@ -71,7 +71,7 @@ img{display:block}
 .sc{overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none;-webkit-mask-image:linear-gradient(180deg,#000 calc(100% - 18px),transparent);mask-image:linear-gradient(180deg,#000 calc(100% - 18px),transparent)}
 .sc::-webkit-scrollbar{display:none}
 /* 充值表单：左栏渠道，右栏金额，底栏协议 + Deposit */
-.cols{flex:1;min-height:0;display:flex;gap:12px;padding:4px 12px 0}
+.cols{flex:1;min-height:0;display:flex;gap:12px;padding:2px 12px 0}
 .col-l{width:248px;flex:none;padding-bottom:14px}
 .col-r{flex:1;min-width:0}
 .pm-t{display:flex;align-items:center;gap:8px}
@@ -102,7 +102,7 @@ img{display:block}
 .inp input{flex:1;min-width:0;background:none;border:0;outline:0;color:#fff;font:600 20px/28px var(--f);caret-color:var(--red);padding:0}
 .inp .clr{width:24px;height:24px;flex:none}
 .inp .clr img{width:24px;height:24px}
-.ft{flex:none;background:#2a2f3b;border-top:1px solid rgba(255,255,255,.1);padding:12px;display:flex;align-items:center;gap:16px}
+.ft{flex:none;background:#2a2f3b;border-top:1px solid rgba(255,255,255,.1);padding:9px 12px;display:flex;align-items:center;gap:16px}
 .ft-r{display:flex;align-items:center;gap:12px;flex:none;margin-left:auto}
 .ft-amt{font:700 24px/32px var(--f);color:#fff;white-space:nowrap}
 .btn-red{height:44px;padding:0 20px;border-radius:12px;background:linear-gradient(90deg,#de4444,#f95858);display:flex;align-items:center;justify-content:center;gap:4px;color:#fff;font:600 16px/24px var(--f);white-space:nowrap}
@@ -134,8 +134,8 @@ img{display:block}
 .chev{width:13.44px;height:13.44px;display:grid;place-items:center}
 .chev span{display:block;position:relative;width:9.5px;height:9.5px;transform:rotate(45deg)}
 .chev img{position:absolute;top:0;right:0;bottom:-7.89%;left:-7.89%;width:auto;height:auto}
-.qcols{flex:1;min-height:0;display:flex;gap:12px;padding:4px 12px 12px}
-.q-l{width:260px;flex:none;background:#242933 url(assets/qr_card_mask.svg) center/cover no-repeat;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:12px}
+.qcols{flex:1;min-height:0;display:flex;gap:12px;padding:2px 12px 8px}
+.q-l{width:260px;flex:none;background:#242933 url(assets/qr_card_mask.svg) center/cover no-repeat;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:10px}
 .q-r{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:8px;padding-bottom:16px}
 .qr-logo{width:126px;height:48px;position:relative;flex:none}
 .qr-logo span{position:absolute;left:12.75px;top:6px;width:100.5px;height:36px}
@@ -228,9 +228,10 @@ img{display:block}
 </head>
 <body>
 <div class="top">
-  <h1>【充提】厅内充值改造 · 横版演示 v2</h1>
-  <span class="sub">组件和文案沿用竖版，按横屏重新排版</span>
-  <a href="v1/">对比 v1（只换容器）→</a>
+  <h1>【充提】厅内充值改造 · 横版演示 v3</h1>
+  <span class="sub">面板底部居中弹起，左右露出游戏</span>
+  <a href="v2/">对比 v2（右侧抽屉）</a>
+  <a href="v1/">v1（只换容器）</a>
   <div class="ctl">
     <label title="模拟 iOS Safari 拦截新标签页"><input type="checkbox" id="iosT"> 模拟 iOS 拦截新标签页</label>
     <button class="pri" id="arrive" disabled>模拟到账（当前订单）</button>
@@ -376,9 +377,9 @@ img{display:block}
   </div>
 </div>
 <div class="notes">
-  <h2>v2：组件和文案沿用竖版，按横屏重新排版（目标：关键内容一屏看完）</h2>
+  <h2>v3：组件和文案沿用竖版，按横屏重新排版（目标：关键内容一屏看完）</h2>
   <ol>
-    <li><b>充值抽屉加宽到 640</b>（约占屏幕 74%，左侧露出的游戏和竖版露出的 1/5 相当），表头 56 → 44。</li>
+    <li><b>充值面板底部居中弹起</b>（和竖版一样从底部弹起）：宽 640 居中，左右各露出约 110px 游戏，顶部留 8px；表头 56 → 44。v2 是贴右侧的抽屉。</li>
     <li><b>表单分两栏</b>：左栏支付方式改成两列网格，6 个渠道一屏看全；右栏放金额快捷按钮（高 48 → 44）和输入框；底栏一行放协议勾选和 ₱ 金额 + Deposit。<b>渠道、金额、按钮打开就能看到，不用滑。</b></li>
     <li><b>保障标识</b>（PhilFirst、KANTAR、PAGCOR）挪到左栏渠道下方，改成三行横条，文案不变，往下滑可见。</li>
     <li><b>点输入框</b>：抽屉缩到键盘上方，只留输入框和 ₱ 金额 + Deposit，输入时按钮始终可点（演示里用仿真键盘示意系统键盘）。</li>
