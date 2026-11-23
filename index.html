@@ -172,6 +172,8 @@ img{display:block}
 .tdoc h4{margin:12px 0 4px;font:600 15px/22.5px var(--f);color:#fff}
 .tdoc p{margin:0 0 8px;font:400 14px/21px var(--f);color:#dce3ec}
 .tdoc .tnote{margin-top:12px;font-size:12px;line-height:18px;color:#8f98a6}
+.tagree{display:flex;justify-content:center;padding:12px 0 4px}
+.tagree .btn-red{width:358px}
 .tut-hd{position:relative;flex:none;height:48px;background:#21262e}
 .tut-hd img{width:390px;height:48px}
 .tut-hd button{position:absolute;left:0;top:0;width:56px;height:48px}
@@ -354,6 +356,8 @@ img{display:block}
               <p>1.3 By using the Services, registering for an account with us, visiting our Platform, or accessing the Services, you acknowledge and agree … …</p>
               <p class="tnote">（演示只节选开头，正文同线上 Terms &amp; Policies 页）</p>
             </div>
+            <!-- 从协议行打开时（同线上 confirm 模式）：滑到底出现 I Agree，点了回到表单并勾选协议 -->
+            <div class="tagree"><button class="btn-red" data-act="terms-agree">I Agree</button></div>
           </div>
         </section>
         <!-- 教程：竖版是整页，横版放进抽屉 -->
@@ -416,7 +420,7 @@ img{display:block}
   <ol>
     <li><b>快捷金额去掉 +24 角标</b>：6 个金额按钮只显示金额。</li>
     <li><b>充值成功页</b>：左右两栏一屏放下。左栏自上而下 Logo、金额（放上面、最醒目）、打勾盾牌和 Deposit Successful（都缩小）；右栏充值信息（Type、User account、Time）、Back to GameZone 和牌照。</li>
-    <li><b>协议页</b>：点协议行里的 Terms of Use 或 Privacy Policy，在充值面板内打开 Terms &amp; Policies（竖版是整页）；表头和页签合成一行（左返回、中间两个页签、右关闭），停在点的那个页签，正文按面板宽度排、上下滑动；返回回到充值表单，已选渠道、金额和勾选不变。</li>
+    <li><b>协议页</b>：点协议行里的 Terms of Use 或 Privacy Policy，在充值面板内打开 Terms &amp; Policies（竖版是整页）；表头和页签合成一行（左返回、中间两个页签、右关闭），停在点的那个页签，正文按面板宽度排、上下滑动；滑到底出现 I Agree，点了回到充值表单并勾选协议；只点返回则回到表单，已选渠道、金额和勾选不变（打开方式和交互同线上，线上竖版是盖在充值浮层上的整屏 Terms &amp; Policies）。</li>
     <li><b>保障标识</b>：在金额输入框下方，横排三张小卡（图标 + 两行小字），每张对齐上面两个金额按钮，向下滑动查看；底部固定区只有 ₱ 金额和 Deposit。</li>
     <li><b>其余同 v7</b>：Tips 点 Got It 或 ✕ 进付款页、教程返回 Tips、金额为空不显示底栏；面板 740 居中、金额按钮原宽一排 6 个、8 个支付方式可左右滑动、二维码页两栏。</li>
   </ol>
@@ -498,6 +502,7 @@ img{display:block}
       case 'tab-terms': S.doc='terms';document.getElementById('tBody').scrollTop=0;break;
       case 'tab-privacy': S.doc='privacy';document.getElementById('tBody').scrollTop=0;break;
       case 'terms-back': S.pane='form';break; // 返回充值表单，已选内容不变
+      case 'terms-agree': S.agree=true;S.pane='form';break; // I Agree：回到表单并勾选协议（同线上）
       case 'tips-close':{$('#tips').classList.remove('on'); // Got It 或 ✕：关弹窗并新开标签页进付款页（同竖版）
         const p=S.pending;if(p&&!p.emb&&!p.paid)openPay(p);break;}
       case 'noshow': S.noShow=!S.noShow;break;
