@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<title>厅内充值 · 横版演示 v8</title>
+<title>厅内充值 · 横版演示 v9</title>
 <style>
 :root{--f:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro","Helvetica Neue",Roboto,"Segoe UI","PingFang SC",Arial,sans-serif;--gold:#eac070;--red:#de4444}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -109,18 +109,13 @@ img{display:block}
 .inp input{flex:1;min-width:0;background:none;border:0;outline:0;color:#fff;font:600 20px/28px var(--f);caret-color:var(--red);padding:0}
 .inp .clr{width:24px;height:24px;flex:none}
 .inp .clr img{width:24px;height:24px}
-.trust{display:flex;gap:10px;justify-content:center;padding:4px 0 12px}
-.tb{height:90px;border:1px solid #484c56;border-radius:12px;padding:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
-.tb p{margin:0;font:500 11px/14px var(--f);color:#8f98a6;text-align:center}
+.trust{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0 12px} /* 和金额卡里的按钮同一套栅格：每张对齐两个金额按钮 */
+.tb{height:52px;border:1px solid #484c56;border-radius:12px;display:flex;align-items:center;justify-content:center;gap:8px}
+.tb p{margin:0;font:500 11px/14px var(--f);color:#8f98a6;text-align:left;white-space:nowrap}
 .ft{flex:none;background:#2a2f3b;border-top:1px solid rgba(255,255,255,.1);padding:10px 12px;display:flex;flex-direction:column;gap:8px}
 .ft.off{display:none}
-.ft-row{display:flex;align-items:center;gap:12px}
-.ft-amt{flex:1;min-width:0;font:700 24px/32px var(--f);color:#fff;white-space:nowrap}
-.ft-trust{flex:none;display:flex;align-items:center;gap:10px}
-.ftb{display:flex;align-items:center;gap:6px}
-.ftb p{margin:0;font:500 10px/13px var(--f);color:#8f98a6;white-space:nowrap}
-.ftd{width:1px;height:24px;background:#484c56;flex:none}
-.ft-trust.tight p{display:none} /* 金额位数多、放不下时只留图标 */
+.ft-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.ft-amt{font:700 24px/32px var(--f);color:#fff;white-space:nowrap}
 .btn-red{height:44px;padding:0 20px;border-radius:12px;background:linear-gradient(90deg,#de4444,#f95858);display:flex;align-items:center;justify-content:center;gap:4px;color:#fff;font:600 16px/24px var(--f)}
 .btn-red:active{filter:brightness(.92)}
 .bolt{width:24px;height:24px;display:grid;place-items:center}
@@ -200,12 +195,12 @@ img{display:block}
 .pay-back{font-size:12px;color:#5b6475;text-decoration:underline;margin-top:2px}
 .pay-tip{font-size:11px;color:#98a1b2}
 .tab-ok{background:linear-gradient(179.4deg,#090b12 .24%,#141a2a 33.2%,#141a2a 63.3%,#090b12 95.8%)}
-.ok-s{position:absolute;inset:0;overflow-y:auto;scrollbar-width:none}
-.ok-s::-webkit-scrollbar{display:none}
-.ok-c{width:100%;padding-top:12px;display:flex;flex-direction:column;align-items:center}
-/* 横版首屏：Logo 和盾牌缩小，打勾盾牌、Deposit Successful 和金额都在首屏 */
-.ok-logo{width:65px;height:40px}
-.shield{position:relative;width:188px;height:188px;margin:-43px 0 -47px;transform:scale(.5);overflow:hidden;filter:drop-shadow(0 14px 11px rgba(43,200,145,.04))}
+.ok2{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:44px;padding:8px 24px}
+.okc-l{width:340px;display:flex;flex-direction:column;align-items:center}
+.okc-r{width:358px;display:flex;flex-direction:column;align-items:center}
+.ok-logo{width:84px;height:51.7px}
+.shw{width:140px;height:140px;margin-top:6px}
+.shield{position:relative;width:188px;height:188px;overflow:hidden;filter:drop-shadow(0 14px 11px rgba(43,200,145,.04));transform:scale(.7447);transform-origin:0 0}
 .shield img{position:absolute}
 .sh-v1{left:14px;top:14px;width:160px;height:160px}
 .sh-v2{left:34px;top:34px;width:120px;height:120px}
@@ -215,9 +210,9 @@ img{display:block}
 .sh-b{left:47.75px;top:50.24px;width:94.34px;height:102px}
 .sh-i{left:59px;top:54px;width:64px;height:75.73px;mix-blend-mode:overlay}
 .sh-c{left:72.35px;top:73.29px;width:51.71px;height:40.79px}
-.ok-t{margin-top:2px;font:700 24px/32px var(--f);color:#fff}
-.ok-amt{margin-top:0;font:700 42px/50px var(--f);color:var(--gold)}
-.ok-card{margin-top:16px;width:358px;border:1px solid rgba(255,255,255,.28);border-radius:12px;background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.4)),rgba(255,255,255,.1);padding:2px 16px}
+.ok-t{margin-top:4px;font:700 24px/32px var(--f);color:#fff}
+.ok-amt{margin-top:2px;font:700 42px/50px var(--f);color:var(--gold)}
+.ok-card{width:358px;border:1px solid rgba(255,255,255,.28);border-radius:12px;background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.4)),rgba(255,255,255,.1);padding:2px 16px}
 .ok-r{height:52px;display:flex;align-items:center;gap:8px}
 .ok-r+.ok-r{border-top:1px solid rgba(255,255,255,.12)}
 .ok-r .ic{width:20px;height:20px;display:grid;place-items:center;flex:none}
@@ -225,9 +220,8 @@ img{display:block}
 .ok-r .v{margin-left:auto;font:600 14px/20px var(--f);color:#f2f6f9;white-space:nowrap}
 .ok-r .pill{height:28px;padding:0 10px;border-radius:8px;background:rgba(251,252,255,.24);display:flex;align-items:center;color:#fff}
 .ok-r .tm{font-weight:400;font-size:13px}
-.ok-bw{position:sticky;bottom:0;width:100%;display:flex;justify-content:center;padding:16.64px;margin-top:16px;background:linear-gradient(180deg,rgba(9,11,18,0) 0%,rgba(9,11,18,.85) 45%,#090b12 100%)}
-.ok-bw .btn-red{width:356.72px;height:45.76px;border-radius:12.48px;font-size:16.64px}
-.ok-lic{display:flex;align-items:center;gap:6.24px;padding:4px 0 28px}
+.ok-btn{width:358px;height:45.76px;border-radius:12.48px;font-size:16.64px;margin-top:16px}
+.ok-lic{display:flex;align-items:center;gap:6.24px;padding-top:12px}
 .ok-lic span{font:400 10.4px/1 "Arial Rounded MT Bold",var(--f);color:#cacaca}
 .ok-lic .pg{width:32.07px;height:33.23px}
 .ok-lic .rg{width:105px;height:33.28px;margin-left:5.4px}
@@ -244,9 +238,9 @@ img{display:block}
 </head>
 <body>
 <div class="top">
-  <h1>【充提】厅内充值改造 · 横版演示 v8</h1>
-  <span class="sub">保障标识挪进底栏、首屏可见；充值成功页首屏显示打勾和成功金额</span>
-  <select class="ver" aria-label="对比旧版本" onchange="if(this.value)location.href=this.value"><option value="">对比旧版本</option><option value="v7/">v7 交互对齐 Figma 方案</option><option value="v6/">v6 去 How To Deposit、渠道可滑</option><option value="v5/">v5 居中加宽</option><option value="v4/">v4 右侧窄抽屉 + 金额一排</option><option value="v3/">v3 底部居中两栏</option><option value="v2/">v2 右侧宽抽屉两栏</option><option value="v1/">v1 只换容器</option></select>
+  <h1>【充提】厅内充值改造 · 横版演示 v9</h1>
+  <span class="sub">保障标识放回金额下方、横排三张小卡；充值成功页左右两栏一屏放下</span>
+  <select class="ver" aria-label="对比旧版本" onchange="if(this.value)location.href=this.value"><option value="">对比旧版本</option><option value="v8/">v8 保障标识在底栏</option><option value="v7/">v7 交互对齐 Figma 方案</option><option value="v6/">v6 去 How To Deposit、渠道可滑</option><option value="v5/">v5 居中加宽</option><option value="v4/">v4 右侧窄抽屉 + 金额一排</option><option value="v3/">v3 底部居中两栏</option><option value="v2/">v2 右侧宽抽屉两栏</option><option value="v1/">v1 只换容器</option></select>
   <div class="ctl">
     <label title="模拟 iOS Safari 拦截新标签页"><input type="checkbox" id="iosT"> 模拟 iOS 拦截新标签页</label>
     <button class="pri" id="arrive" disabled>模拟到账（当前订单）</button>
@@ -293,19 +287,16 @@ img{display:block}
                 </div>
                 <div class="inp"><img src="assets/icon_peso.svg" alt=""><input id="amtIn" inputmode="decimal" value="100" aria-label="Deposit amount"><button class="clr" data-act="clear" aria-label="清空"><img src="assets/icon_clear.svg" alt=""></button></div>
               </div>
+              <!-- 保障标识：放在金额下方，横版排成一排三张小卡（图标 + 两行小字），每张对齐上面两个金额按钮 -->
+              <div class="trust">
+                <div class="tb"><img src="assets/badge_philfirst.png" style="width:72px;height:20.7px" alt="PhilFirst"><p>Fund 100%<br>Protected</p></div>
+                <div class="tb"><img src="assets/badge_kantar.png" style="width:70px;height:13.82px" alt="KANTAR"><p>#1 for Fastest Cash In &amp;<br>Cash Out—Kantar, 2026</p></div>
+                <div class="tb"><img src="assets/badge_pagcor.png" style="width:24px;height:25px" alt="PAGCOR"><p>Safe, Licensed,<br>Regulated</p></div>
+              </div>
             </div>
           </div>
           <div class="ft" id="ft">
-            <div class="ft-row"><span class="ft-amt" id="ftAmt">₱ 100</span>
-              <!-- 保障标识：横版放进底部固定区，金额和 Deposit 之间，首屏可见 -->
-              <div class="ft-trust" id="ftTrust">
-                <div class="ftb"><img src="assets/badge_philfirst.png" style="width:52px;height:14.95px" alt="PhilFirst"><p>Fund 100%<br>Protected</p></div>
-                <i class="ftd"></i>
-                <div class="ftb"><img src="assets/badge_kantar.png" style="width:54px;height:10.66px" alt="KANTAR"><p>#1 for Fastest Cash In &amp;<br>Cash Out—Kantar, 2026</p></div>
-                <i class="ftd"></i>
-                <div class="ftb"><img src="assets/badge_pagcor.png" style="width:19.2px;height:20px" alt="PAGCOR"><p>Safe, Licensed,<br>Regulated</p></div>
-              </div>
-              <button class="btn-red" data-act="deposit"><span class="bolt"><img src="assets/icon_bolt.svg" alt=""></span>Deposit</button></div>
+            <div class="ft-row"><span class="ft-amt" id="ftAmt">₱ 100</span><button class="btn-red" data-act="deposit"><span class="bolt"><img src="assets/icon_bolt.svg" alt=""></span>Deposit</button></div>
             <div class="agree" id="agree" data-act="agree"><span class="cb"><i><img src="assets/chip_check.svg" alt=""></i></span><p>I agree with the <u>Terms of Use</u> &amp; <u>Privacy Policy</u>, and confirm that I am at least 21 years old.</p></div>
           </div>
         </section>
@@ -361,32 +352,37 @@ img{display:block}
       </div>
       <!-- 新标签页 2：充值成功页（方案 C） -->
       <div class="tab tab-ok" id="tabOk">
-        <div class="ok-s" id="okScroll"><div class="ok-c">
-          <img class="ok-logo" src="assets/ok_gz_logo.svg" alt="GameZone">
-          <div class="shield">
-            <img class="sh-v1" src="assets/ok_v1.svg" alt=""><img class="sh-v2" src="assets/ok_v2.svg" alt="">
-            <img class="sh-s1" src="assets/ok_spark1.svg" alt=""><img class="sh-s2" src="assets/ok_spark2.svg" alt=""><img class="sh-s3" src="assets/ok_spark3.svg" alt="">
-            <img class="sh-b" src="assets/ok_shield.svg" alt=""><img class="sh-i" src="assets/ok_intersect.svg" alt=""><img class="sh-c" src="assets/ok_check.svg" alt="">
+        <!-- 横版：左边打勾和成功金额，右边充值信息、按钮和牌照，一屏放下 -->
+        <div class="ok2" id="okScroll">
+          <div class="okc-l">
+            <img class="ok-logo" src="assets/ok_gz_logo.svg" alt="GameZone">
+            <div class="shw"><div class="shield">
+              <img class="sh-v1" src="assets/ok_v1.svg" alt=""><img class="sh-v2" src="assets/ok_v2.svg" alt="">
+              <img class="sh-s1" src="assets/ok_spark1.svg" alt=""><img class="sh-s2" src="assets/ok_spark2.svg" alt=""><img class="sh-s3" src="assets/ok_spark3.svg" alt="">
+              <img class="sh-b" src="assets/ok_shield.svg" alt=""><img class="sh-i" src="assets/ok_intersect.svg" alt=""><img class="sh-c" src="assets/ok_check.svg" alt="">
+            </div></div>
+            <div class="ok-t">Deposit Successful</div>
+            <div class="ok-amt" id="okAmt">₱ 100.00</div>
           </div>
-          <div class="ok-t">Deposit Successful</div>
-          <div class="ok-amt" id="okAmt">₱ 100.00</div>
-          <div class="ok-card">
-            <div class="ok-r"><span class="ic"><img src="assets/ok_ic_pay.svg" alt=""></span><span class="k">Type</span><span class="v pill" id="okType">GCash</span></div>
-            <div class="ok-r"><span class="ic"><img src="assets/ok_ic_user.svg" alt=""></span><span class="k">User account</span><span class="v">Matteo</span></div>
-            <div class="ok-r"><span class="ic"><img src="assets/ok_ic_time.svg" alt=""></span><span class="k">Time</span><span class="v tm" id="okTime"></span></div>
+          <div class="okc-r">
+            <div class="ok-card">
+              <div class="ok-r"><span class="ic"><img src="assets/ok_ic_pay.svg" alt=""></span><span class="k">Type</span><span class="v pill" id="okType">GCash</span></div>
+              <div class="ok-r"><span class="ic"><img src="assets/ok_ic_user.svg" alt=""></span><span class="k">User account</span><span class="v">Matteo</span></div>
+              <div class="ok-r"><span class="ic"><img src="assets/ok_ic_time.svg" alt=""></span><span class="k">Time</span><span class="v tm" id="okTime"></span></div>
+            </div>
+            <button class="btn-red ok-btn" data-act="back-gz">Back to GameZone</button>
+            <div class="ok-lic"><span>Officially Licensed by</span><img class="pg" src="assets/ok_pagcor.png" alt="PAGCOR"><img class="rg" src="assets/ok_21.png" alt="21+"></div>
           </div>
-          <div class="ok-bw"><button class="btn-red" data-act="back-gz">Back to GameZone</button></div>
-          <div class="ok-lic"><span>Officially Licensed by</span><img class="pg" src="assets/ok_pagcor.png" alt="PAGCOR"><img class="rg" src="assets/ok_21.png" alt="21+"></div>
-        </div></div>
+        </div>
       </div>
     </div>
   </div>
 </div>
 <div class="notes">
-  <h2>v8：在 v7 基础上改保障标识和充值成功页（11/23 用户意见）</h2>
+  <h2>v9：在 v7 基础上改保障标识和充值成功页（11/23 用户意见）</h2>
   <ol>
-    <li><b>保障标识适配横屏</b>：从金额输入框下方挪进底部固定区，放在 ₱ 金额和 Deposit 之间；三个标识缩成「图标 + 两行小字」一排，文案不变；金额位数多、放不下时只留图标。首屏就能看到，不用再向下滑动查看。金额为空时随底栏一起隐藏。</li>
-    <li><b>充值成功页首屏</b>：仍是单列，Logo 和盾牌缩小，首屏完整显示打勾盾牌、Deposit Successful 和金额；Back to GameZone 照旧吸底，明细和牌照向下滑动查看。</li>
+    <li><b>保障标识</b>：仍在金额输入框下方，横版排成一排三张小卡，每张「图标 + 两行小字」，宽度对齐上面两个金额按钮，文案不变；向下滑动查看。底部固定区只有 ₱ 金额和 Deposit（v8 放进底栏干扰视线，已撤回）。</li>
+    <li><b>充值成功页左右两栏</b>：左边 Logo、打勾盾牌、Deposit Successful 和金额，右边充值信息（Type、User account、Time）、Back to GameZone 和牌照，一屏放下，不用滑动。</li>
     <li><b>其余同 v7</b>：Tips 点 Got It 或 ✕ 进付款页、教程返回 Tips、金额为空不显示底栏；面板 740 居中、金额按钮原宽一排 6 个、8 个支付方式可左右滑动、二维码页两栏。</li>
   </ol>
   <p class="dim">演示说明：底图是安卓 Chrome 横屏真机截图，网页可视区约 863×318；内嵌式渠道的付款页都用 QRPh 页示意；第三方付款页是示意页；余额高亮只是演示提示，真实产品只刷新数字；Confirm Deposit 确认弹框等界面没做，规则以 Figma 方案页为准。勾选上方「模拟 iOS 拦截新标签页」可看 Tips 弹窗和教程。</p>
@@ -426,7 +422,6 @@ img{display:block}
     $$('.amt').forEach(a=>a.classList.toggle('on',+a.dataset.v===S.amt));
     $('#ftAmt').textContent='₱ '+(S.amt>0?short(S.amt):'0');
     $('#ft').classList.toggle('off',$('#amtIn').value.trim()===''); // 同线上：金额为空时不显示提交栏
-    {const ta=$('#ftTrust'),fa=$('#ftAmt');ta.classList.remove('tight');if(fa.scrollWidth>fa.clientWidth+1)ta.classList.add('tight');} // 金额放不下时保障标识只留图标
     $('#agree').classList.toggle('on',S.agree);
     $('#noShow').classList.toggle('on',S.noShow);
     $('#bal').textContent=fmt(S.bal,2);
