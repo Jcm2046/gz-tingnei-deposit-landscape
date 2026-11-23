@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<title>厅内充值 · 横版演示 v7</title>
+<title>厅内充值 · 横版演示 v8</title>
 <style>
 :root{--f:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro","Helvetica Neue",Roboto,"Segoe UI","PingFang SC",Arial,sans-serif;--gold:#eac070;--red:#de4444}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -114,8 +114,13 @@ img{display:block}
 .tb p{margin:0;font:500 11px/14px var(--f);color:#8f98a6;text-align:center}
 .ft{flex:none;background:#2a2f3b;border-top:1px solid rgba(255,255,255,.1);padding:10px 12px;display:flex;flex-direction:column;gap:8px}
 .ft.off{display:none}
-.ft-row{display:flex;align-items:center;justify-content:space-between}
-.ft-amt{font:700 24px/32px var(--f);color:#fff}
+.ft-row{display:flex;align-items:center;gap:12px}
+.ft-amt{flex:1;min-width:0;font:700 24px/32px var(--f);color:#fff;white-space:nowrap}
+.ft-trust{flex:none;display:flex;align-items:center;gap:10px}
+.ftb{display:flex;align-items:center;gap:6px}
+.ftb p{margin:0;font:500 10px/13px var(--f);color:#8f98a6;white-space:nowrap}
+.ftd{width:1px;height:24px;background:#484c56;flex:none}
+.ft-trust.tight p{display:none} /* 金额位数多、放不下时只留图标 */
 .btn-red{height:44px;padding:0 20px;border-radius:12px;background:linear-gradient(90deg,#de4444,#f95858);display:flex;align-items:center;justify-content:center;gap:4px;color:#fff;font:600 16px/24px var(--f)}
 .btn-red:active{filter:brightness(.92)}
 .bolt{width:24px;height:24px;display:grid;place-items:center}
@@ -197,9 +202,10 @@ img{display:block}
 .tab-ok{background:linear-gradient(179.4deg,#090b12 .24%,#141a2a 33.2%,#141a2a 63.3%,#090b12 95.8%)}
 .ok-s{position:absolute;inset:0;overflow-y:auto;scrollbar-width:none}
 .ok-s::-webkit-scrollbar{display:none}
-.ok-c{width:100%;padding-top:36px;display:flex;flex-direction:column;align-items:center}
-.ok-logo{width:135.2px;height:83.2px}
-.shield{position:relative;width:188px;height:188px;margin-top:10.8px;overflow:hidden;filter:drop-shadow(0 14px 11px rgba(43,200,145,.04))}
+.ok-c{width:100%;padding-top:12px;display:flex;flex-direction:column;align-items:center}
+/* 横版首屏：Logo 和盾牌缩小，打勾盾牌、Deposit Successful 和金额都在首屏 */
+.ok-logo{width:65px;height:40px}
+.shield{position:relative;width:188px;height:188px;margin:-43px 0 -47px;transform:scale(.5);overflow:hidden;filter:drop-shadow(0 14px 11px rgba(43,200,145,.04))}
 .shield img{position:absolute}
 .sh-v1{left:14px;top:14px;width:160px;height:160px}
 .sh-v2{left:34px;top:34px;width:120px;height:120px}
@@ -209,8 +215,8 @@ img{display:block}
 .sh-b{left:47.75px;top:50.24px;width:94.34px;height:102px}
 .sh-i{left:59px;top:54px;width:64px;height:75.73px;mix-blend-mode:overlay}
 .sh-c{left:72.35px;top:73.29px;width:51.71px;height:40.79px}
-.ok-t{margin-top:8px;font:700 24px/32px var(--f);color:#fff}
-.ok-amt{margin-top:12px;font:700 42px/50px var(--f);color:var(--gold)}
+.ok-t{margin-top:2px;font:700 24px/32px var(--f);color:#fff}
+.ok-amt{margin-top:0;font:700 42px/50px var(--f);color:var(--gold)}
 .ok-card{margin-top:16px;width:358px;border:1px solid rgba(255,255,255,.28);border-radius:12px;background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.4)),rgba(255,255,255,.1);padding:2px 16px}
 .ok-r{height:52px;display:flex;align-items:center;gap:8px}
 .ok-r+.ok-r{border-top:1px solid rgba(255,255,255,.12)}
@@ -238,9 +244,9 @@ img{display:block}
 </head>
 <body>
 <div class="top">
-  <h1>【充提】厅内充值改造 · 横版演示 v7</h1>
-  <span class="sub">交互对齐 Figma 方案：Tips 关闭后进付款页、教程返回 Tips、金额为空不显示底栏</span>
-  <select class="ver" aria-label="对比旧版本" onchange="if(this.value)location.href=this.value"><option value="">对比旧版本</option><option value="v6/">v6 去 How To Deposit、渠道可滑</option><option value="v5/">v5 居中加宽</option><option value="v4/">v4 右侧窄抽屉 + 金额一排</option><option value="v3/">v3 底部居中两栏</option><option value="v2/">v2 右侧宽抽屉两栏</option><option value="v1/">v1 只换容器</option></select>
+  <h1>【充提】厅内充值改造 · 横版演示 v8</h1>
+  <span class="sub">保障标识挪进底栏、首屏可见；充值成功页首屏显示打勾和成功金额</span>
+  <select class="ver" aria-label="对比旧版本" onchange="if(this.value)location.href=this.value"><option value="">对比旧版本</option><option value="v7/">v7 交互对齐 Figma 方案</option><option value="v6/">v6 去 How To Deposit、渠道可滑</option><option value="v5/">v5 居中加宽</option><option value="v4/">v4 右侧窄抽屉 + 金额一排</option><option value="v3/">v3 底部居中两栏</option><option value="v2/">v2 右侧宽抽屉两栏</option><option value="v1/">v1 只换容器</option></select>
   <div class="ctl">
     <label title="模拟 iOS Safari 拦截新标签页"><input type="checkbox" id="iosT"> 模拟 iOS 拦截新标签页</label>
     <button class="pri" id="arrive" disabled>模拟到账（当前订单）</button>
@@ -287,15 +293,19 @@ img{display:block}
                 </div>
                 <div class="inp"><img src="assets/icon_peso.svg" alt=""><input id="amtIn" inputmode="decimal" value="100" aria-label="Deposit amount"><button class="clr" data-act="clear" aria-label="清空"><img src="assets/icon_clear.svg" alt=""></button></div>
               </div>
-              <div class="trust">
-                <div class="tb" style="width:92px"><img src="assets/badge_philfirst.png" style="width:72px;height:20.7px" alt="PhilFirst"><p>Fund 100%<br>Protected</p></div>
-                <div class="tb" style="width:160px"><span style="width:80px;height:25px;display:grid;place-items:center"><img src="assets/badge_kantar.png" style="width:70px;height:13.82px" alt="KANTAR"></span><p style="width:154px">#1 for Fastest Cash In &amp; Cash Out—Kantar, 2026</p></div>
-                <div class="tb" style="width:92px"><span style="width:80px;height:25px;display:grid;place-items:center"><img src="assets/badge_pagcor.png" style="width:24px;height:25px" alt="PAGCOR"></span><p style="width:88px">Safe, Licensed,<br>Regulated</p></div>
-              </div>
             </div>
           </div>
           <div class="ft" id="ft">
-            <div class="ft-row"><span class="ft-amt" id="ftAmt">₱ 100</span><button class="btn-red" data-act="deposit"><span class="bolt"><img src="assets/icon_bolt.svg" alt=""></span>Deposit</button></div>
+            <div class="ft-row"><span class="ft-amt" id="ftAmt">₱ 100</span>
+              <!-- 保障标识：横版放进底部固定区，金额和 Deposit 之间，首屏可见 -->
+              <div class="ft-trust" id="ftTrust">
+                <div class="ftb"><img src="assets/badge_philfirst.png" style="width:52px;height:14.95px" alt="PhilFirst"><p>Fund 100%<br>Protected</p></div>
+                <i class="ftd"></i>
+                <div class="ftb"><img src="assets/badge_kantar.png" style="width:54px;height:10.66px" alt="KANTAR"><p>#1 for Fastest Cash In &amp;<br>Cash Out—Kantar, 2026</p></div>
+                <i class="ftd"></i>
+                <div class="ftb"><img src="assets/badge_pagcor.png" style="width:19.2px;height:20px" alt="PAGCOR"><p>Safe, Licensed,<br>Regulated</p></div>
+              </div>
+              <button class="btn-red" data-act="deposit"><span class="bolt"><img src="assets/icon_bolt.svg" alt=""></span>Deposit</button></div>
             <div class="agree" id="agree" data-act="agree"><span class="cb"><i><img src="assets/chip_check.svg" alt=""></i></span><p>I agree with the <u>Terms of Use</u> &amp; <u>Privacy Policy</u>, and confirm that I am at least 21 years old.</p></div>
           </div>
         </section>
@@ -373,12 +383,11 @@ img{display:block}
   </div>
 </div>
 <div class="notes">
-  <h2>v7：在 v6 基础上把交互对齐 Figma 方案（排版不变）</h2>
+  <h2>v8：在 v7 基础上改保障标识和充值成功页（11/23 用户意见）</h2>
   <ol>
-    <li><b>iOS Tips 弹窗</b>：弹出时订单已经创建；点 Got It 或 ✕ 关闭弹窗，并新开标签页进入付款页（同竖版）。</li>
-    <li><b>教程返回</b>：教程左上返回回到 Tips 弹窗（同竖版），不再回到充值表单。</li>
-    <li><b>金额为空</b>：清空金额后不显示底部的 ₱ 金额、Deposit 和协议行，输入或选择金额后再出现（同线上）。</li>
-    <li><b>其余同 v6</b>：表头只有 Deposit 和 ✕；面板 740 居中、金额按钮原宽一排 6 个、输入框和协议在首屏；8 个支付方式一屏放 6 个、可左右滑动、边缘渐隐，第一次打开轻带一下提示可滑；二维码页两栏；成功页 Back to GameZone 吸底。</li>
+    <li><b>保障标识适配横屏</b>：从金额输入框下方挪进底部固定区，放在 ₱ 金额和 Deposit 之间；三个标识缩成「图标 + 两行小字」一排，文案不变；金额位数多、放不下时只留图标。首屏就能看到，不用再向下滑动查看。金额为空时随底栏一起隐藏。</li>
+    <li><b>充值成功页首屏</b>：仍是单列，Logo 和盾牌缩小，首屏完整显示打勾盾牌、Deposit Successful 和金额；Back to GameZone 照旧吸底，明细和牌照向下滑动查看。</li>
+    <li><b>其余同 v7</b>：Tips 点 Got It 或 ✕ 进付款页、教程返回 Tips、金额为空不显示底栏；面板 740 居中、金额按钮原宽一排 6 个、8 个支付方式可左右滑动、二维码页两栏。</li>
   </ol>
   <p class="dim">演示说明：底图是安卓 Chrome 横屏真机截图，网页可视区约 863×318；内嵌式渠道的付款页都用 QRPh 页示意；第三方付款页是示意页；余额高亮只是演示提示，真实产品只刷新数字；Confirm Deposit 确认弹框等界面没做，规则以 Figma 方案页为准。勾选上方「模拟 iOS 拦截新标签页」可看 Tips 弹窗和教程。</p>
 </div>
@@ -417,6 +426,7 @@ img{display:block}
     $$('.amt').forEach(a=>a.classList.toggle('on',+a.dataset.v===S.amt));
     $('#ftAmt').textContent='₱ '+(S.amt>0?short(S.amt):'0');
     $('#ft').classList.toggle('off',$('#amtIn').value.trim()===''); // 同线上：金额为空时不显示提交栏
+    {const ta=$('#ftTrust'),fa=$('#ftAmt');ta.classList.remove('tight');if(fa.scrollWidth>fa.clientWidth+1)ta.classList.add('tight');} // 金额放不下时保障标识只留图标
     $('#agree').classList.toggle('on',S.agree);
     $('#noShow').classList.toggle('on',S.noShow);
     $('#bal').textContent=fmt(S.bal,2);
