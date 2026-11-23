@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<title>厅内充值 · 横版演示 v9</title>
+<title>厅内充值 · 横版演示 v10</title>
 <style>
 :root{--f:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro","Helvetica Neue",Roboto,"Segoe UI","PingFang SC",Arial,sans-serif;--gold:#eac070;--red:#de4444}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -103,7 +103,6 @@ img{display:block}
 .amts{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
 .amt{height:48px;border-radius:10px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.14);display:grid;place-items:center;font:600 16px/24px var(--f);white-space:nowrap;color:#fff;position:relative}
 .amt.on{background:var(--gold);color:#181b21;box-shadow:none}
-.amt .bd{position:absolute;top:-6px;right:-1px;height:16px;padding:0 6px;border-radius:99px;background:var(--red);color:#fff;font:600 12px/16px var(--f)}
 .inp{height:44px;background:#181b21;border-radius:12px;padding:8px 12px;display:flex;align-items:center;gap:4px}
 .inp>img{width:24px;height:24px;flex:none}
 .inp input{flex:1;min-width:0;background:none;border:0;outline:0;color:#fff;font:600 20px/28px var(--f);caret-color:var(--red);padding:0}
@@ -163,6 +162,16 @@ img{display:block}
 .row .open{background:#444b58;border:.5px solid var(--gold);border-radius:20px;padding:4px 16px;font:400 12px/18px var(--f);color:var(--gold)}
 /* 教程（抽屉内） */
 .pane.guide{background:#181b21}
+.pane.terms .th{justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.08)}
+.ttabs{display:flex;gap:32px;align-self:stretch}
+.tt{height:100%;position:relative;font:600 15px/42px var(--f);color:#8f98a6;white-space:nowrap}
+.tt.on{color:#fff}
+.tt.on::after{content:'';position:absolute;left:0;right:0;bottom:4px;height:2px;border-radius:2px;background:#fff}
+.tbody{padding:4px 16px 16px}
+.tdoc{display:none}.tdoc.on{display:block}
+.tdoc h4{margin:12px 0 4px;font:600 15px/22.5px var(--f);color:#fff}
+.tdoc p{margin:0 0 8px;font:400 14px/21px var(--f);color:#dce3ec}
+.tdoc .tnote{margin-top:12px;font-size:12px;line-height:18px;color:#8f98a6}
 .tut-hd{position:relative;flex:none;height:48px;background:#21262e}
 .tut-hd img{width:390px;height:48px}
 .tut-hd button{position:absolute;left:0;top:0;width:56px;height:48px}
@@ -199,8 +208,8 @@ img{display:block}
 .okc-l{width:340px;display:flex;flex-direction:column;align-items:center}
 .okc-r{width:358px;display:flex;flex-direction:column;align-items:center}
 .ok-logo{width:84px;height:51.7px}
-.shw{width:140px;height:140px;margin-top:6px}
-.shield{position:relative;width:188px;height:188px;overflow:hidden;filter:drop-shadow(0 14px 11px rgba(43,200,145,.04));transform:scale(.7447);transform-origin:0 0}
+.shw{width:96px;height:96px;margin-top:12px}
+.shield{position:relative;width:188px;height:188px;overflow:hidden;filter:drop-shadow(0 14px 11px rgba(43,200,145,.04));transform:scale(.5106);transform-origin:0 0} /* 188 → 96 */
 .shield img{position:absolute}
 .sh-v1{left:14px;top:14px;width:160px;height:160px}
 .sh-v2{left:34px;top:34px;width:120px;height:120px}
@@ -210,8 +219,8 @@ img{display:block}
 .sh-b{left:47.75px;top:50.24px;width:94.34px;height:102px}
 .sh-i{left:59px;top:54px;width:64px;height:75.73px;mix-blend-mode:overlay}
 .sh-c{left:72.35px;top:73.29px;width:51.71px;height:40.79px}
-.ok-t{margin-top:4px;font:700 24px/32px var(--f);color:#fff}
-.ok-amt{margin-top:2px;font:700 42px/50px var(--f);color:var(--gold)}
+.ok-t{margin-top:2px;font:700 18px/26px var(--f);color:#fff}
+.ok-amt{margin-top:14px;font:700 42px/50px var(--f);color:var(--gold)}
 .ok-card{width:358px;border:1px solid rgba(255,255,255,.28);border-radius:12px;background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.4)),rgba(255,255,255,.1);padding:2px 16px}
 .ok-r{height:52px;display:flex;align-items:center;gap:8px}
 .ok-r+.ok-r{border-top:1px solid rgba(255,255,255,.12)}
@@ -238,9 +247,9 @@ img{display:block}
 </head>
 <body>
 <div class="top">
-  <h1>【充提】厅内充值改造 · 横版演示 v9</h1>
-  <span class="sub">保障标识放回金额下方、横排三张小卡；充值成功页左右两栏一屏放下</span>
-  <select class="ver" aria-label="对比旧版本" onchange="if(this.value)location.href=this.value"><option value="">对比旧版本</option><option value="v8/">v8 保障标识在底栏</option><option value="v7/">v7 交互对齐 Figma 方案</option><option value="v6/">v6 去 How To Deposit、渠道可滑</option><option value="v5/">v5 居中加宽</option><option value="v4/">v4 右侧窄抽屉 + 金额一排</option><option value="v3/">v3 底部居中两栏</option><option value="v2/">v2 右侧宽抽屉两栏</option><option value="v1/">v1 只换容器</option></select>
+  <h1>【充提】厅内充值改造 · 横版演示 v10</h1>
+  <span class="sub">去掉 +24 角标；成功页金额放上面；协议页在面板内打开</span>
+  <select class="ver" aria-label="对比旧版本" onchange="if(this.value)location.href=this.value"><option value="">对比旧版本</option><option value="v9/">v9 成功页金额在下</option><option value="v8/">v8 保障标识在底栏</option><option value="v7/">v7 交互对齐 Figma 方案</option><option value="v6/">v6 去 How To Deposit、渠道可滑</option><option value="v5/">v5 居中加宽</option><option value="v4/">v4 右侧窄抽屉 + 金额一排</option><option value="v3/">v3 底部居中两栏</option><option value="v2/">v2 右侧宽抽屉两栏</option><option value="v1/">v1 只换容器</option></select>
   <div class="ctl">
     <label title="模拟 iOS Safari 拦截新标签页"><input type="checkbox" id="iosT"> 模拟 iOS 拦截新标签页</label>
     <button class="pri" id="arrive" disabled>模拟到账（当前订单）</button>
@@ -278,12 +287,12 @@ img{display:block}
               </div>
               <div class="card">
                                 <div class="amts" id="amts">
-                  <button class="amt on" data-v="100">₱ 100<i class="bd">+24</i></button>
-                  <button class="amt" data-v="200">₱ 200<i class="bd">+24</i></button>
-                  <button class="amt" data-v="300">₱ 300<i class="bd">+24</i></button>
-                  <button class="amt" data-v="500">₱ 500<i class="bd">+24</i></button>
-                  <button class="amt" data-v="1000">₱ 1,000<i class="bd">+24</i></button>
-                  <button class="amt" data-v="2000">₱ 2,000<i class="bd">+24</i></button>
+                  <button class="amt on" data-v="100">₱ 100</button>
+                  <button class="amt" data-v="200">₱ 200</button>
+                  <button class="amt" data-v="300">₱ 300</button>
+                  <button class="amt" data-v="500">₱ 500</button>
+                  <button class="amt" data-v="1000">₱ 1,000</button>
+                  <button class="amt" data-v="2000">₱ 2,000</button>
                 </div>
                 <div class="inp"><img src="assets/icon_peso.svg" alt=""><input id="amtIn" inputmode="decimal" value="100" aria-label="Deposit amount"><button class="clr" data-act="clear" aria-label="清空"><img src="assets/icon_clear.svg" alt=""></button></div>
               </div>
@@ -297,7 +306,7 @@ img{display:block}
           </div>
           <div class="ft" id="ft">
             <div class="ft-row"><span class="ft-amt" id="ftAmt">₱ 100</span><button class="btn-red" data-act="deposit"><span class="bolt"><img src="assets/icon_bolt.svg" alt=""></span>Deposit</button></div>
-            <div class="agree" id="agree" data-act="agree"><span class="cb"><i><img src="assets/chip_check.svg" alt=""></i></span><p>I agree with the <u>Terms of Use</u> &amp; <u>Privacy Policy</u>, and confirm that I am at least 21 years old.</p></div>
+            <div class="agree" id="agree" data-act="agree"><span class="cb"><i><img src="assets/chip_check.svg" alt=""></i></span><p>I agree with the <u data-act="terms">Terms of Use</u> &amp; <u data-act="privacy">Privacy Policy</u>, and confirm that I am at least 21 years old.</p></div>
           </div>
         </section>
         <!-- 内嵌式付款页：沿用竖版「内嵌式渠道半浮层」 -->
@@ -320,6 +329,30 @@ img{display:block}
               <div class="row"><span class="l"><img src="assets/app_g.png" alt="">Deposit using Gcash</span><span class="open">Open</span></div>
               <div class="row"><span class="l"><img src="assets/app_g.png" alt="">Deposit using Gcash</span><span class="open">Open</span></div>
               <div class="row"><span class="l"><img src="assets/app_g.png" alt="">Deposit using Gcash</span><span class="open">Open</span></div>
+            </div>
+          </div>
+        </section>
+        <!-- 协议页：竖版点链接打开整页 Terms & Policies（两个页签），横版放进面板，表头和页签合成一行 -->
+        <section class="pane terms" data-pane="terms">
+          <div class="hd th"><button class="ib" data-act="terms-back" aria-label="返回"><span class="chev"><span><img src="assets/back.svg" alt=""></span></span></button>
+            <div class="ttabs"><button class="tt on" data-act="tab-terms">Terms Of Use</button><button class="tt" data-act="tab-privacy">Privacy Policy</button></div>
+            <button class="ib" data-act="close" aria-label="关闭"><img src="assets/close.svg" alt=""></button></div>
+          <div class="body tbody" id="tBody">
+            <div class="tdoc on" data-doc="terms">
+              <h4>I. Member's Basic Information</h4>
+              <p>To become a GameZone, and/or Lavie Member, new players may either personally register onsite or through remote/online registration. …</p>
+              <h4>II. Communications Opt In</h4>
+              <p>In order to improve your experience with us, we may send you communication materials, including but not limited to administrative updates, regulatory notices, and promotional offers. …</p>
+              <h4>III. Collection of Personal Information and Privacy Statement</h4>
+              <p>By registering, and thereafter continuing to access or use any of the services, platforms, or facilities of GameZone, or Lavie, you signify your consent … …</p>
+              <p class="tnote">（演示只节选开头，正文同线上 Terms &amp; Policies 页）</p>
+            </div>
+            <div class="tdoc" data-doc="privacy">
+              <h4>1. INTRODUCTION</h4>
+              <p>1.1 Welcome to the GameZone platform run by DigiPlus Interactive Corp Limited and its affiliates. …</p>
+              <p>1.2 'Personal Data' or 'personal data' means data, whether true or not, about an individual who can be identified from that data. …</p>
+              <p>1.3 By using the Services, registering for an account with us, visiting our Platform, or accessing the Services, you acknowledge and agree … …</p>
+              <p class="tnote">（演示只节选开头，正文同线上 Terms &amp; Policies 页）</p>
             </div>
           </div>
         </section>
@@ -356,13 +389,13 @@ img{display:block}
         <div class="ok2" id="okScroll">
           <div class="okc-l">
             <img class="ok-logo" src="assets/ok_gz_logo.svg" alt="GameZone">
+            <div class="ok-amt" id="okAmt">₱ 100.00</div>
             <div class="shw"><div class="shield">
               <img class="sh-v1" src="assets/ok_v1.svg" alt=""><img class="sh-v2" src="assets/ok_v2.svg" alt="">
               <img class="sh-s1" src="assets/ok_spark1.svg" alt=""><img class="sh-s2" src="assets/ok_spark2.svg" alt=""><img class="sh-s3" src="assets/ok_spark3.svg" alt="">
               <img class="sh-b" src="assets/ok_shield.svg" alt=""><img class="sh-i" src="assets/ok_intersect.svg" alt=""><img class="sh-c" src="assets/ok_check.svg" alt="">
             </div></div>
             <div class="ok-t">Deposit Successful</div>
-            <div class="ok-amt" id="okAmt">₱ 100.00</div>
           </div>
           <div class="okc-r">
             <div class="ok-card">
@@ -379,10 +412,12 @@ img{display:block}
   </div>
 </div>
 <div class="notes">
-  <h2>v9：在 v7 基础上改保障标识和充值成功页（11/23 用户意见）</h2>
+  <h2>v10：在 v9 基础上按 11/23 用户意见微调</h2>
   <ol>
-    <li><b>保障标识</b>：仍在金额输入框下方，横版排成一排三张小卡，每张「图标 + 两行小字」，宽度对齐上面两个金额按钮，文案不变；向下滑动查看。底部固定区只有 ₱ 金额和 Deposit（v8 放进底栏干扰视线，已撤回）。</li>
-    <li><b>充值成功页左右两栏</b>：左边 Logo、打勾盾牌、Deposit Successful 和金额，右边充值信息（Type、User account、Time）、Back to GameZone 和牌照，一屏放下，不用滑动。</li>
+    <li><b>快捷金额去掉 +24 角标</b>：6 个金额按钮只显示金额。</li>
+    <li><b>充值成功页</b>：左右两栏一屏放下。左栏自上而下 Logo、金额（放上面、最醒目）、打勾盾牌和 Deposit Successful（都缩小）；右栏充值信息（Type、User account、Time）、Back to GameZone 和牌照。</li>
+    <li><b>协议页</b>：点协议行里的 Terms of Use 或 Privacy Policy，在充值面板内打开 Terms &amp; Policies（竖版是整页）；表头和页签合成一行（左返回、中间两个页签、右关闭），停在点的那个页签，正文按面板宽度排、上下滑动；返回回到充值表单，已选渠道、金额和勾选不变。</li>
+    <li><b>保障标识</b>：在金额输入框下方，横排三张小卡（图标 + 两行小字），每张对齐上面两个金额按钮，向下滑动查看；底部固定区只有 ₱ 金额和 Deposit。</li>
     <li><b>其余同 v7</b>：Tips 点 Got It 或 ✕ 进付款页、教程返回 Tips、金额为空不显示底栏；面板 740 居中、金额按钮原宽一排 6 个、8 个支付方式可左右滑动、二维码页两栏。</li>
   </ol>
   <p class="dim">演示说明：底图是安卓 Chrome 横屏真机截图，网页可视区约 863×318；内嵌式渠道的付款页都用 QRPh 页示意；第三方付款页是示意页；余额高亮只是演示提示，真实产品只刷新数字；Confirm Deposit 确认弹框等界面没做，规则以 Figma 方案页为准。勾选上方「模拟 iOS 拦截新标签页」可看 Tips 弹窗和教程。</p>
@@ -418,6 +453,8 @@ img{display:block}
     $('#mask').classList.toggle('on',S.open);
     $('#drawer').classList.toggle('on',S.open);
     $$('.pane').forEach(p=>p.classList.toggle('on',p.dataset.pane===S.pane));
+    $$('.tt').forEach(t=>t.classList.toggle('on',t.dataset.act==='tab-'+(S.doc||'terms')));
+    $$('.tdoc').forEach(d=>d.classList.toggle('on',d.dataset.doc===(S.doc||'terms')));
     $$('.chip').forEach(c=>c.classList.toggle('on',c.dataset.ch===S.ch));
     $$('.amt').forEach(a=>a.classList.toggle('on',+a.dataset.v===S.amt));
     $('#ftAmt').textContent='₱ '+(S.amt>0?short(S.amt):'0');
@@ -432,7 +469,7 @@ img{display:block}
     const p=S.pending;
     $('#arrive').disabled=!(p&&p.emb&&!p.paid&&S.tab==='game');
     const where=S.tab==='game'?'游戏标签页':(S.tab==='pay'?'新标签页 · 第三方付款页':'新标签页 · 充值成功页');
-    const dr=S.open?('抽屉打开（'+({form:'充值表单',qr:'内嵌付款页',guide:'教程'})[S.pane]+'）'):'抽屉关闭';
+    const dr=S.open?('抽屉打开（'+({form:'充值表单',qr:'内嵌付款页',guide:'教程',terms:'协议页'})[S.pane]+'）'):'抽屉关闭';
     $('#status').innerHTML=`当前：<b>${where}</b> · ${dr} · 余额 ₱${fmt(S.bal,2)}`+(p&&!p.paid?` · 待到账订单 <b>₱${fmt(p.amt,2)}（${CH[p.ch].n}）</b>`:'');
   }
   function flash(){const b=$('#bal');b.classList.remove('flash');void b.offsetWidth;b.classList.add('flash');setTimeout(()=>b.classList.remove('flash'),1400);}
@@ -457,6 +494,10 @@ img{display:block}
           else openPay(S.pending);}
         break;}
       case 'back': S.pane='form';break;
+      case 'terms': case 'privacy': S.doc=el.dataset.act;S.pane='terms';document.getElementById('tBody').scrollTop=0;break; // 点协议链接：面板内打开协议页，停在对应页签
+      case 'tab-terms': S.doc='terms';document.getElementById('tBody').scrollTop=0;break;
+      case 'tab-privacy': S.doc='privacy';document.getElementById('tBody').scrollTop=0;break;
+      case 'terms-back': S.pane='form';break; // 返回充值表单，已选内容不变
       case 'tips-close':{$('#tips').classList.remove('on'); // Got It 或 ✕：关弹窗并新开标签页进付款页（同竖版）
         const p=S.pending;if(p&&!p.emb&&!p.paid)openPay(p);break;}
       case 'noshow': S.noShow=!S.noShow;break;
