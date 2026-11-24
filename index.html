@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<title>厅内充值 · 横版演示 v12</title>
+<title>厅内充值 · 横版演示 v13</title>
 <style>
 :root{--f:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro","Helvetica Neue",Roboto,"Segoe UI","PingFang SC",Arial,sans-serif;--gold:#eac070;--red:#de4444}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -321,11 +321,9 @@ img{display:block}
 .bk.trx img{width:100%;height:100%}
 .bkf{flex:none;padding:10px 12px 12px}
 .bkf .btn-red{width:100%}
-/* ---------- 快捷金额角标、输入框占位和红字 ---------- */
+/* ---------- 快捷金额角标、输入框占位（v13 起输入框下方不显示红字提示） ---------- */
 .amt .rb{position:absolute;left:-1px;top:-1px;width:30px;height:30px;z-index:1;pointer-events:none}
 .inp input::placeholder{font:400 14px/28px var(--f);color:#8f98a6;opacity:1}
-.tip{display:none;margin:4px 0;font:400 12px/16px var(--f);color:#e04f5f;text-align:left}
-.tip.on{display:block}
 /* ---------- LoadCentral、Bayad Center 说明卡 ---------- */
 .info{display:none;background:#21262e;border-radius:12px;padding:12px;text-align:left}
 .info h5{margin:0 0 8px;font:700 16px/28px var(--f);color:#fff}
@@ -358,16 +356,8 @@ img{display:block}
 .vch .v2{flex:1;min-width:0}
 .vch .v2 h6{margin:0 0 5px;font:700 14px/19px var(--f);color:#b9b3c8}
 .vch .v2 img{width:366px;height:114px}
-/* ---------- 底部固定区：Rewards 行、Deposit 置灰 ---------- */
+/* ---------- 底部固定区：Deposit 置灰（v13 起没有 Rewards 行） ---------- */
 .ft-amt{min-width:0;overflow:hidden;text-overflow:ellipsis}
-.rw{display:none;align-items:center;height:20px}
-.rw.on{display:flex}
-.rw-t{flex:none;margin-right:8px;font:400 14px/20px var(--f);color:#fff}
-.rw-s{flex:1;min-width:0;display:flex;align-items:center;overflow-x:auto;overflow-y:hidden;scrollbar-width:none}
-.rw-s::-webkit-scrollbar{display:none}
-.rw-c{flex:none;display:flex;align-items:center}
-.rw-c img{flex:none;width:20px;height:20px;position:relative;z-index:1}
-.rw-c b{height:18px;margin-left:-15px;padding:0 4px 0 18px;border-radius:999px;background:#46331a;border:1px solid #907d4e;font:700 14px/16px var(--f);color:var(--gold);white-space:nowrap}
 .btn-red:disabled{background:#3a4250;color:#8f98a6;cursor:not-allowed;filter:none}
 .bolt .b2{display:none}
 .btn-red:disabled .b1{display:none}
@@ -382,9 +372,9 @@ img{display:block}
 .kb-g button:active{background:#5f6368}
 .kb-g .kb-done{grid-column:span 3;background:#8ab4f8;color:#202124;font-size:15px;font-weight:600}
 .drawer.kbm{top:auto;bottom:170px}
-.drawer.kbm .hd,.drawer.kbm .fm>*:not(#amtCard),.drawer.kbm .amts,.drawer.kbm .rw,.drawer.kbm .agree{display:none}
+.drawer.kbm .hd,.drawer.kbm .fm>*:not(#amtCard),.drawer.kbm .amts,.drawer.kbm .agree{display:none}
 .drawer.kbm .pane,.drawer.kbm .body{flex:none}
-/* 排法（规格 2.9）：上内边距 12 → 输入框 44 → 红字（有才显示）→ 间距 8 → ₱ 金额 + Deposit 一行 44 → 下内边距 10 */
+/* 排法（规格 2.9，v13 去掉红字后）：上内边距 12 → 输入框 44 → 间距 8 → ₱ 金额 + Deposit 一行 44 → 下内边距 10，共 118 高 */
 .drawer.kbm .fm{padding:12px 12px 0}
 .drawer.kbm .fm.nof{padding-bottom:10px}
 .drawer.kbm .card{background:none;padding:0}
@@ -502,9 +492,9 @@ img{display:block}
 </head>
 <body>
 <div class="top">
-  <h1>【充提】厅内充值改造 · 横版演示 v12</h1>
-  <span class="sub">补齐线上竖版有、横版还缺的界面、弹窗和状态；点「模拟场景」切换</span>
-  <select class="ver" aria-label="对比旧版本" onchange="if(this.value)location.href=this.value"><option value="">对比旧版本</option><option value="v11/">v11 没有二级渠道和各类弹窗</option><option value="v10/">v10 没有确认框</option><option value="v9/">v9 成功页金额在下</option><option value="v8/">v8 保障标识在底栏</option><option value="v7/">v7 交互对齐 Figma 方案</option><option value="v6/">v6 去 How To Deposit、渠道可滑</option><option value="v5/">v5 居中加宽</option><option value="v4/">v4 右侧窄抽屉 + 金额一排</option><option value="v3/">v3 底部居中两栏</option><option value="v2/">v2 右侧宽抽屉两栏</option><option value="v1/">v1 只换容器</option></select>
+  <h1>【充提】厅内充值改造 · 横版演示 v13</h1>
+  <span class="sub">去掉输入框下方的红字和 Rewards 行；点「模拟场景」切换</span>
+  <select class="ver" aria-label="对比旧版本" onchange="if(this.value)location.href=this.value"><option value="">对比旧版本</option><option value="v12/">v12 有红字提示和 Rewards 行</option><option value="v11/">v11 没有二级渠道和各类弹窗</option><option value="v10/">v10 没有确认框</option><option value="v9/">v9 成功页金额在下</option><option value="v8/">v8 保障标识在底栏</option><option value="v7/">v7 交互对齐 Figma 方案</option><option value="v6/">v6 去 How To Deposit、渠道可滑</option><option value="v5/">v5 居中加宽</option><option value="v4/">v4 右侧窄抽屉 + 金额一排</option><option value="v3/">v3 底部居中两栏</option><option value="v2/">v2 右侧宽抽屉两栏</option><option value="v1/">v1 只换容器</option></select>
   <div class="ctl">
     <button id="simBtn" aria-expanded="false" aria-controls="simPanel" title="选择要模拟的情况">模拟场景 ▾<i id="simN"></i></button>
     <button class="pri" id="arrive" disabled>模拟到账（当前订单）</button>
@@ -514,7 +504,6 @@ img{display:block}
   <div class="sim" id="simPanel" role="group" aria-label="模拟场景">
     <fieldset><legend>账号和活动</legend>
       <label><input type="checkbox" id="simNew"><span>新玩家（没有充值记录）</span></label>
-      <label><input type="checkbox" id="simPromo"><span>有存款活动（显示 Rewards 行）</span></label>
       <label><input type="checkbox" id="simTiers"><span>9 个金额档位</span></label>
       <label><input type="checkbox" id="simVip"><span>VIP 奖励待领取<small>（打开面板时弹）</small></span></label>
       <label><input type="checkbox" id="simNoPhone"><span>没绑手机号<small>（选 Pay&amp;Go 时弹）</small></span></label>
@@ -606,7 +595,6 @@ img{display:block}
                 <div class="amts-sk"><i class="sk"></i><i class="sk"></i><i class="sk"></i><i class="sk"></i><i class="sk"></i><i class="sk"></i></div>
                 <div class="inw">
                   <div class="inp"><img src="assets/icon_peso.svg" alt=""><input id="amtIn" inputmode="decimal" autocomplete="off" value="100" placeholder="Min 10 - Max 100,000" aria-label="Deposit amount"><button class="clr" id="clr" data-act="clear" aria-label="清空"><img src="assets/icon_clear.svg" alt=""></button></div>
-                  <p class="tip" id="amtTip"></p>
                 </div>
               </div>
               <!-- 保障标识：放在金额下方，横版排成一排三张小卡（图标 + 两行小字），每张对齐上面两个金额按钮 -->
@@ -619,8 +607,6 @@ img{display:block}
           </div>
           <div class="ft" id="ft">
             <div class="ft-row"><span class="ft-amt" id="ftAmt">₱ 100</span><button class="btn-red" id="depBtn" data-act="deposit"><span class="bolt"><img class="b1" src="assets/icon_bolt.svg" alt=""><img class="b2" src="assets/v12/bolt_grey.png" alt=""></span>Deposit</button></div>
-            <!-- Rewards 行：有存款活动且金额大于 0 时出现 -->
-            <div class="rw" id="rw"><span class="rw-t">Rewards</span><div class="rw-s"><span class="rw-c"><img src="assets/v12/rw_bonus.png" alt="Bonus Credits"><b id="rwAmt">₱20</b></span></div></div>
             <div class="agree" id="agree" data-act="agree"><span class="cb"><i><img src="assets/chip_check.svg" alt=""></i></span><p>I agree with the <u data-act="terms">Terms of Use</u> &amp; <u data-act="privacy">Privacy Policy</u>, and confirm that I am at least 21 years old.</p></div>
           </div>
         </section>
@@ -1156,17 +1142,23 @@ img{display:block}
   </div>
 </div>
 <div class="notes">
-  <h2>v12：把线上竖版有、横版演示还缺的界面、弹窗和状态补齐（11/24）</h2>
+  <h2>v13：在 v12 上去掉两样（11/24）</h2>
+  <ol>
+    <li><b>去掉输入框下方的红字提示</b>：横版不显示输入框下方的红字提示，输入不合法的金额失焦后自动修正（不到 10 改成 10，超过 100,000 改成 100,000，Pay&amp;Go 向下取整到 100 的倍数）。</li>
+    <li><b>去掉底部固定区的 Rewards 行</b>：「模拟场景」里的「有存款活动」一项也一起去掉。</li>
+  </ol>
+  <p class="dim">要看去掉之前的样子，在上面的「对比旧版本」里选 v12。</p>
+  <h2>v12：把线上竖版有、横版演示还缺的界面、弹窗和状态补齐（v13 保留，上面两样除外）</h2>
   <p><b>怎么看</b>：点右上角「模拟场景」，勾选或选择一种情况，再照常点充值走一遍。「重置」会把页面和全部模拟项恢复到刚打开的样子。已定的排版没动：面板 740 居中、表头 44、渠道一排、6 个快捷金额一排、保障标识横排三张小卡、Confirm Deposit 确认框、协议 Tips、协议页、QRPh 两栏、教程、成功页两栏。</p>
-  <h2>这一版补了什么</h2>
+  <h2>v12 补了什么</h2>
   <ol>
     <li><b>二级渠道一排</b>：选 Bankcard 出现 17 家银行，选 OTC 出现 Pay&amp;Go、LoadCentral、Bayad Center，选 Traxion 出现 14 个机构。4 个及以上时最左边有 All，点开 All Banks（竖版是底部抽屉、3 列，横版放进面板、6 列），点格子只是临时选中，点 Confirm 才生效。这一排会把金额区往下挤：首屏只露出快捷金额的上半截，金额输入框要向下滑才看得到（照线上的堆叠顺序，没有另做排法）。</li>
     <li><b>快捷金额</b>：默认选中的那一档左上角有角标，有充值记录标 RECENT，没有充值记录标 HOT；可以切成 9 个档位（每排 6 个，自动换成两排）；打开面板的头 0.4 秒是加载占位（金额 6 个灰块、渠道 1 张灰卡）。右上角的 +N 奖励角标按已定口径不显示。</li>
-    <li><b>金额输入框</b>：清空后显示 Min 10 - Max 100,000，清空按钮消失，底部固定区整条隐藏；金额不到 10、或 Pay&amp;Go 的金额不是 100 的倍数时，输入框正下方出红字；点到别处后自动改成合法金额。横屏下这行红字正好被底部固定区挡住，演示在红字出现时把表单往上滑一点让它露出来，红字消失再滑回去。这是<b>演示的做法，红字放在哪里待 UI 确认</b>。</li>
+    <li><b>金额输入框</b>：清空后显示 Min 10 - Max 100,000，清空按钮消失，底部固定区整条隐藏；金额不到 10、超过 100,000、或 Pay&amp;Go 的金额不是 100 的倍数时，点到别处后自动改成合法金额（v13 起输入框下方不再显示红字提示）。</li>
     <li><b>渠道维护</b>：维护中的渠道卡变暗并写 Under Maintenance，点它不切换渠道，而是弹 Under Maintenance 弹窗；全部渠道维护时常驻一条提示 Under Maintenance. Please switch Payment Methods。</li>
     <li><b>三种特殊渠道</b>：LoadCentral、Bayad Center 只有说明卡，没有金额区和 Deposit（横版把说明卡分成左右两栏、三栏）；E-Voucher 是输入 12 位凭证码加 Submit（横版左边输入和按钮、右边 How To Use），成功、失败各一个弹窗。</li>
-    <li><b>底部固定区</b>：有存款活动时多一行 Rewards；系统维护时 Deposit 置灰、点不了。</li>
-    <li><b>键盘弹起</b>：面板缩到键盘上方，表头、渠道、快捷金额、保障标识、Rewards 行和协议行暂时收起，只留金额输入框（含红字）和「₱ 金额 + Deposit」一行。这是方案里的<b>建议做法，待开发确认</b>（线上现在没有针对键盘做任何处理）。</li>
+    <li><b>底部固定区</b>：系统维护时 Deposit 置灰、点不了（v13 起没有 Rewards 行）。</li>
+    <li><b>键盘弹起</b>：面板缩到键盘上方，表头、渠道、快捷金额、保障标识和协议行暂时收起，只留金额输入框和「₱ 金额 + Deposit」一行。这是方案里的<b>建议做法，待开发确认</b>（线上现在没有针对键盘做任何处理）。</li>
     <li><b>点 Deposit 后的检查</b>，顺序同线上：防沉迷 Notice → eKYC（Account Security，或 7 天强制 KYC 的 Notice）→ 协议 Tips → 反洗钱 Account Security Alert → Confirm Deposit。防沉迷、eKYC、反洗钱、渠道维护这四个弹窗带插图，竖版是图在上、字在下，高度超过横屏可视区，横版改成左图右文。</li>
     <li><b>其他弹窗</b>：Pay&amp;Go 没绑手机号的 Mobile Number Required、系统维护公告、VIP 奖励待领取的 Congratulations!、扫码类渠道返回网页地址时的 Pay Now 提示、接口限流的 Notice!。</li>
     <li><b>点 Confirm 后</b>：每一单都先出全屏 loading（Connecting to 渠道名...）。演示里停 0.8 秒就进下一步；建单超时会提示 Connection timeout, please try again（线上是 10 秒，演示缩短为 3 秒）。</li>
@@ -1197,7 +1189,6 @@ img{display:block}
   <h2>哪些是示例值</h2>
   <ol>
     <li>快捷金额 9 个档位里的后 3 个（₱3,000、₱5,000、₱10,000）。</li>
-    <li>Rewards 行的金额：按当前金额的 20% 显示。₱100 对应 ₱20 是 UAT 截图里的真实例子，其余金额是按比例推的。</li>
     <li>E-Voucher 充值成功的 ₱500；凭证码输 0000 0000 0000 看失败弹窗，输其他 12 位数字看成功弹窗。</li>
     <li>VIP 奖励的 ₱100、Pay&amp;Go 的现金码 482913 和手续费 PHP 0.00、各付款页的单号、成功页的 User account（Matteo）。</li>
     <li>系统维护公告的标题和正文：线上取站点配置，演示用的是组件默认值 System Maintenance 和 System is under maintenance.。</li>
@@ -1304,11 +1295,7 @@ img{display:block}
     if(S.str===''||!basic())return;
     let a=S.amt;if(a<10)a=10;if(a>100000)a=100000;if(isPayGo()){a=Math.floor(a/100)*100;if(a<100)a=100;}
     if(a!==S.amt||!/^(0|[1-9]\d*)(\.\d{1,2})?$/.test(S.str))setStr(String(a));
-  }
-  const tipText=()=>{if(!basic()||S.str==='')return'';const a=S.amt;
-    if(a>0&&a<10)return'Minimum amount P 10';
-    if(isPayGo()&&a>0&&a%100!==0)return'Please Enter An Amount In Multiples Of 100 (E.G 200, 500, 1000)';
-    return'';};
+  } // v13：输入框下方不再显示红字提示（最低金额、Pay&Go 要 100 的倍数这两条都去掉），金额不合法只靠这里失焦时自动改
 
   // ---------- Toast：同一时刻只留一条，默认 3 秒消失 ----------
   const MAINT_ALL='Under Maintenance. Please switch Payment Methods';
@@ -1387,7 +1374,7 @@ img{display:block}
 
   // ---------- 渲染 ----------
   const amtIn=$('#amtIn'), vIn=$('#vIn'), subsBox=$('#subs'), tB=$('#tBody');
-  let amtKey='', subKey='', bkKey='', lastTip='', lastPane='form';
+  let amtKey='', subKey='', bkKey='', lastPane='form';
   const kbOn=()=>on('simKb')&&S.open&&S.tab==='game'&&S.pane==='form'&&basic()&&!S.skel&&!modal();
   function renderAmts(){const t=tiers(), b=badgeTier(), hot=on('simNew'), key=t.join()+'|'+b+'|'+hot;
     if(key!==amtKey){amtKey=key;$('#amts').innerHTML=t.map(v=>`<button class="amt" data-v="${v}">${v===b?`<img class="rb" src="${A}badge_${hot?'hot':'recent'}.png" alt="${hot?'HOT':'RECENT'}">`:''}₱ ${fmt(v,0)}</button>`).join('');}
@@ -1414,11 +1401,6 @@ img{display:block}
   }
   function centerSub(smooth){const el=subsBox.querySelector('.sch.on');if(!el||!subsBox.clientWidth)return; // 选中的子渠道滑到中间
     subsBox.scrollTo({left:Math.max(0,el.offsetLeft-(subsBox.clientWidth-el.offsetWidth)/2),behavior:smooth?'smooth':'auto'});}
-  let tipFrom=null; // 为了露出红字把表单往上滑过：记下滑之前和之后的位置，红字消失后滑回去（玩家自己又滑过就不动）
-  function revealTip(){const tip=$('#amtTip'), b=$('#fBody');if(!tip.classList.contains('on')||!b.clientHeight)return; // 红字被底部固定区挡住时，把表单滑到能看到红字
-    const br=b.getBoundingClientRect(), tr=tip.getBoundingClientRect(), k=br.height/b.offsetHeight||1, d=(tr.bottom-br.bottom)/k+6;
-    if(d>0){const from=tipFrom?tipFrom.from:b.scrollTop;b.scrollTop+=d;tipFrom={from,to:b.scrollTop};}}
-  function unrevealTip(){const b=$('#fBody');if(tipFrom&&Math.abs(b.scrollTop-tipFrom.to)<2)b.scrollTop=tipFrom.from;tipFrom=null;}
   function revealChip(smooth){const el=chips.querySelector('.chip.on');if(!el||!chips.clientWidth)return; // 选中的渠道卡没有完整露出来时，把它滑进来（左右各留 12）
     const cr=chips.getBoundingClientRect(), er=el.getBoundingClientRect(), k=cr.width/chips.offsetWidth||1;
     const l=(er.left-cr.left)/k+chips.scrollLeft, r=l+er.width/k, sl=chips.scrollLeft, w=chips.clientWidth;
@@ -1446,11 +1428,9 @@ img{display:block}
     const shown=S.skel?'':S.str;if(amtIn.value!==shown)amtIn.value=shown;
     amtIn.inputMode=kb?'none':'decimal'; // 键盘弹起（示意）时用页面里的仿真键盘输入，手机上不再另外弹系统键盘
     $('#clr').style.display=shown===''?'none':''; // 金额为空：清空按钮不显示
-    const tip=S.skel?'':tipText(), tEl=$('#amtTip');tEl.textContent=tip;tEl.classList.toggle('on',tip!=='');
     const ftOff=S.skel||!b||S.str==='';
     $('#ft').classList.toggle('off',ftOff);$('#fm').classList.toggle('nof',ftOff); // 同线上：金额为空时不显示提交栏；LoadCentral、Bayad Center、E-Voucher 也不显示
     $('#ftAmt').textContent='₱ '+(S.amt>0?short(S.amt):'0');
-    $('#rw').classList.toggle('on',on('simPromo')&&S.amt>0);$('#rwAmt').textContent='₱'+(S.amt*.2).toLocaleString('en-US',{maximumFractionDigits:2}); // Rewards 行：示例按当前金额的 20%
     $('#depBtn').disabled=on('simSysBtn'); // 系统维护：Deposit 置灰
     $('#agree').classList.toggle('on',S.agree);$('#agreeV').classList.toggle('on',S.agree);
     const vs=S.vcode.replace(/(\d{4})(?=\d)/g,'$1 ');if(vIn.value!==vs)vIn.value=vs; // 凭证码每 4 位加一个空格
@@ -1473,7 +1453,6 @@ img{display:block}
     const st=S.open?('抽屉打开（'+PANE[S.pane]+'）'+(S.confirm?' · 确认框打开':'')+(kb?' · 键盘弹起':'')):'抽屉关闭';
     $('#status').innerHTML=`当前：<b>${where}</b> · ${st} · 余额 ₱${fmt(S.bal,2)}`+(p&&!p.paid?` · 待到账订单 <b>₱${fmt(p.amt,2)}（${esc(p.name)}）</b>`:'');
     syncMaintToast();
-    if(tip!==lastTip){if(tip)revealTip();else unrevealTip();}lastTip=tip;
     if(S.pane==='terms')fab();
     const vis=chips.clientWidth>0; // 首次横滑提示还没走完，渠道一排就被收起（进了 All Banks、协议页，或键盘弹起）：等它回来时直接归位
     if(vis&&!chipsVis&&nudging){nudging=false;chips.scrollLeft=0;fade();}chipsVis=vis;
@@ -1587,7 +1566,7 @@ img{display:block}
   amtIn.addEventListener('input',e=>{S.touched=true;setStr(filt(e.target.value));render();});
   amtIn.addEventListener('blur',()=>{fixAmt();render();});
   vIn.addEventListener('input',e=>{S.vcode=e.target.value.replace(/\D/g,'').slice(0,16);render();}); // 只收数字；超过 12 位时出红字
-  ['pointerdown','mousedown'].forEach(n=>{$('#kb').addEventListener(n,e=>e.preventDefault());$('#clr').addEventListener(n,e=>e.preventDefault());}); // 点仿真键盘、点清空按钮时不让输入框失焦（失焦会先把金额改成合法值，红字消失、内容挪位，这一下就点空了）
+  ['pointerdown','mousedown'].forEach(n=>{$('#kb').addEventListener(n,e=>e.preventDefault());$('#clr').addEventListener(n,e=>e.preventDefault());}); // 点仿真键盘、点清空按钮时不让输入框失焦（失焦会先把金额改成合法值，再清空就多跳一下）
   tB.addEventListener('scroll',fab,{passive:true});
 
   // ---------- 控制条 ----------
@@ -1598,7 +1577,7 @@ img{display:block}
     shut();});
   $('#reset').addEventListener('click',()=>{gen++;S=JSON.parse(JSON.stringify(S0));
     $$('#simPanel input').forEach(i=>{i.checked=false;});$$('#simPanel select').forEach(s=>{s.selectedIndex=0;}); // 全部模拟项恢复默认
-    $$('.dmask.on').forEach(d=>d.classList.remove('on'));loading(null);hideToast();$('#ring').style.display='';subKey=bkKey='';lastTip='';tipFrom=null;
+    $$('.dmask.on').forEach(d=>d.classList.remove('on'));loading(null);hideToast();$('#ring').style.display='';subKey=bkKey='';
     nudging=false;chips.scrollLeft=0;$('#fBody').scrollTop=0;render();fade();}); // 渠道一排和表单也滑回开头
   const simBtn=$('#simBtn'), simPanel=$('#simPanel');
   const simShow=v=>{simPanel.classList.toggle('on',v);simBtn.setAttribute('aria-expanded',v?'true':'false');};
