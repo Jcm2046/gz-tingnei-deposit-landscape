@@ -1,0 +1,801 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>厅内充值 · 横版演示 v11</title>
+<style>
+:root{--f:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro","Helvetica Neue",Roboto,"Segoe UI","PingFang SC",Arial,sans-serif;--gold:#eac070;--red:#de4444}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:#15171c;color:#dfe3ea;font-family:var(--f)}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+img{display:block}
+/* ---------- 页面外壳 ---------- */
+.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 16px 8px}
+.top h1{font-size:16px;margin:0;font-weight:600;color:#fff}
+.top .sub{font-size:12px;color:#8f98a6}
+.top .vl{font-size:12px;color:var(--gold);white-space:nowrap}
+.top .ver{height:26px;border-radius:6px;background:#2a2f3b;color:var(--gold);border:1px solid #3a4150;font-size:12px;padding:0 4px}
+@media (orientation:landscape) and (max-height:520px){.top .ver{width:80px}}
+@media (orientation:landscape) and (max-height:520px){.top .lt{display:none}}
+.hd.g3{display:grid;grid-template-columns:1fr auto 1fr}
+.hd.g3 .hlp{justify-self:start;font:500 12px/18px var(--f);color:#dce3ec;white-space:nowrap}
+.hd.g3 .ib{justify-self:end}
+.ctl{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-left:auto}
+.ctl button{height:30px;padding:0 12px;border-radius:8px;background:#2a2f3b;border:1px solid #3a4150;font-size:13px;color:#dfe3ea}
+.ctl button:hover:not(:disabled){border-color:var(--gold);color:#fff}
+.ctl button:disabled{opacity:.4;cursor:not-allowed}
+.ctl button.pri{background:#4a3b1c;border-color:var(--gold);color:var(--gold)}
+.ctl label{display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;user-select:none}
+.ctl input{accent-color:var(--gold)}
+.status{padding:0 16px 6px;font-size:12px;color:#8f98a6;min-height:18px}
+.status b{color:var(--gold);font-weight:500}
+.stage{position:relative;width:100%;height:min(calc(100vh - 96px),calc((100vw - 24px)*.4492));min-height:220px}
+.notes{max-width:1100px;margin:6px auto 28px;padding:0 16px;font-size:13px;line-height:1.7;color:#b8c0cc}
+.notes h2{font-size:14px;color:#fff;margin:14px 0 4px}
+.notes ol{margin:0;padding-left:20px}
+.notes .dim{color:#8f98a6}
+.rot{display:none;text-align:center;font-size:12px;color:var(--gold);padding:4px 0}
+@media (orientation:portrait) and (max-width:600px){.rot{display:block}}
+.stage{overflow:hidden}
+/* 手机横屏：只显示网页可视区，接近 1:1 */
+@media (orientation:landscape) and (max-height:520px){
+  .top{padding:4px 10px;gap:8px;flex-wrap:nowrap}
+  .top h1{font-size:13px;white-space:nowrap}
+  .top .sub,.status{display:none}
+  .ctl{gap:6px;flex-wrap:nowrap}
+  .ctl button{height:26px;padding:0 8px;font-size:12px;white-space:nowrap}
+  .ctl label{font-size:12px;white-space:nowrap}
+  .stage{height:calc(100vh - 36px);height:calc(100dvh - 36px)}
+  .device.crop{border-radius:0;box-shadow:none}
+}
+/* ---------- 设备（整张横屏截图，含状态栏、地址栏、导航键） ---------- */
+.device{position:absolute;left:50%;top:50%;width:969.7px;height:435.61px;transform-origin:center;background:url(../assets/lobby.jpg) 0 0/100% 100% no-repeat;border-radius:18px;overflow:hidden;box-shadow:0 0 0 6px #050608,0 12px 40px rgba(0,0,0,.6)}
+.addr{position:absolute;left:113.6px;top:66.6px;width:600px;height:37.9px;background:#333439;color:#e3e3e3;font:400 19.3px/37.9px Roboto,var(--f);padding-left:3.8px;white-space:nowrap;overflow:hidden;display:none}
+.tabn{position:absolute;left:822.3px;top:76.5px;width:13.6px;height:14.4px;background:#121318;color:#fff;font:700 11px/14.4px Roboto,var(--f);text-align:center;display:none}
+.newtab .addr,.newtab .tabn{display:block}
+/* 网页可视区：1139×420 截图像素 ÷ 1.32 = 862.9×318.2 CSS px */
+.web{position:absolute;left:50.76px;top:117.42px;width:862.88px;height:318.18px;overflow:hidden;font-family:var(--f)}
+.hot{position:absolute;left:190px;top:269px;width:73px;height:49px;border-radius:12px}
+.hot:hover{box-shadow:0 0 0 2px rgba(234,192,112,.8)}
+.ring{position:absolute;left:204px;top:265px;width:44px;height:44px;border-radius:50%;border:2px solid var(--gold);pointer-events:none;animation:ring 1.6s ease-out infinite}
+@keyframes ring{0%{transform:scale(.7);opacity:1}100%{transform:scale(1.5);opacity:0}}
+.bal{position:absolute;left:98.5px;top:296.2px;font:600 14px/16px var(--f);color:#e4dfe9;letter-spacing:.2px;white-space:nowrap;transition:color .3s,text-shadow .3s}
+.bal.flash{color:#ffe7a8;text-shadow:0 0 8px rgba(234,192,112,.9)}
+/* ---------- 蒙层 + 右侧抽屉 ---------- */
+.mask{position:absolute;inset:0;background:rgba(0,0,0,.6);opacity:0;pointer-events:none;transition:opacity .3s;z-index:10}
+.mask.on{opacity:1;pointer-events:auto}
+.drawer{position:absolute;top:0;bottom:0;left:calc(50% - 370px);width:740px;background:#2f3542;border-radius:20px 20px 0 0;transform:translateY(105%);transition:transform .3s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;overflow:hidden;z-index:20}
+.drawer.on{transform:none;box-shadow:0 -6px 24px rgba(0,0,0,.35)}
+.pane{display:none;flex-direction:column;flex:1;min-height:0}
+.pane.on{display:flex}
+.hd{height:44px;flex:none;display:flex;align-items:center;padding:0 16px}
+.hd .ttl{flex:1;text-align:center;font:600 16px/24px var(--f);color:#fff;padding:0 10px}
+.ib{width:24px;height:24px;display:grid;place-items:center;flex:none}
+.ib img{width:12px;height:12px}
+.body{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none}
+.body::-webkit-scrollbar{display:none}
+/* 充值表单 */
+.fm{display:flex;flex-direction:column;gap:12px;padding:4px 12px 12px}
+.pm-t{display:flex;align-items:center;gap:8px}
+.pm-t b{flex:1;font:600 16px/24px var(--f);color:#fff}
+.pm-t a{font:500 12px/18px var(--f);color:#dce3ec}
+.chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -12px;padding:0 12px;scroll-padding:0 12px;scroll-snap-type:x proximity;overscroll-behavior-x:contain;cursor:grab}
+.chips .chip{scroll-snap-align:start}
+.chips.fr{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 36px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 36px),transparent)}
+.chips.fl{-webkit-mask-image:linear-gradient(90deg,transparent,#000 36px);mask-image:linear-gradient(90deg,transparent,#000 36px)}
+.chips.fl.fr{-webkit-mask-image:linear-gradient(90deg,transparent,#000 36px,#000 calc(100% - 36px),transparent);mask-image:linear-gradient(90deg,transparent,#000 36px,#000 calc(100% - 36px),transparent)}
+.chips.drag{cursor:grabbing;scroll-snap-type:none}
+.lg .ins{font:700 12px/16px var(--f);color:#fff;white-space:nowrap}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;height:45px;padding:4px 12px;border-radius:10px;background:#383f4d;position:relative;overflow:hidden;display:flex;align-items:center}
+.chip.on{background:#48453f;box-shadow:inset 0 0 0 1.5px var(--gold)}
+.chip .lg{width:84px;height:32px;position:relative;display:flex;align-items:center;justify-content:center;gap:2px;overflow:hidden}
+.chip .ck{display:none;position:absolute;right:0;bottom:0;width:16px;height:16px;background:var(--gold);border-radius:10px 0 10px 0;place-items:center}
+.chip.on .ck{display:grid}
+.chip .ck img{width:12px;height:12px}
+.lg .otc{font:700 14px/20px var(--f);color:#fff}
+.lg .ip{position:absolute;left:4px;right:3px;top:6.67px;bottom:6.67px;overflow:hidden}
+.lg .ip img{position:absolute;height:135.55%;width:115.98%;left:-9.72%;top:-17.28%;max-width:none}
+.card{background:#242933;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:12px}
+.card-t{font:500 14px/22px var(--f);color:#fff}
+.amts{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.amt{height:48px;border-radius:10px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.14);display:grid;place-items:center;font:600 16px/24px var(--f);white-space:nowrap;color:#fff;position:relative}
+.amt.on{background:var(--gold);color:#181b21;box-shadow:none}
+.inp{height:44px;background:#181b21;border-radius:12px;padding:8px 12px;display:flex;align-items:center;gap:4px}
+.inp>img{width:24px;height:24px;flex:none}
+.inp input{flex:1;min-width:0;background:none;border:0;outline:0;color:#fff;font:600 20px/28px var(--f);caret-color:var(--red);padding:0}
+.inp .clr{width:24px;height:24px;flex:none}
+.inp .clr img{width:24px;height:24px}
+.trust{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0 12px} /* 和金额卡里的按钮同一套栅格：每张对齐两个金额按钮 */
+.tb{height:52px;border:1px solid #484c56;border-radius:12px;display:flex;align-items:center;justify-content:center;gap:8px}
+.tb p{margin:0;font:500 11px/14px var(--f);color:#8f98a6;text-align:left;white-space:nowrap}
+.ft{flex:none;background:#2a2f3b;border-top:1px solid rgba(255,255,255,.1);padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.ft.off{display:none}
+.ft-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.ft-amt{font:700 24px/32px var(--f);color:#fff;white-space:nowrap}
+.btn-red{height:44px;padding:0 20px;border-radius:12px;background:linear-gradient(90deg,#de4444,#f95858);display:flex;align-items:center;justify-content:center;gap:4px;color:#fff;font:600 16px/24px var(--f)}
+.btn-red:active{filter:brightness(.92)}
+.bolt{width:24px;height:24px;display:grid;place-items:center}
+.bolt img{width:20px;height:20px}
+.agree{display:flex;gap:4px;align-items:flex-start;text-align:left;cursor:pointer}
+.cb{padding-top:2px;flex:none}
+.cb i{display:block;width:20px;height:20px;position:relative}
+.cb i::after{content:"";position:absolute;inset:12.5%;background:#21262e;border:.833px solid rgba(255,255,255,.1);border-radius:5px}
+.agree.on .cb i::after{background:var(--gold);border-color:var(--gold)}
+.cb i img{position:absolute;left:4px;top:4px;width:12px;height:12px;z-index:1;display:none}
+.agree.on .cb i img{display:block}
+.agree p{margin:0;font:400 13px/22px var(--f);color:#8f98a6}
+.agree u{color:#fff;font-weight:500;line-height:20px}
+/* 内嵌式付款页（QRPh） */
+.chev{width:13.44px;height:13.44px;display:grid;place-items:center}
+.chev span{display:block;position:relative;width:9.5px;height:9.5px;transform:rotate(45deg)}
+.chev img{position:absolute;top:0;right:0;bottom:-7.89%;left:-7.89%;width:auto;height:auto}
+.qr-w{padding:0 12px 12px}
+.qr-card{position:relative;width:366px;height:477px}
+.qr-card>img{position:absolute;inset:0;width:366px;height:477px}
+.qr-in{position:absolute;left:12px;top:12px;width:342px;display:flex;flex-direction:column;align-items:center;gap:12px;padding-bottom:16px}
+.qr-logo{width:126px;height:48px;position:relative}
+.qr-logo span{position:absolute;left:12.75px;top:6px;width:100.5px;height:36px}
+.qr-logo img{position:absolute;left:0;right:0;top:20.83%;bottom:12.5%;width:100%;height:66.67%}
+.qr-amt{height:18px;display:flex;align-items:center;justify-content:center;font:600 18px/28px var(--f);color:var(--gold);margin-top:4px}
+.qr-note{font:400 14px/22px var(--f);color:#8f98a6;text-align:center}
+.qr-note b{display:block;font-weight:500;color:#fff}
+.qr-box{position:relative;width:200px;height:200px;flex:none}
+.qr-box .wb{position:absolute;inset:0;background:#fff;border-radius:10.909px}
+.qr-box .code{position:absolute;left:5.45px;top:6.36px;width:188.18px;height:188.18px;border-radius:14.545px;overflow:hidden}
+.qr-box .code img{position:absolute;height:383.64%;width:177.45%;left:-38.91%;top:-79.27%;max-width:none}
+.qr-box .cw{position:absolute;left:86.36px;top:86.36px;width:27.27px;height:27.27px;background:#fff;border-radius:4.545px}
+.qr-box .cl{position:absolute;inset:45%;overflow:hidden}
+.qr-box .cl img{position:absolute;height:106.54%;width:450.19%;left:-2.02%;top:0;max-width:none}
+.qr-pw{display:flex;gap:4px;align-items:flex-start;font:400 14px/22px var(--f);color:#fff}
+.qr-pw span{position:relative;width:50px;height:20px}
+.qr-pw span img{position:absolute;left:0;top:3.37px;width:50px;height:16.27px}
+.qr-tx{font:400 14px/22px var(--f);color:#fff;text-align:center}
+.qr-tx b{font-weight:500}
+.scan{display:flex;flex-direction:column;gap:12px;padding:12px 12px 16px}
+.scan-t{text-align:center;font:600 16px/24px var(--f);color:var(--gold);text-transform:uppercase}
+.row{height:52px;background:#242933;border-radius:12px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between}
+.row .l{display:flex;align-items:center;gap:8px;font:400 14px/22px var(--f);color:#fff}
+.row img{width:32px;height:32px}
+.row .open{background:#444b58;border:.5px solid var(--gold);border-radius:20px;padding:4px 16px;font:400 12px/18px var(--f);color:var(--gold)}
+/* 教程（抽屉内） */
+.pane.guide{background:#181b21}
+.pane.terms .th{justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.08)}
+.ttabs{display:flex;gap:32px;align-self:stretch}
+.tt{height:100%;position:relative;font:600 15px/42px var(--f);color:#8f98a6;white-space:nowrap}
+.tt.on{color:#fff}
+.tt.on::after{content:'';position:absolute;left:0;right:0;bottom:4px;height:2px;border-radius:2px;background:#fff}
+.tbody{padding:4px 16px 16px}
+.tdoc{display:none}.tdoc.on{display:block}
+.tdoc h4{margin:12px 0 4px;font:600 15px/22.5px var(--f);color:#fff}
+.tdoc p{margin:0 0 8px;font:400 14px/21px var(--f);color:#dce3ec}
+.tdoc .tnote{margin-top:12px;font-size:12px;line-height:18px;color:#8f98a6}
+.tdoc ul,.tdoc ol{margin:0 0 8px;padding-left:20px;font:400 14px/21px var(--f);color:#a8b3c2}
+.tdoc table{width:100%;border-collapse:collapse;margin:0 0 8px;font:400 13px/19px var(--f);color:#dce3ec}
+.tdoc td{border:1px solid #484c56;padding:6px 8px;vertical-align:top}
+.tagree{display:flex;justify-content:center;padding:12px 0 4px}
+.tagree .btn-red{width:358px}
+.tut-hd{position:relative;flex:none;height:48px;background:#21262e}
+.tut-hd img{width:390px;height:48px}
+.tut-hd button{position:absolute;left:0;top:0;width:56px;height:48px}
+.pane.guide .body{display:flex;justify-content:center}
+.pane.guide .body img{width:390px;height:auto;align-self:flex-start}
+/* Tips 弹窗 */
+.dmask{position:absolute;inset:0;background:rgba(0,0,0,.6);z-index:40;display:none;align-items:center;justify-content:center}
+.dmask.on{display:flex}
+.tips{width:292px;border-radius:16px;background:#2f3542;position:relative}
+.tips .t{height:56px;display:flex;align-items:center;justify-content:center;font:600 16px/24px var(--f);color:#fff}
+.tips .ib{position:absolute;left:252px;top:16px}
+.tips .tx{padding:4px 16px;font:400 14px/22px Inter,var(--f);color:#fff;text-align:center}
+.tips .rd{height:34px;display:flex;align-items:center;justify-content:center;gap:4px;font:400 14px/22px Inter,var(--f);color:#a5a5a5;width:100%}
+.tips .rd i{position:relative;width:18px;height:20px}
+.tips .rd i img{width:18px;height:20px}
+.tips .rd.on i::after{content:"";position:absolute;left:5px;top:6px;width:8px;height:8px;border-radius:50%;background:var(--gold)}
+.tips .bt{display:flex;gap:12px;padding:16px}
+.tips .bt button{flex:1;height:44px;border-radius:12px;font:600 16px/24px var(--f)}
+.b-out{border:1.5px solid var(--red)!important;color:#f25555!important}
+/* 新标签页：第三方付款页（示意）与充值成功页 */
+.tab{position:absolute;inset:0;z-index:60;display:none}
+.tab.on{display:block}
+.tab-pay{background:#f3f5f9;color:#1c2333}
+.pay-top{height:44px;background:#0b1b3a;display:flex;align-items:center;gap:10px;padding:0 16px;color:#cfd8ea;font-size:12px}
+.pay-top .lg{width:84px;height:32px;display:flex;align-items:center;justify-content:center;gap:2px;position:relative;overflow:hidden}
+.pay-body{display:flex;flex-direction:column;align-items:center;justify-content:center;height:calc(100% - 44px);gap:8px}
+.pay-m{font-size:13px;color:#5b6475}
+.pay-amt{font-size:30px;font-weight:700}
+.pay-btn{margin-top:6px;height:42px;padding:0 28px;border-radius:21px;background:#1a5cff;color:#fff;font-weight:600;font-size:15px}
+.pay-back{font-size:12px;color:#5b6475;text-decoration:underline;margin-top:2px}
+.pay-tip{font-size:11px;color:#98a1b2}
+.tab-ok{background:linear-gradient(179.4deg,#090b12 .24%,#141a2a 33.2%,#141a2a 63.3%,#090b12 95.8%)}
+.ok2{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:44px;padding:8px 24px}
+.okc-l{width:340px;display:flex;flex-direction:column;align-items:center}
+.okc-r{width:358px;display:flex;flex-direction:column;align-items:center}
+.ok-logo{width:84px;height:51.7px}
+.shw{width:96px;height:96px;margin-top:12px}
+.shield{position:relative;width:188px;height:188px;overflow:hidden;filter:drop-shadow(0 14px 11px rgba(43,200,145,.04));transform:scale(.5106);transform-origin:0 0} /* 188 → 96 */
+.shield img{position:absolute}
+.sh-v1{left:14px;top:14px;width:160px;height:160px}
+.sh-v2{left:34px;top:34px;width:120px;height:120px}
+.sh-s1{left:120px;top:35px;width:19px;height:19px}
+.sh-s2{left:159px;top:58px;width:14px;height:14px}
+.sh-s3{left:42px;top:127px;width:14px;height:14px}
+.sh-b{left:47.75px;top:50.24px;width:94.34px;height:102px}
+.sh-i{left:59px;top:54px;width:64px;height:75.73px;mix-blend-mode:overlay}
+.sh-c{left:72.35px;top:73.29px;width:51.71px;height:40.79px}
+.ok-t{margin-top:2px;font:700 18px/26px var(--f);color:#fff}
+.ok-amt{margin-top:14px;font:700 42px/50px var(--f);color:var(--gold)}
+.ok-card{width:358px;border:1px solid rgba(255,255,255,.28);border-radius:12px;background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.4)),rgba(255,255,255,.1);padding:2px 16px}
+.ok-r{height:52px;display:flex;align-items:center;gap:8px}
+.ok-r+.ok-r{border-top:1px solid rgba(255,255,255,.12)}
+.ok-r .ic{width:20px;height:20px;display:grid;place-items:center;flex:none}
+.ok-r .k{width:100px;font:400 13px/20px var(--f);color:#abbbc6}
+.ok-r .v{margin-left:auto;font:600 14px/20px var(--f);color:#f2f6f9;white-space:nowrap}
+.ok-r .pill{height:28px;padding:0 10px;border-radius:8px;background:rgba(251,252,255,.24);display:flex;align-items:center;color:#fff}
+.ok-r .tm{font-weight:400;font-size:13px}
+.ok-btn{width:358px;height:45.76px;border-radius:12.48px;font-size:16.64px;margin-top:16px}
+.ok-lic{display:flex;align-items:center;gap:6.24px;padding-top:12px}
+.ok-lic span{font:400 10.4px/1 "Arial Rounded MT Bold",var(--f);color:#cacaca}
+.ok-lic .pg{width:32.07px;height:33.23px}
+.ok-lic .rg{width:105px;height:33.28px;margin-left:5.4px}
+/* v5：内嵌付款页两栏（沿用 v3） */
+.qcols{flex:1;min-height:0;display:flex;gap:12px;padding:4px 12px 12px}
+.q-l{width:260px;flex:none;background:#242933 url(../assets/qr_card_mask.svg) center/cover no-repeat;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:12px}
+.q-r{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:8px;padding-bottom:16px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none;-webkit-mask-image:linear-gradient(180deg,#000 calc(100% - 18px),transparent);mask-image:linear-gradient(180deg,#000 calc(100% - 18px),transparent)}
+.q-r::-webkit-scrollbar{display:none}
+.q-r .qr-logo{flex:none}
+.q-r .qr-amt{flex:none;height:22px;margin-top:0}
+.q-r .scan-t{margin-top:6px}
+.q-r .row{flex:none;width:100%}
+.cmask{position:absolute;inset:0;background:rgba(0,0,0,.6);z-index:30;opacity:0;pointer-events:none;transition:opacity .3s}
+.cmask.on{opacity:1;pointer-events:auto}
+.csheet{position:absolute;bottom:0;left:calc(50% - 195px);width:390px;background:#2f3542;border-radius:20px 20px 0 0;z-index:31;transform:translateY(105%);transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+.csheet.on{transform:none}
+.cs-hd{position:relative;padding:16px 0;text-align:center;font:600 16px/24px var(--f);color:#fff}
+.cs-x{position:absolute;right:16px;top:0;height:100%;display:grid;place-items:center}
+.cs-x img{width:12px;height:12px;opacity:.75}
+.cs-box{display:flex;flex-direction:column;align-items:center;padding:4px 16px}
+.cs-amt{font:800 39px/47px var(--f);color:#eac070}
+.cs-badge{margin:16px 0;display:inline-flex;align-items:center;gap:2px;border-radius:99px;padding:5px 12px;background:rgba(54,194,111,.13);color:#36c26f;font:400 13px/20px var(--f);white-space:nowrap}
+.cs-badge svg{width:20px;height:20px;flex:none}
+.cs-via{margin:0;font:400 14px/22px var(--f);color:#8f98a6}
+.cs-bt{padding:16px}
+.cs-btn{width:100%;height:44px;border-radius:12px;font:600 16px/24px var(--f)}
+.tips.atips{width:350px}
+.atips .t{height:58px}
+.atips .tx{padding:4px 12px;color:#8f98a6}
+.atips .tx u{color:#fff;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="top">
+  <h1>【充提】厅内充值改造 · 横版演示 v11</h1>
+  <span class="sub">补上 Confirm Deposit 确认框和协议 Tips（同竖版）；协议页用线上全文</span>
+  <select class="ver" aria-label="对比旧版本" onchange="if(this.value)location.href=this.value"><option value="">对比旧版本</option><option value="../">最新版</option><option value="../v10/">v10 没有确认框</option><option value="../v9/">v9 成功页金额在下</option><option value="../v8/">v8 保障标识在底栏</option><option value="../v7/">v7 交互对齐 Figma 方案</option><option value="../v6/">v6 去 How To Deposit、渠道可滑</option><option value="../v5/">v5 居中加宽</option><option value="../v4/">v4 右侧窄抽屉 + 金额一排</option><option value="../v3/">v3 底部居中两栏</option><option value="../v2/">v2 右侧宽抽屉两栏</option><option value="../v1/">v1 只换容器</option></select>
+  <div class="ctl">
+    <label title="模拟 iOS Safari 拦截新标签页"><input type="checkbox" id="iosT"> 模拟 iOS 拦截新标签页</label>
+    <button class="pri" id="arrive" disabled>模拟到账（当前订单）</button>
+    <button id="reset">重置</button>
+  </div>
+</div>
+<div class="status" id="status"></div>
+<div class="rot">手机请横屏，或用电脑打开</div>
+<div class="stage" id="stage">
+  <div class="device" id="device">
+    <div class="addr" id="addr"></div>
+    <div class="tabn">2</div>
+    <div class="web" id="web">
+      <span class="bal" id="bal">59.14</span>
+      <i class="ring" id="ring"></i>
+      <button class="hot" data-act="open" aria-label="Deposit" title="点这里打开充值"></button>
+      <div class="mask" id="mask"></div>
+      <aside class="drawer" id="drawer">
+        <!-- 充值表单：沿用竖版 01.A -->
+        <section class="pane on" data-pane="form">
+          <div class="hd g3"><span></span><span class="ttl">Deposit</span><button class="ib" data-act="close" aria-label="关闭"><img src="../assets/close.svg" alt=""></button></div>
+          <div class="body">
+            <div class="fm">
+              <div>
+                                <div class="chips" id="chips">
+                  <button class="chip on" data-ch="gcash"><span class="lg"><img src="../assets/logo_gcash.svg" style="width:73px;height:18px" alt="GCash"></span><i class="ck"><img src="../assets/chip_check.svg" alt=""></i></button>
+                  <button class="chip" data-ch="bankcard"><span class="lg" style="gap:5.8px"><img src="../assets/logo_bankcard_icon.svg" style="width:23.7px;height:18px" alt=""><img src="../assets/logo_bankcard_word.svg" style="width:53.58px;height:10.72px" alt="Bankcard"></span><i class="ck"><img src="../assets/chip_check.svg" alt=""></i></button>
+                  <button class="chip" data-ch="otc"><span class="lg"><img src="../assets/logo_otc_icon.svg" style="width:20px;height:20px" alt=""><span class="otc">OTC</span></span><i class="ck"><img src="../assets/chip_check.svg" alt=""></i></button>
+                  <button class="chip" data-ch="qrph"><span class="lg"><img src="../assets/logo_qrph.png" style="width:66px;height:15.7px" alt="QRPh"></span><i class="ck"><img src="../assets/chip_check.svg" alt=""></i></button>
+                  <button class="chip" data-ch="grabpay"><span class="lg"><img src="../assets/logo_grabpay.svg" style="width:79.2px;height:17.73px" alt="GrabPay"></span><i class="ck"><img src="../assets/chip_check.svg" alt=""></i></button>
+                  <button class="chip" data-ch="instapay"><span class="lg"><span class="ip"><img src="../assets/logo_x31221.png" alt="InstaPay"></span></span><i class="ck"><img src="../assets/chip_check.svg" alt=""></i></button>
+                  <button class="chip" data-ch="dpay"><span class="lg"><img src="../assets/logo_dpay.svg" style="width:48.63px;height:13px" alt="DPAY"></span><i class="ck"><img src="../assets/chip_check.svg" alt=""></i></button>
+                  <button class="chip" data-ch="instore"><span class="lg" style="gap:3px"><img src="../assets/logo_gz_instore.svg" style="width:30px;height:16.67px" alt=""><span class="ins">In-Store</span></span><i class="ck"><img src="../assets/chip_check.svg" alt=""></i></button>
+                </div>
+              </div>
+              <div class="card">
+                                <div class="amts" id="amts">
+                  <button class="amt on" data-v="100">₱ 100</button>
+                  <button class="amt" data-v="200">₱ 200</button>
+                  <button class="amt" data-v="300">₱ 300</button>
+                  <button class="amt" data-v="500">₱ 500</button>
+                  <button class="amt" data-v="1000">₱ 1,000</button>
+                  <button class="amt" data-v="2000">₱ 2,000</button>
+                </div>
+                <div class="inp"><img src="../assets/icon_peso.svg" alt=""><input id="amtIn" inputmode="decimal" value="100" aria-label="Deposit amount"><button class="clr" data-act="clear" aria-label="清空"><img src="../assets/icon_clear.svg" alt=""></button></div>
+              </div>
+              <!-- 保障标识：放在金额下方，横版排成一排三张小卡（图标 + 两行小字），每张对齐上面两个金额按钮 -->
+              <div class="trust">
+                <div class="tb"><img src="../assets/badge_philfirst.png" style="width:72px;height:20.7px" alt="PhilFirst"><p>Fund 100%<br>Protected</p></div>
+                <div class="tb"><img src="../assets/badge_kantar.png" style="width:70px;height:13.82px" alt="KANTAR"><p>#1 for Fastest Cash In &amp;<br>Cash Out—Kantar, 2026</p></div>
+                <div class="tb"><img src="../assets/badge_pagcor.png" style="width:24px;height:25px" alt="PAGCOR"><p>Safe, Licensed,<br>Regulated</p></div>
+              </div>
+            </div>
+          </div>
+          <div class="ft" id="ft">
+            <div class="ft-row"><span class="ft-amt" id="ftAmt">₱ 100</span><button class="btn-red" data-act="deposit"><span class="bolt"><img src="../assets/icon_bolt.svg" alt=""></span>Deposit</button></div>
+            <div class="agree" id="agree" data-act="agree"><span class="cb"><i><img src="../assets/chip_check.svg" alt=""></i></span><p>I agree with the <u data-act="terms">Terms of Use</u> &amp; <u data-act="privacy">Privacy Policy</u>, and confirm that I am at least 21 years old.</p></div>
+          </div>
+        </section>
+        <!-- 内嵌式付款页：沿用竖版「内嵌式渠道半浮层」 -->
+        <section class="pane" data-pane="qr">
+          <div class="hd"><button class="ib" data-act="back" aria-label="返回"><span class="chev"><span><img src="../assets/back.svg" alt=""></span></span></button><span class="ttl"></span><button class="ib" data-act="close" aria-label="关闭"><img src="../assets/close.svg" alt=""></button></div>
+          <div class="qcols">
+            <div class="q-l">
+              <div class="qr-box"><i class="wb"></i><span class="code"><img src="../assets/qr_code_src.png" alt="QR"></span><i class="cw"></i><span class="cl"><img src="../assets/qr_center_src.png" alt=""></span></div>
+              <div class="qr-pw">powered by<span><img src="../assets/qr_allbank.png" alt="AllBank"></span></div>
+            </div>
+            <div class="q-r sc" id="qR">
+              <div class="qr-logo"><span><img src="../assets/logo_qrph.png" alt="QR Ph"></span></div>
+              <div class="qr-amt" id="qrAmt">Amount: ₱ 100.00</div>
+              <div class="qr-note"><b>IMPORTANT NOTE:</b>Please make sure to use this QR code only Once and deposit the exact amount shown as above</div>
+              <div class="qr-tx">Transaction: <b id="qrTx">202505131133043193543997D</b></div>
+              <div class="scan-t">Scan with app to deposit</div>
+              <div class="row"><span class="l"><img src="../assets/app_g.png" alt="">Deposit using Gcash</span><span class="open">Open</span></div>
+              <div class="row"><span class="l"><img src="../assets/app_bank.png" alt="">Deposit using Gcash</span><span class="open">Open</span></div>
+              <div class="row"><span class="l"><img src="../assets/app_maya.png" alt="">Deposit using Gcash</span><span class="open">Open</span></div>
+              <div class="row"><span class="l"><img src="../assets/app_g.png" alt="">Deposit using Gcash</span><span class="open">Open</span></div>
+              <div class="row"><span class="l"><img src="../assets/app_g.png" alt="">Deposit using Gcash</span><span class="open">Open</span></div>
+              <div class="row"><span class="l"><img src="../assets/app_g.png" alt="">Deposit using Gcash</span><span class="open">Open</span></div>
+            </div>
+          </div>
+        </section>
+        <!-- 协议页：竖版点链接打开整页 Terms & Policies（两个页签），横版放进面板，表头和页签合成一行 -->
+        <section class="pane terms" data-pane="terms">
+          <div class="hd th"><button class="ib" data-act="terms-back" aria-label="返回"><span class="chev"><span><img src="../assets/back.svg" alt=""></span></span></button>
+            <div class="ttabs"><button class="tt on" data-act="tab-terms">Terms Of Use</button><button class="tt" data-act="tab-privacy">Privacy Policy</button></div>
+            <button class="ib" data-act="close" aria-label="关闭"><img src="../assets/close.svg" alt=""></button></div>
+          <div class="body tbody" id="tBody">
+            <div class="tdoc on" data-doc="terms">
+<h4>I. Member's Basic Information</h4>
+<p>To become a GameZone, and/or Lavie Member, new players may either personally register onsite or through remote/online registration. As part of the registration process, players are required to provide mandatory personal information and present one (1) valid government-issued Identification (ID) Card. By submitting their personal data, players acknowledge that they have read and understood the Data Privacy Policy, which outlines how their information will be collected, processed, and safeguarded in accordance with the Data Privacy Act of 2012. Only persons twenty-one (21) years of age and above and not among the banned personalities as provided under the Memorandum Circular No. 6, Series of 2016, of The Office of the President, shall strictly be allowed to register and avail of the services of an Online Gaming Platform.</p>
+<h4>II. Communications Opt In</h4>
+<p>In order to improve your experience with us, we may send you communication materials, including but not limited to administrative updates, regulatory notices, and promotional offers. You may opt out of receiving marketing-related communications at any time by adjusting your preferences in your account settings or by contacting our Customer Service at cs@gamefun.pro.<br>º E-mail º SMS º Phone Calls<br>º Social Media (Facebook, Instagram, Twitter, and the like)</p>
+<h4>III. Collection of Personal Information and Privacy Statement</h4>
+<p>By registering, and thereafter continuing to access or use any of the services, platforms, or facilities of GameZone, or Lavie, you signify your consent and authorization for GameZone, or Lavie to collect, process, store, and share your personal information such as but not limited to your complete name, date of birth, contact details, and other personal circumstances, as a requirement of the Philippine Amusement and Gaming Corporation (PAGCOR) and for the purpose of providing you with our various services.</p>
+<p>For a safe and enjoyable gaming experience, your personal information upon registration shall likewise be collected and shared to company's holding company, affiliates, subsidiaries, accredited operators duly licensed by PAGCOR, and other third parties, on a need-to-know basis, or to carefully selected partners or third-party service providers solely for the following:</p>
+<ol><li>For purposes of enhancing the security of customer's account, safeguarding funds and for the establishment of a proactive risk control or risk management.</li><li>Provision of various services, administration of your account, accounting, market study, player and game tracking, profiling and customer assistance.</li><li>For release of prizes and implementation of promotional activities or games.</li><li>For purposes of business continuity and system migration in connection with all related gaming platforms in order to ensure uninterrupted access and improved user experience.</li><li>For the purpose of facilitating the orderly migration or transfer of player accounts, data, and related functionalities to a new or additional platform, provided that, such platform is duly licensed by PAGCOR and, provided further, that the transfer of any such information shall only be made to accredited operators duly licensed by PAGCOR. The disclosure, sharing, assignment, or transfer of data may involve personal information, including sensitive personal information, and all player-related data in the custody of GameZone, or Lavie. Such disclosure shall be limited to what is necessary for said migration or transfer and shall be subject to appropriate data protection and confidentiality safeguards consistent with applicable privacy and gaming laws and regulations.</li><li>Other analogous circumstances.</li></ol>
+<p>In processing your personal information/data GameZone, and Lavie adhere to a strict privacy policy in accordance with Republic Act No. 10173 or the Data Privacy Act of 2012.</p>
+<ol><li>In addition to the above-mentioned purposes, GameZone, and Lavie collect personal information/data, which will be used to facilitate the transaction, track and administer your account, and improve efficiency in providing you with our products and services.</li><li>GameZone, and Lavie shall keep the Member's information strictly confidential. The information you give us will not be sold, shared with subsidiaries, third-party service providers, suppliers, related companies, or made available to the public, except in line with the disclosed purposes, in the course of our ordinary business, or when authorized by and in accordance with Philippine law or any valid order of the court or government agencies.</li><li>GameZone, and Lavie apply strict security measures and uses automated systems to make sure that the Data Privacy standards for confidentiality, integrity, and availability of your personal data are met. Our employees are trained to handle your personal data and we have internal controls in place to avoid and handle personal data breach.</li><li>GameZone, and Lavie is governed by the laws of the Republic of the Philippines. For all intents and purposes, the storage location of all personal data collected is in the Philippines.</li><li>Your information shall be kept in our system for as long as your account is active and for a period of at least one (1) year from your last visit.</li><li>For any complaints, which include, but is not limited to, the handling, correction, or request for deletion of your personal information, please contact us at cs@gamefun.pro.</li></ol>
+<h4>IV. Terms and Conditions for Membership</h4>
+<p>GameZone, and Lavie is open to qualified individuals twenty-one (21) years old and above.<br>Pursuant to Presidential Decree 1869, as amended by Republic Act 9487, persons under 21 years of age or students of any school, college, or university in the Philippines are not allowed to play in this gaming establishment or in our Online Gaming Platform.<br>Pursuant to Malacañang Memorandum Circular No. 8, the following are not allowed to enter, stay, and/or play in the gaming establishment/platform:</p>
+<ol><li>Government officials and employees connected directly with the operation of the Government or any of its agencies.</li><li>Members of the Armed Forces of the Philippines, including the Army, Navy, Air Force, or the Philippine National Police.</li><li>Persons under 21 years of age.</li><li>PAGCOR officials and employees;</li><li>Unregistered players;</li><li>Banned individuals;</li><li>Spouse, common-law partner, children, parents of officials and persons mentioned in items (1), (2), and (4) above.</li><li>Persons included to the National Database of Restricted Persons;</li><li>Gaming Employment License (GEL) holders; and</li><li>Financiers/Loan Sharks and the like.</li></ol>
+<p>GameZone, and/or Lavie has the right to deny application or terminate the membership of any individual reasonably suspected to be violating or who is violating the terms and conditions of the membership, or applicable rule or regulation, or providing false or inaccurate information during the membership registration. By proceeding with the membership registration, you hereby attest and expressly confirm that you do not fall under any of the categories of the restricted persons above.<br>Funds or credits in the account of a player who is found ineligible to play shall mean forfeiture of said fund/credits in favor of the Government. In compliance with the latest rules and regulations of PAGCOR.</p>
+<p>A player's violation of any provisions of the Term Of Use shall be a ground for the suspension or cancellation of player's account.</p>
+<h4>V. Responsible Gaming</h4>
+<p>Customers or players are required to be informed regarding of the responsible gaming reminders of PAGCOR such as the prohibition of playing online games in open and public places.</p>
+<h4>VI. Jackpot Winnings and Prizes</h4>
+<p>In accordance with the National Internal Revenue Code of the Philippines (NIRC), as amended by the Tax Reform for Acceleration and Inclusion Act (TRAIN Law), all jackpot and other prizes exceeding Ten Thousand Pesos (Php10,000.00) are subject to a final withholding tax of twenty percent (20%). The player acknowledges and agrees that GameZone, or Lavie is authorized to withhold and remit such tax to the Bureau of Internal Revenue (BIR) as required by law.</p>
+<h4>Definition of Terms</h4>
+<p>Jackpot Prize means the top prize won in a game. It may be a fixed amount or a progressive jackpot. It is won when a designated pattern or combination is achieved. It may also be won as a random jackpot prize.</p>
+<p>Prize means cash offered or striven in game.</p>
+<p>Interests, Prizes, and Other Winnings. A final tax at the rate of twenty percent (20%) is hereby imposed upon the amount of interest, yield, or any other monetary benefit earned from any currency bank deposit or deposit substitute, trust funds, and other similar arrangements (except prizes amounting to Ten thousand pesos (Php10,000) or less which shall be subject to tax under Subsection (A) of Section 24 under the NIRC as amended by the TRAIN Law.)</p>
+<p>Tax Withholding: For all qualifying Jackpot prizes, the Operator is legally required to withhold twenty percent (20%) of the prize amount and remit the full tax amount to BIR.</p>
+<p>Scope of Application: This rule applies to all games on the Platform, including both self-developed and third-party games.</p>
+<p>User Rights: Players are not required to file or pay this tax separately. The filing and remittance of the tax is the sole responsibility of the Platform operator. Official tax forms are available to winners upon request.</p>
+<h4>VII. Binding Effect of Game Mechanics and Amendments</h4>
+<p>By registering for and/or using the online gaming platform, the player expressly acknowledges and agrees that all game mechanics, rules, and conditions—including any modifications, updates, or adjustments made from time to time—are binding upon the player. GameZone, and Lavie reserves the right, at its sole discretion, to revise, update, or modify any aspect of the gameplay, mechanics, features, or interface, with or without prior notice. Continued use of the platform after such changes constitutes the player's acceptance of the revised game mechanics.</p>
+<h4>VIII. Authority to Determine Final Results</h4>
+<p>The player agrees that the platform, through its certified game engine and backend systems, has the sole and exclusive right to determine, validate, and declare the official and final result of any game or spin. By registering as a player, and accepting the Terms Of Use of the platform, the player has deemed that it has expressly accepted all the game results based on the sole and final determination of GameZone, or Lavie.</p>
+<p>No challenge, claim, or dispute regarding the outcome of any game shall be entertained unless the player provides evidence of a technical malfunction not attributable to the player's own device, network, or actions. The internal records, logs, and game history shall serve as the authoritative basis for resolving any discrepancies or disputes.</p>
+<h4>IX. Player Responsibility</h4>
+<p>It is the player's responsibility to stay informed of the current game mechanics and updates. All such changes shall be deemed incorporated into this Terms of Use upon publication or implementation on the platform.</p>
+<h4>X. System Safety and Security</h4>
+<p>The online gaming system is designed with your safety and security as our top priorities. GameZone, and Lavie employ advanced and robust security protocols to protect your personal information and ensure a secure gaming environment.</p>
+<p>To guarantee the fairness and integrity of our games, the online gaming system undergoes regular and rigorous testing by independent third-party laboratories. These tests are conducted to ensure that all games operate in accordance with industry standards and regulatory requirements. The online gaming system has been certified by Gaming Laboratories International (GLI), a globally recognized authority in gaming certification and testing. GLI certification means that our platform has met or exceeded the strict standards for fairness, randomness, and reliability set by GLI.</p>
+<h4>XI. Virtual Prize Wheel Feature in Covered Games</h4>
+<p>Virtual Prize Wheel feature is available in the majority of games offered on the platform, providing players with additional chances to win bonuses, rewards, or in-game prizes as part of the overall gaming experience. Each segment of the wheel represents a different prize amount.</p>
+<h4>1. How to Play</h4>
+<p>a. The player initiates a spin by clicking the virtual wheel interface.<br>b. Once the spin is activated, the system's randomization algorithm computer program determines the outcome.<br>c. The result is displayed to the player via an on-screen pop-up notification and recorded in the player's spin record history which are fully synchronized with the platform's backend system, which serves as the conclusive determination of the official game outcome and winner.</p>
+<h4>2. Determination of Winner</h4>
+<p>The official and binding result of each spin shall be determined by the following:</p>
+<p>a. Pop-up Notification – The on-screen message that appears immediately after each spin reflects the official result of the game and the reward (if any) received.<br>b. Spin Records – The result of each spin is recorded in the player's spin history, accessible within the game interface. This record serves as a reference for both the player and the platform.<br>c. Backend System Records – The platform's backend system, including transaction logs, shall serve as the final and authoritative source in the event of any discrepancy. These backend records shall prevail over any display issues.</p>
+<h4>3. No Manual Intervention</h4>
+<p>All outcomes are determined automatically by the certified game system and cannot be altered, influenced, or reversed by any party, including GameZone, Lavie or the player.</p>
+<h4>4. Dispute Resolution</h4>
+<p>In case of any discrepancy between the pop-up result, spin records, or any other display, the backend system logs and records shall be the sole basis for determining the actual outcome. The decision based on these records shall be final and unappealable.</p>
+<h4>XII. Standard Processing Periods for Deposit and Withdrawal Transactions</h4>
+<p>(Subject to applicable Anti-Money Laundering Act ("AMLA") rules and regulations, including any enhanced due diligence, transaction monitoring, or other justifiable causes (hereinafter, the "Regulatory Checks"), which may extend processing times.):</p>
+<table><tr><td>Deposit or Withdrawal Transaction</td><td>General Rule on the Processing Periods</td><td>Exception</td></tr><tr><td>Php1.00 to Php50,000.00</td><td>One (1) to Three (3) business days</td><td>Unless otherwise extended by virtue of Regulatory Checks.</td></tr><tr><td>Php50,000.00 to Php500,000.00</td><td>Three (3) to Five (5) business days</td></tr><tr><td>Php500,000.00 and above</td><td>Five (5) to Ten (10) business days</td></tr></table>
+<p>GameZone, and Lavie is not responsible for any delays caused by circumstances beyond its control, such as, those arising from transactions with third party payment providers and vendors, or from compliance with AMLA rules and regulations and other Regulatory Checks.</p>
+<p>In case a player is found to be included in the National Database of Restricted Persons ("NDRP"), any pending or requested withdrawal may be subject to the rules, regulations, directives, and approvals of PAGCOR, Anti-Money Laundering Council ("AMLC") or the Bangko Sentral ng Pilipinas ("BSP"), which may include, but shall not be limited to, the holding, suspension, or other regulatory handling of funds in accordance with applicable PAGCOR issuances and relevant laws, rules and regulations.</p>
+<p>In the event that any deposit or withdrawal transaction is tagged, flagged, or otherwise subjected to review under AMLA or its implementing rules and regulations, such transaction and any related funds may be subject to the rules, regulations, directives, and requirements of the AMLC and other competent authorities, which may include, but shall not be limited to, the temporary holding, suspension, freezing, or reporting of the transaction and/or funds, as may be required under applicable laws and regulations.</p>
+<p>For delayed deposits and withdrawals due to third-party payment provider's scheduled preventive maintenance, the Account will be monitored within 24 hours.</p>
+<p>If the amount has not been reflected in the player's account, the player is requested to report back to GameZone, and Lavie to ensure that funds will be credited back into the player's account, subject to the results of the Regulatory Checks.</p>
+<h4>XIII. GameZone, or Lavie Has No Liability</h4>
+<p>I acknowledge and agree that no liability shall be attached to GameZone, or Lavie if the latter is unable to complete any funding instructions initiated by me for any reason beyond its control, including, but not limited to, the following:</p>
+<p>i. If, through no fault of GameZone, or Lavie, my Account does not contain sufficient funds or if the deposit or withdrawal would exceed the transactional limit set for my Account;<br>ii. The payment processing center/system is not working properly or is under system maintenance and I am aware or have been advised by GameZone, or Lavie about the malfunction or system downtime or maintenance before I execute the fund transfer instructions;<br>iii. I have not provided the correct account information, or information that I provided becomes incorrect; and/or<br>iv. Circumstances beyond the control of GameZone, or Lavie (such as, but not limited to, fire, flood, system breakdown, technical bugs or malfunction, and/or types of players; or interference from an outside force), even if foreseeable or foreseen, that may prevent the proper execution of the transfer instructions and GameZone, or Lavie have taken reasonable precautions to avoid those circumstances.</p>
+<p>In the event of technical bugs, malfunctions or any analogous circumstances that may affect the game results, GameZone, or Lavie reserves the right, in its sole and exclusive discretion, to independently determine the game result subject to compliance with applicable rules and regulations of PAGCOR.</p>
+<p>Account Suspension may be implemented due to the following reasons:</p>
+<p>a. National Database for Restricted Persons – persons banned from gaming.<br>b. Multiple accounts – only one (1) Online Gaming Platform account shall be allowed per player.<br>c. Promo and Chips Abuser – Reasonable suspicion of being engaged in activities that are in breach of our promotional guidelines.<br>d. Underage and Banned Personalities – only persons twenty-one (21) years of age and above and not among banned personalities<br>e. Other transactions that may be deemed suspicious and subject to further investigation upon the sole and exclusive discretion of GameZone, or Lavie.<br>f. Use of bot software is not permitted and, if the player is found to have used such software, it will be considered cheating, and the player may be sanctioned accordingly.</p>
+<h4>XIV. Anti-Money Laundering (AML) Compliance Provision</h4>
+<h4>1. Compliance with AML Laws:</h4>
+<p>a. You acknowledge and agree that GameZone, or Lavie, the operator of this Online Gaming Platform, is committed to full compliance with all applicable AML laws and regulations, including, but not limited to, the Anti-Money Laundering Act (the "AMLA").</p>
+<h4>2. Customer Verification and Reporting:</h4>
+<p>a. By using the Online Gaming Platform, you consent to and understand that GameZone, or Lavie may perform customer verification checks and maintain records of your transactions in accordance with AMLA requirements.<br>b. You agree to report any suspicious or potentially AMLA-related activities or transactions to GameZone, or Lavie as soon as such activities are identified.</p>
+<h4>3. Record-Keeping:</h4>
+<p>a. GameZone, or Lavie shall maintain accurate records of your transactions and personal information as required by law, strictly for Anti-Money Laundering (AML) compliance. Such records will be securely stored and accessed only by authorized personnel. Retention of AML-related data will comply with legal requirements, and customers may request access to their records subject to applicable laws and regulations.</p>
+<h4>4. Termination of Accounts:</h4>
+<p>a. You acknowledge that GameZone, or Lavie reserves the right to suspend, terminate, or restrict access to the Platform for any player found to be involved in, or reasonably suspected of being involved in, money laundering or other illicit financial activities. GameZone, or Lavie may, but shall not have the obligation to, inform you prior to suspending, terminating or restricting the access pursuant to this clause.<br>b. You acknowledge the authority of GameZone, or Lavie to suspend, terminate or restrict the access and accordingly, you shall hold GameZone, or Lavie free and harmless against any and all consequences of such suspension, termination or restriction, or any loss or damage which you may suffer as a result thereof.</p>
+<h4>5. Cooperation with Investigations:</h4>
+<p>a. You agree to cooperate with GameZone, or Lavie, law enforcement agencies, and relevant authorities in the event of an AMLA investigation or inquiry.</p>
+<h4>6. Penalties for Non-Compliance:</h4>
+<p>a. You acknowledge that non-compliance with AMLA laws and regulations may result in legal penalties and could lead to the suspension, termination, or restriction of your account on the Platform and even criminal prosecution.</p>
+<h4>7. Amendments to AML Requirements:</h4>
+<p>a. You agree that GameZone, or Lavie may, at its discretion, amend its AMLA requirements to align with changes in AML related laws and regulations. You are expected to adhere to these changes promptly.</p>
+<h4>XV. Insurance Protection for Your Deposit &amp; Winnings</h4>
+<p>In GameZone, your verified deposits and winnings are safe. To give you extra peace of mind, we have partnered with an Insurance Company that can cover valid claims in case of non-payment.</p>
+<h4>What's Covered</h4>
+<ul><li>If we unjustifiably refuse or unable to release your confirmed deposits and winnings, you may file a claim with the Insurance Company.</li><li>The claim will cover the exact amount of your verified deposits and winnings that we failed to release, subject to the policy limits, restrictions, and conditions below.</li></ul>
+<h4>What's Not Covered</h4>
+<p>The Insurance Company will not cover claims if:</p>
+<ul><li>The winnings are based on fraudulent or invalid bets.</li><li>You violated our terms of use, promotional rules, or applicable rules of the Philippine Amusement and Gaming Corporation (PAGCOR).</li><li>PAGCOR or the courts have already ruled that your claim is not valid.</li><li>Your claim is disqualified based on the terms and conditions below.</li></ul>
+<h4>Why This Matters</h4>
+<p>This insurance coverage is an added safeguard to protect players. While we remain fully committed and responsible for paying all your verified deposits and winnings, the insurance gives you extra assurance that your money is safe with us at all times.</p>
+<h4>Terms and Conditions of the Insurance Protection</h4>
+<p>The insurance policy shall provide limited coverage for non-payment of verified deposits and winnings of the Players, subject to the terms and conditions below.</p>
+<h4>1.   Covered Risks</h4>
+<p>The Insurance Company may accept claims in cases where:</p>
+<p>1.1   GameZone, and Lavie (collectively, the "Company") refuses or fails to pay confirmed player deposits and winnings, provided that, the deposits and winnings are valid, duly recorded, and not subject to fraud, error, or breach of gaming rules.</p>
+<p>1.2   The refusal to pay arises from business, operational, or liquidity issues, not from misconduct, fraud, mistake, negligence, or wrongdoing by the Player.</p>
+<h4>2.   Eligibility</h4>
+<p>Insurance coverage may apply only if all of the following conditions are satisfied:</p>
+<p>2.1   The Player is duly registered with any of the Company's brands and has successfully completed electronic Know-Your-Customer (eKYC) verification.</p>
+<p>2.2   The Player has made at least one successful verified deposit into his gaming account.</p>
+<p>2.3   The Player remains in full compliance with the Terms of Use, promotion rules, and all applicable laws and regulations, including, but not limited to, the regulations of the Philippine Amusement and Gaming Corporation (PAGCOR).</p>
+<p>2.4   The Player is not disqualified under Section 5 (Prohibited Persons).</p>
+<p>2.5   The Insurance Policy remains active, valid, and unexpired for the period subject of the claim.</p>
+<h4>3.   Exclusions and Disqualifications</h4>
+<p>The Insurance Company shall not be liable for claims in the following situations:</p>
+<p>3.1   Fraudulent, manipulated, or invalid bets or deposits placed by the Player.</p>
+<p>3.2   Winnings disputed due to violation of gaming or promotion rules, regulations, or terms of use.</p>
+<p>3.3   Bonuses, locked funds, free bets, pending wagers, and promotional credits.</p>
+<p>3.4   Deposits or winnings by virtue of any suspicious transaction or suspected unlawful activity.</p>
+<p>3.5   Indirect or consequential losses, such as loss of opportunity, reputation, or emotional damages.</p>
+<p>3.6   Normal gaming or betting losses without the fault or negligence of the Company.</p>
+<p>3.7   Technical errors, hacks, account breaches, glitches, and other technical issues caused by the Player's own negligence, mistake, or actions.</p>
+<p>3.8   Player failed KYC/AML verification or violated PAGCOR rules or other applicable regulations.</p>
+<p>3.9   Player terminated or closed his gaming account with the Company.</p>
+<p>3.10   The account balance, deposits, or winnings is subject to dispute, investigation, or suspected unlawful activity.</p>
+<p>3.11   Claims where the Player has not yet exhausted internal remedies with the Company (i.e., direct request for payment).</p>
+<p>3.12   Cases where PAGCOR or the courts have issued a lawful order denying the claim.</p>
+<p>3.13   The claim was filed beyond the prescribed period.</p>
+<h4>4.   Claim Amount Covered</h4>
+<p>The Insurance Company's liability shall be limited to the exact amount of verified deposits or winnings, subject to the policy limit per Player and per claim.</p>
+<p>Insurance coverage is limited to a maximum of PHILIPPINE PESOS: ONE MILLION PESOS (Php1,000,000.00) per Player. The maximum aggregate limit is PHILIPPINE PESOS: ONE BILLION (Php1,000,000,000.00).</p>
+<h4>5.   Prohibited Persons</h4>
+<p>The following individuals shall not be eligible for insurance coverage or claims:</p>
+<p>5.1   Government officials and employees connected directly with the operation of the Government or any of its agencies;</p>
+<p>5.2   Members of the Armed Forces of the Philippines, including the Army, Navy, Air Force, or the Philippine National Police;</p>
+<p>5.3   Persons under 21 years of age;</p>
+<p>5.4   PAGCOR officials and employees;</p>
+<p>5.5   Unregistered players;</p>
+<p>5.6   Banned individuals;</p>
+<p>5.7   Spouse, common-law partner, children, parents of officials and persons mentioned in items (5.1), (5.2), and (5.4) above;</p>
+<p>5.8   Persons included to the National Database of Restricted Persons;</p>
+<p>5.9   Gaming Employment License (GEL) holders; and</p>
+<p>5.10   Financiers/Loan Sharks and the like</p>
+<p>5.11   Such other prohibited persons pursuant to applicable laws, rules, and regulations.</p>
+<h4>6.   Prohibited Conduct</h4>
+<p>The following acts shall void eligibility and/or claims:</p>
+<p>6.1   Filing a claim without complete and valid player registration and KYC.</p>
+<p>6.2   Use of falsified, tampered, incomplete, or inconsistent documents.</p>
+<p>6.3   Transfer, assignment, or sale of insurance coverage or benefits.</p>
+<p>6.4   Filing multiple claims arising from the same incident.</p>
+<p>6.5   Submitting duplicate or overlapping claims.</p>
+<p>6.6   Use of another person's account, ticket, or registration to file a claim.</p>
+<p>6.7   Collusion between players and the Company's staff to facilitate false claims.</p>
+<p>6.8   Attempting to claim for transactions not covered by the Insurance Policy.</p>
+<p>6.9   Any discrepancy between the Company's records and claimant submissions.</p>
+<h4>7.   Insurance Claims Process</h4>
+<h4>Step 1: Initial Event</h4>
+<p>An insurance claim may arise when the Company refuses to release a player's verified deposits or winnings for any reason covered by the insurance arrangement.</p>
+<h4>Step 2: Filing of Claim</h4>
+<p>The Player submits a formal claim directly to the Insurance Company, providing all required documents and evidence to support the claim.<br>Email:   bondclaim@philfirst.com.ph<br>Tel No:   (+632) 8892 8888 loc. 301</p>
+<h4>Step 3: Insurance Company Review</h4>
+<p>Upon receipt of a claim, the Insurance Company will review and determine the appropriate course of action. The Insurance Company may, in the course of its investigation, require an independent third-party validation by requesting the Player to secure a lawful written order from PAGCOR or competent court affirming the Player's entitlement to his deposit and winnings. Upon presentation of such an order, the Insurance Company may process the claim and release the insurance proceeds.</p>
+<h4>Step 4: Final Decision</h4>
+<p>The Insurance Company retains the discretion to determine whether or not to pay the claim, based on the circumstances and supporting documents.</p>
+<p>The insurer's decision regarding claim validity and payment shall be final, executory, and binding, without prejudice to rights available under applicable laws. The Company shall not entertain appeals or disputes relating to the determinations made by the Insurance Company.</p>
+<p>The Company reserves the right to amend, suspend, or terminate the Insurance Program at any time, subject to applicable regulations.</p>
+<p>These Terms of Use are subject to changes, revisions, updates, and amendments from time to time without the need of prior notice or consent of the user.</p>
+            </div>
+            <div class="tdoc" data-doc="privacy">
+<h4>1. INTRODUCTION</h4>
+<p>1.1 Welcome to the GameZone platform run by DigiPlus Interactive Corp Limited and its affiliates (individually and collectively, 'GameZone', 'we', 'us' or 'our'). GameZone takes its responsibilities under applicable privacy laws and regulations ('Privacy Laws') seriously and is committed to respecting the privacy rights and concerns of all Users of our GameZone website and mobile application (the 'Platform') (we refer to the Platform and the services we provide as described on our Platform collectively as the 'Services'). Users refers to a user who registers for an account with us for use of the Services.<br>We recognize the importance of the personal data you have entrusted to us and believe that it is our responsibility to properly manage, protect and process your personal data. This Privacy Policy (“Privacy Policy” or “Policy”) is designed to assist you in understanding how we collect, use, disclose and/or process the personal data you have provided to us and/or we possess about you, whether now or in the future, as well as to assist you in making an informed decision before providing us with any of your personal data.</p>
+<p>1.2 'Personal Data' or 'personal data' means data, whether true or not, about an individual who can be identified from that data, or from that data and other information to which an organisation has or is likely to have access. Common examples of personal data could include name, identification number and contact information.</p>
+<p>1.3 By using the Services, registering for an account with us, visiting our Platform, or accessing the Services, you acknowledge and agree that you accept the practices, requirements, and/or policies outlined in this Privacy Policy, and you hereby consent to us collecting, using, disclosing and/or processing your personal data as described herein.</p>
+<p>IF YOU DO NOT CONSENT TO THE PROCESSING OF YOUR PERSONAL DATA AS DESCRIBED IN THIS PRIVACY POLICY,PLEASE DO NOT USE OUR SERVICES OR ACCESS OUR PLATFORM.</p>
+<p>If we change our Privacy Policy, we will notify you including by posting those changes or the amended Privacy Policy on our Platform. We reserve the right to amend this Privacy Policy at any time. To the fullest extent permissible under applicable law, your continued use of the Services or Platform, shall constitute your acknowledgment and acceptance of the changes made to this Privacy Policy.</p>
+<p>1.4 This Policy applies in conjunction with other notices, contractual clauses, consent clauses that apply in relation to the collection, storage, use, disclosure and/or processing of your personal data by us and is not intended to override those notices or clauses unless we state expressly otherwise.</p>
+<p>1.5 This Policy applies to both buyers and sellers who use the Services except where expressly stated otherwise.</p>
+<h4>2. WHEN WILL GameZone COLLECT PERSONAL DATA?</h4>
+<p>2.1 We will/may collect personal data about you:</p>
+<ul><li>when you register and/or use our Services or Platform, or open an account with us;</li><li>when you enter into any agreement or provide other documentation or information in respect of your interactions with us, or when you use our products and services;</li><li>when you interact with us, such as via telephone calls (which may be recorded), letters, fax, face-to-face meetings, social media platforms and emails,including when you interact with our customer service agents;</li><li>when you use our electronic services, or interact with us via our application or use services on our Platform. This includes, without limitation, through cookies which we may deploy when you interact with our application or website;</li><li>when you grant permissions on your device to share information with our application or Platform;</li><li>when you link your GameZone account with your social media or other external account or use other social media features, in accordance with the provider’s policies;</li><li>when you carry out transactions through our Services;</li><li>when you provide us with feedback or complaints;</li><li>when you submit your personal data to us for any reason The above does not purport to be exhaustive and sets out some common instances of when personal data about you may be collected.</li></ul>
+<h4>3. WHAT PERSONAL DATA WILL GameZone COLLECT?</h4>
+<p>3.1 The personal data that GameZone may collect includes but is not limited to:</p>
+<p>• name; • email address; • date of birth; • billing and/or delivery address; • bank account and payment information; • telephone number; • gender; • information sent by or associated with the device(s) used to access our Services or Platform; • information about your network and the people and accounts you interact with; • photographs or audio or video recordings; • government issued identification or other information required for our due diligence, know your customer, identity verification, or fraud prevention purposes; • marketing and communications data, such as your preferences in receiving marketing from us and third parties, your communication preferences and history of communications with us, our service providers, and other third parties; • usage and transaction data, including details about your searches, orders, the advertising and content you interact with on the Platform, and other products and services related to you; • location data; • any other information about the User when the User signs up to use our Services or Platform, and when the User uses the Services or Platform, as well as information related to how the User uses our Services or Platform; • aggregate data on content the User engages with.</p>
+<p>3.2 You agree not to submit any information to us which is inaccurate or misleading, and you agree to inform us of any inaccuracies or changes to such information. We reserve the right at our sole discretion to require further documentation to verify the information provided by you.</p>
+<p>3.3 If you sign up to be a user of our Platform using your social media account (“Social Media Account”),link your GameZone account to your Social Media Account or use any GameZone social media features, we may access information about you which you have voluntarily provided to your Social Media Account provider in accordance with such provider`s policies, and we will manage and use any such personal data in accordance with this Policy at all times.</p>
+<p>3.4 If you do not want us to collect the aforementioned information/personal data, you may opt out at any time by notifying our Data Protection Officer in writing. Further information on opting out can be found in the section below entitled How can you withdraw consent, remove, request access to or modify information you have provided to us? Note, however, that opting out or withdrawing your consent for us to collect, use or process your personal data may affect your use of the Services and the Platform.</p>
+<h4>4. COLLECTION OF OTHER DATA</h4>
+<p>4.1 As with most websites and mobile applications, your device sends information which may include data about you that gets logged by a web server when you browse our Platform. This typically includes without limitation your device’s Internet Protocol (IP) address, computer/mobile device operating system and browser type, type of mobile device, the characteristics of the mobile device, the unique device identifier (UDID) or mobile equipment identifier (MEID) for your mobile device, the address of a referring web site (if any), the pages you visit on our website and mobile 'applications and the times of visit, and sometimes a cookie (which can be disabled using your ', browser preferences) to help the site remember your last visit. If you are logged in, this information is associated with your personal account. The information is also included in anonymous statistics to allow us to understand how visitors use our site.</p>
+<p>4.2 Our mobile applications may collect precise information about the location of your mobile device using technologies such as GPS, Wi-Fi, etc. We collect, use, disclose and/or process this information for one or more Purposes including, without limitation, location-based services that you request or to deliver relevant content to you based on your location or to allow you to share your location to other Users as part of the services under our mobile applications. For most mobile devices, you are able to withdraw your permission for us to acquire this information on your location through your device settings. If you have questions about how to disable your mobile device`s location services, please contact your mobile device service provider or the device manufacturer.</p>
+<p>4.3 As when you view pages on our website or mobile application, when you watch content and advertising and access other software on our Platform or through the Services, most of the same information is sent to us (including, without limitation, IP Address, operating system, etc.); but, instead of page views,your device sends us information on the content, advertisement viewed and/or software installed by the Services and the Platform and time.</p>
+<h4>5. COOKIES</h4>
+<p>5.1 We or our authorized service providers and advertising partners may from time to time use “cookies” or other features to allow us or third parties to collect or share information in connection with your use of our Services or Platform. These features help us improve our Platform and the Services we offer, help us offer new services and features, and/or enable us and our advertising partners serve more relevant content to you, including through remarketing. “Cookies” are identifiers that are stored on your computer or mobile device that record data about computer or device, how and when the Services or Platform are used or visited, by how many people and other activity within our Platform. We may link cookie information to personal data. Cookies also link to information regarding what web pages you have viewed. This information is used to enable our third party advertising partners to serve advertisements on sites across the internet, and to conduct data analysis and to monitor usage of the Services.</p>
+<p>5.2 You may refuse the use of cookies by selecting the appropriate settings on your browser or device. However, please note that if you do this you may not be able to use the full functionality of our Platform or the Services.</p>
+<h4>6. HOW WE STORE THE INFORMATION YOU PROVIDE US?</h4>
+<p>6.1 We may collect, use, disclose and/or process your personal data for one or more of the following purposes:</p>
+<ul><li>to consider and/or process your application/transaction with us or your transactions or communications with third parties via the Services;</li><li>to manage, operate, provide and/or administer your use of and/or access to our Services and our Platform, as well as your relationship and user account with us;</li><li>to respond to, process, deal with or complete a transaction and/or to fulfill your requests for certain products and services and notify you of service issues and unusual account actions;</li><li>to enforce our Terms of Service or any applicable end user license agreements;</li><li>to protect personal safety and the rights, property or safety of others;</li><li>for identification, verification, due diligence, or know your customer purposes;</li><li>to evaluate and make decisions relating to your credit and risk profile and eligibility for credit products;</li><li>to maintain and administer any software updates and/or other updates and support that may be required from time to time to ensure the smooth running of our Services;</li><li>to deal with or facilitate customer service, carry out your instructions, deal with or respond to any enquiries given by (or purported to be given by) you or on your behalf;</li><li>to contact you or communicate with you via voice call, text message and/or fax message, email and/or postal mail or otherwise for the purposes of administering and/or managing your relationship with us or your use of our Services, such as but not limited to communicating administrative information to you relating to our Services. You acknowledge and agree that such communication by us could be by way of the mailing of correspondence, documents or notices to you, which could involve disclosure of certain personal data about you to bring about delivery of the same as well as on the external cover of envelopes/mail packages;</li><li>to allow other users to interact, connect with you or see some of your activities on the Platform, including to inform you when another User has sent you a private message, posted a comment for you on the Platform or connected with you using the social features on the Platform;</li><li>to conduct research, analysis and development activities (including, but not limited to, data analytics, surveys, product and service development and/or profiling), to analyse how you use our Services, to recommend products and/or services relevant to your interests, to improve our Services or products and/or to enhance your customer experience;</li><li>to allow for audits and surveys to, among other things, validate the size and composition of our target audience, and understand their experience with Provider’s Services;</li><li>for marketing and advertising, and in this regard, to send you by various mediums and modes of communication marketing and promotional information and materials relating to products and/or services (including, without limitation, products and/or services of third parties whom GameZone may collaborate or tie up with) that GameZone (and/or its affiliates or related corporations) may be selling, marketing or promoting, whether such products or services exist now or are created in the future. You can unsubscribe from receiving marketing information at any time by using the unsubscribe function within the electronic marketing material. We may use your contact information to send newsletters or marketing materials from us and from our related companies;</li><li>to respond to legal processes or to comply with or as required by any applicable law, governmental or regulatory requirements of any relevant jurisdiction or where we have a good faith belief that such disclosure is necessary, including, without limitation, meeting the requirements to make disclosure under the requirements of any law binding on GameZone or on its related corporations or affiliates (including, where applicable, the display of your name, and contact details);</li><li>to produce statistics and research for internal and statutory reporting and/or record-keeping requirements;</li><li>to carry out due diligence or other screening activities (including, without limitation, background checks) in accordance with legal or regulatory obligations or our risk management procedures that may be required by law or that may have been put in place by us;</li><li>to audit our Services or GameZone`s business;</li><li>to prevent or investigate any actual or suspected violations of our Terms of Service, fraud, unlawful activity, omission or misconduct, whether relating to your use of our Services or any other matter arising from your relationship with us;</li><li>to respond to any threatened or actual claims asserted against GameZone or other claim that any Content violates the rights of third parties;</li><li>to store, host, back up (whether for disaster recovery or otherwise) of your personal data, whether within or outside of your jurisdiction;</li><li>to deal with and/or facilitate a business asset transaction or a potential business asset transaction, where such transaction involves GameZone as a participant or involves only a related corporation or affiliate of GameZone as a participant or involves GameZone and/or any one or more of GameZone`s related corporations or affiliates as participant(s), and there may be other third party organisations who are participants in such transaction. A “business asset transaction” refers to the purchase, sale, lease, merger, amalgamation or any other acquisition, disposal or financing of an organisation or a portion of an organisation or of any of the business or assets of an organisation; and/or;</li><li>any other purposes which we notify you of at the time of obtaining your consent. (collectively, the “Purposes”).</li></ul>
+<p>6.2 You acknowledge, consent and agree that GameZone may access, preserve and disclose your Account information and Content if required to do so by law or pursuant to an order of a court or by any governmental or regulatory authority having jurisdiction over GameZone or in a good faith belief that such access preservation or disclosure is reasonably necessary to: (a) comply with legal process; (b) comply with a request from any governmental or regulatory authority having jurisdiction over GameZone; (c) enforce the GameZone Terms of Service or this Privacy Policy; (d) respond to any threatened or actual claims asserted against GameZone or other claim that any Content violates the rights of third parties; (e) respond to your requests for customer service; or (f) protect the rights, property or personal safety of GameZone, its users and/or the public.</p>
+<p>6.3 As the purposes for which we will/may collect, use, disclose or process your personal data depend on the circumstances at hand, such purpose may not appear above. However, we will notify you of such other purpose at the time of obtaining your consent, unless processing of the applicable data without your consent is permitted by the Privacy Laws.</p>
+<h4>7. HOW DOES GameZone PROTECT AND RETAIN CUSTOMER INFORMATION?</h4>
+<p>7.1 We implement a variety of security measures and strive to ensure the security of your personal data on our systems. User personal data is contained behind secured networks and is only accessible by a limited number of employees who have special access rights to such systems. However, there can inevitably be no guarantee of absolute security.</p>
+<p>7.2 We will retain personal data in accordance with the Privacy Laws and/or other applicable laws. That is, we will destroy or anonymize your personal data when we have reasonably determined that;</p>
+<p>(i) the purpose for which that personal data was collected is no longer being served by the retention of such personal data;</p>
+<p>(ii) retention is no longer necessary for any legal or business purposes; and</p>
+<p>(iii) no other legitimate interests warrant further retention of such personal data.</p>
+<p>If you cease using the Platform, or your permission to use the Platform and/or the Services is terminated or withdrawn, we may continue storing, using and/or disclosing your personal data in accordance with this Privacy Policy and our obligations under the Privacy Laws. Subject to applicable law, we may securely dispose of your personal data without prior notice to you.</p>
+<h4>8. DOES GameZone DISCLOSE THE INFORMATION IT COLLECTS FROM ITS VISITORS TO OUTSIDE PARTIES?</h4>
+<p>8.1 In conducting our business, we will/may need to use, process, disclose and/or transfer your personal data to our third party service providers, agents and/or our affiliates or related corporations, and/or other third parties, which may be located in Philippines or outside of Philippines, for one or more of the above-stated Purposes. Such third party service providers, agents and/or affiliates or related corporations and/or other third parties would be processing your personal data either on our behalf or otherwise, for one or more of the above-stated Purposes. We endeavour to ensure that the third parties and our affiliates keep your personal data secure from unauthorised access, collection, use, disclosure, processing or similar risks and retain your personal data only for as long as your personal data is needed for the above-mentioned Purposes. Such third parties include, without limitation:</p>
+<ul><li>our subsidiaries, affiliates and related corporations;</li><li>other users of our Platform for one or more of the above-stated Purposes;</li><li>contractors, agents, service providers and other third parties we use to support our business. These include but are not limited to those parties which provide administrative or other services to us such as mailing houses, logistics service providers, financial services providers, advertising and marketing partners, telecommunication companies, information technology companies, and data centres;</li><li>governmental or regulatory authorities having jurisdiction over GameZone or as otherwise permitted under Section 6.2;</li><li>a user in the event of a merger, divestiture, restructuring, reorganization, dissolution or other sale or transfer of some or all of Provider’s assets, whether as a going concern or as part of bankruptcy, liquidation or similar proceeding, in which personal data held by GameZone about our Service Users is among the assets transferred; or to a counterparty in a business asset transaction that GameZone or any of its affiliates or related corporations is involved in;</li><li>and third parties to whom disclosure by us is for one or more of the Purposes and such third parties would in turn be collecting and processing your personal data for one or more of the Purposes.</li></ul>
+<p>8.2 We may share user information, including statistical and demographic information, about our Users and information about their use of the Services with advertising partners and third party suppliers of advertisements, remarketing, and/or other programming.We may share user information, including statistical and demographic information, about our Users and information about their use of the Services with advertising partners and third party suppliers of advertisements, remarketing, and/or other programming.</p>
+<p>8.3 For the avoidance of doubt, in the event that Privacy Laws or other applicable laws permit an organization such as us to collect, use or disclose your personal data without your consent, such permission granted by the laws shall continue to apply. Consistent with the foregoing and subject to applicable law, we may use your personal data for recognized legal grounds including to comply with our legal obligations, to perform our contract with you, to achieve a legitimate interest and our reasons for using it outweigh any prejudice to your data protection rights, or where necessary in connection with a legal claim.</p>
+<p>8.4 Third parties may unlawfully intercept or access personal data transmitted to or contained on the site, technologies may malfunction or not work as anticipated, or someone might access, abuse or misuse information through no fault of ours. We will nevertheless deploy reasonable security arrangements to protect your personal data as required by the Privacy Laws; however there can inevitably be no guarantee of absolute security such as but not limited to when unauthorized disclosure arises from malicious and sophisticated hacking by malcontents through no fault of ours.</p>
+<p>8.5 As set forth in Provider’s Terms of Service, Users (including any employees, agents, representatives, or any other person acting for such User or on such User’s behalf) in possession of another User’s personal data through the use of the Services (the “Receiving Party”) hereby agree that, they will</p>
+<p>(i) comply with all applicable Privacy Laws with respect to any such data, including any collection, processing, storage or transfer of such data;</p>
+<p>(ii) allow GameZone or the User whose personal data the Receiving Party has collected (the “Disclosing Party”) to remove his or her data so collected from the Receiving Party’s database;</p>
+<p>(iii) allow GameZone or the Disclosing Party to review what information has been collected about them by the Receiving Party, in each case of (ii) and (iii) above, in compliance with and where required by applicable laws.</p>
+<p>8.6 Notwithstanding anything set forth herein, Users (including any employees, agents, representatives, or any other person acting for such User or on such User’s behalf) shall comply with all applicable Privacy Laws and, in respect of any user’s personal data received from GameZone,</p>
+<p>(i) are not permitted to use such user’s personal data except as reasonably necessary to respond to users’ enquiries and to carry out respond to, process, deal with or complete a transaction without the users’ and Provider’s prior written consent;</p>
+<p>(ii) should refrain from contacting users using such information outside of the GameZone Poker platform;</p>
+<p>(iii) are not permitted to disclose such user’s personal data to any unauthorized third parties without the buyer’s and Provider’s prior written consent;</p>
+<p>(iv) shall employ sufficient security measures to protect each GameZone user’s personal data in their possession, retain such data only for as long as necessary for the purposes above and in accordance with the Privacy Laws, and to delete or return such data to GameZone upon any request from GameZone or as soon as reasonably possible upon completion of the transaction; and (v) to inform Provider’s official mail at cs@gamefun.pro, in the event of any potential data breach or other loss of such user’s data.</p>
+<h4>9. INFORMATION ON USER AGE</h4>
+<p>9.1 The Services are not intended for individuals under the age of 21. We do not knowingly collect or maintain any personal data or non-personally-identifiable information from anyone under the age of 21 nor is any part of our Platform or other Services directed to individuals under the age of 21. We will close any accounts used exclusively by such individuals and will remove and/or delete any personal data we believe was submitted under the age of 21.</p>
+<h4>10. INFORMATION COLLECTED BY THIRD PARTIES</h4>
+<p>10.1 Our Platform uses Google Analytics, a web analytics service provided by Google, Inc. (“Google”). Google Analytics uses cookies, which are text files placed on your device, to help the Platform analyze how Users use the Platform. The information generated by the cookie about your use of the Platform (including your IP address) will be transmitted to and stored by Google on servers in the United States. Google will use this information for the purpose of evaluating your use of the Platform, compiling reports on website activity for website operators and providing other services relating to website activity and Internet usage. Google may also transfer this information to third parties where required to do so by law, or where such third parties process the information on Google`s behalf. Google will not associate your IP address with any other data held by Google.</p>
+<p>10.2 We, and third parties, may from time to time make software applications downloads available for your use via the Platform or through the Services. These applications may separately access, and allow a third party to view, your identifiable information, such as your name, your user ID, your device’s IP Address or other information such as any cookies that you may previously have installed or that were installed for you by a third party software application or website. Additionally, these applications may ask you to provide additional information directly to third parties. Third party products or services provided through these applications are not owned or controlled by GameZone. You are encouraged to read the terms and other policies published by such third parties on their websites or otherwise.</p>
+<h4>11. DISCLAIMER REGARDING SECURITY AND THIRD PARTY SITES</h4>
+<p>11.1 WE DO NOT GUARANTEE THE SECURITY OF PERSONAL DATA AND/OR OTHER INFORMATION THAT YOU PROVIDE ON THIRD PARTY SITES. We do implement a variety of security measures to maintain the safety of your personal data that is in our possession or under our control. Your personal data is contained behind secured networks and is only accessible by a limited number of persons who have special access rights to such systems, and are required to keep the personal data confidential. When you place orders or access your personal data, we offer the use of a secure server. All personal data or sensitive information you supply is encrypted into our databases to be only accessed as stated above.</p>
+<p>11.2 In an attempt to provide you with increased value, we may choose various third party websites to link to, and frame within, the Platform. We may also participate in co-branding and other relationships to offer e-commerce and other services and features to our visitors. These linked sites have separate and independent privacy policies as well as security arrangements. Even if the third party is affiliated with us, we have no control over these linked sites, each of which has separate privacy and data collection practices independent of us. Data collected by our co-brand partners or third party web sites (even if offered on or through our Platform) may not be received by us.</p>
+<p>11.3 We therefore have no responsibility or liability for the content, security arrangements (or lack thereof) and activities of these linked sites. These linked sites are only for your convenience and you therefore access them at your own risk. Nonetheless, we seek to protect the integrity of our Platform and the links placed upon each of them and therefore welcome any feedback about these linked sites (including, without limitation, if a specific link does not work).</p>
+<h4>12. HOW CAN YOU WITHDRAW CONSENT, REQUEST ACCESS TO OR CORRECT INFORMATION YOU HAVE PROVIDED TO US?</h4>
+<p>12.1 Withdrawing Consent</p>
+<p>12.1.1 You may withdraw your consent for the collection, use and/or disclosure and/or request deletion of your personal data in our possession or under our control by sending an email to our official mail at cs@gamefun.pro, and we will process such requests in accordance with this Privacy Policy and our obligations under the Privacy Laws and other applicable law. However, your withdrawal of consent may mean that we will not be able to continue providing the Services to you and we may need to terminate your existing relationship and/or the contract you have with us.</p>
+<p>12.2 Requesting Access to or Correction of Personal Data</p>
+<p>12.2.1 If you have an account with us, you may personally access and/or correct your personal data currently in our possession or control through the Account Settings page on the Platform. If you do not have an account with us, you may request to access and/or correct your personal data currently in our possession or control by submitting a written request to us. We will need enough information from you in order to ascertain your identity as well as the nature of your request so as to be able to deal with your request. Hence, please submit your written request by sending an email to our official mail at cs@gamefun.pro.</p>
+<p>12.2.2 We reserve the right to refuse to correct your personal data in accordance with the provisions as set out in Privacy Laws, where they require and/or entitle an organisation to refuse to correct personal data in stated circumstances.</p>
+<h4>13. QUESTIONS, CONCERNS OR COMPLAINTS? CONTACT US</h4>
+<p>13.1 If you have any questions or concerns about our privacy practices, we welcome you to contact us by e-mail at cs@gamefun.pro.</p>
+            </div>
+            <!-- 从协议行打开时（同线上 confirm 模式）：滑到底出现 I Agree，点了回到表单并勾选协议 -->
+            <div class="tagree"><button class="btn-red" data-act="terms-agree">I Agree</button></div>
+          </div>
+        </section>
+        <!-- 教程：竖版是整页，横版放进抽屉 -->
+        <section class="pane guide" data-pane="guide">
+          <div class="tut-hd"><img src="../assets/tut_header.png" alt="How to Allow Pop-ups in Safari"><button data-act="guide-back" aria-label="返回"></button></div>
+          <div class="body"><img src="../assets/tut_cards.jpg" alt="教程"></div>
+        </section>
+      </aside>
+      <!-- iOS 拦截新标签页时的 Tips 弹窗：沿用竖版，居中 -->
+      <div class="dmask" id="tips">
+        <div class="tips">
+          <div class="t">Tips</div>
+          <button class="ib" data-act="tips-close" aria-label="关闭"><img src="../assets/tips_close.svg" alt=""></button>
+          <div class="tx">To ensure a smooth login and deposit experience, please enable pop-ups in your Safari settings.</div>
+          <button class="rd" id="noShow" data-act="noshow"><i><img src="../assets/tips_radio.svg" alt=""></i>Don't show this again</button>
+          <div class="bt"><button class="b-out" data-act="guide">View Guides</button><button class="btn-red" data-act="tips-close">Got It</button></div>
+        </div>
+      </div>
+      <!-- Confirm Deposit：同竖版底部确认框（宽 390，高度随内容约 271），横版在面板上方从底部弹出、水平居中 -->
+      <div class="cmask" id="cmask"></div>
+      <div class="csheet" id="csheet">
+        <div class="cs-hd">Confirm Deposit<button class="cs-x" data-act="confirm-close" aria-label="关闭"><img src="../assets/close.svg" alt=""></button></div>
+        <div class="cs-box">
+          <div class="cs-amt" id="csAmt">₱100</div>
+          <div class="cs-badge"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10.5846 1.2L3.2 10.9263H8.61538L7.63077 18.8L16 8.14737H10.0923L10.5846 1.2Z" fill="#3D8BFF"/></svg>Bilis ng GameZone! Pasok agad ang funds!</div>
+          <p class="cs-via" id="csVia">Via GCash</p>
+        </div>
+        <div class="cs-bt"><button class="btn-red cs-btn" data-act="confirm-go">Confirm — Credited in Seconds</button></div>
+      </div>
+      <!-- 协议没勾选点 Deposit：同竖版协议 Tips（宽 350，无右上关闭，Cancel 在左、Agree 在右） -->
+      <div class="dmask" id="agreeTips">
+        <div class="tips atips">
+          <div class="t">Tips</div>
+          <div class="tx">I agree to the <u data-act="terms2">Terms of Use</u> &amp; <u data-act="privacy2">Privacy Policy</u>, and confirm that I am at least 21 years old.</div>
+          <div class="bt"><button class="b-out" data-act="agree-cancel">Cancel</button><button class="btn-red" data-act="agree-ok">Agree</button></div>
+        </div>
+      </div>
+      <!-- 新标签页 1：第三方付款页（示意） -->
+      <div class="tab tab-pay" id="tabPay">
+        <div class="pay-top"><span class="lg" id="payLogo"></span><span>第三方付款页（示意，非真实页面）</span></div>
+        <div class="pay-body">
+          <div class="pay-m">Pay to GameZone</div>
+          <div class="pay-amt" id="payAmt">₱ 100.00</div>
+          <button class="pay-btn" data-act="pay-ok">模拟付款成功</button>
+          <button class="pay-back" data-act="pay-back">不付款，直接切回游戏标签页</button>
+          <div class="pay-tip">新标签页打开，原游戏标签页保留</div>
+        </div>
+      </div>
+      <!-- 新标签页 2：充值成功页（方案 C） -->
+      <div class="tab tab-ok" id="tabOk">
+        <!-- 横版：左边打勾和成功金额，右边充值信息、按钮和牌照，一屏放下 -->
+        <div class="ok2" id="okScroll">
+          <div class="okc-l">
+            <img class="ok-logo" src="../assets/ok_gz_logo.svg" alt="GameZone">
+            <div class="ok-amt" id="okAmt">₱ 100.00</div>
+            <div class="shw"><div class="shield">
+              <img class="sh-v1" src="../assets/ok_v1.svg" alt=""><img class="sh-v2" src="../assets/ok_v2.svg" alt="">
+              <img class="sh-s1" src="../assets/ok_spark1.svg" alt=""><img class="sh-s2" src="../assets/ok_spark2.svg" alt=""><img class="sh-s3" src="../assets/ok_spark3.svg" alt="">
+              <img class="sh-b" src="../assets/ok_shield.svg" alt=""><img class="sh-i" src="../assets/ok_intersect.svg" alt=""><img class="sh-c" src="../assets/ok_check.svg" alt="">
+            </div></div>
+            <div class="ok-t">Deposit Successful</div>
+          </div>
+          <div class="okc-r">
+            <div class="ok-card">
+              <div class="ok-r"><span class="ic"><img src="../assets/ok_ic_pay.svg" alt=""></span><span class="k">Type</span><span class="v pill" id="okType">GCash</span></div>
+              <div class="ok-r"><span class="ic"><img src="../assets/ok_ic_user.svg" alt=""></span><span class="k">User account</span><span class="v">Matteo</span></div>
+              <div class="ok-r"><span class="ic"><img src="../assets/ok_ic_time.svg" alt=""></span><span class="k">Time</span><span class="v tm" id="okTime"></span></div>
+            </div>
+            <button class="btn-red ok-btn" data-act="back-gz">Back to GameZone</button>
+            <div class="ok-lic"><span>Officially Licensed by</span><img class="pg" src="../assets/ok_pagcor.png" alt="PAGCOR"><img class="rg" src="../assets/ok_21.png" alt="21+"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="notes">
+  <h2>v11：在 v10 基础上补确认弹窗（11/23 用户：横版没有确认弹窗，和竖版冲突）</h2>
+  <ol>
+    <li><b>Confirm Deposit 确认框</b>：点 Deposit 后照竖版弹出（竖版是底部抽屉，宽 390），横版在面板上方从底部弹出、水平居中，高度约 271，在可视区内：金额、Bilis ng GameZone! Pasok agad ang funds!、Via 渠道名，点 Confirm — Credited in Seconds 才建单并按渠道继续，点 ✕ 关闭不建单。</li>
+    <li><b>协议 Tips</b>：协议没勾选时点 Deposit 先弹（同竖版，居中、宽 350、无关闭），Cancel 不继续，Agree 自动勾选后弹确认框；Tips 里的链接打开协议页（没有 I Agree），返回回到 Tips。</li>
+    <li><b>iOS Safari Tips 建单时机更正</b>：弹出时还没建单，点 Got It 或 ✕ 时才建单并新开付款页（同竖版代码）。</li>
+    <li><b>协议页正文</b>：换成线上 Terms &amp; Policies 全文（2026-10-21 版本，Terms Of Use 42 个章节、Privacy Policy 13 个章节）。</li>
+<li><b>快捷金额去掉 +24 角标</b>：6 个金额按钮只显示金额。</li>
+    <li><b>充值成功页</b>：左右两栏一屏放下。左栏自上而下 Logo、金额（放上面、最醒目）、打勾盾牌和 Deposit Successful（都缩小）；右栏充值信息（Type、User account、Time）、Back to GameZone 和牌照。</li>
+    <li><b>协议页</b>：点协议行里的 Terms of Use 或 Privacy Policy，在充值面板内打开 Terms &amp; Policies（竖版是整页）；表头和页签合成一行（左返回、中间两个页签、右关闭），停在点的那个页签，正文按面板宽度排、上下滑动；滑到底出现 I Agree，点了回到充值表单并勾选协议；只点返回则回到表单，已选渠道、金额和勾选不变（打开方式和交互同线上，线上竖版是盖在充值浮层上的整屏 Terms &amp; Policies）。</li>
+    <li><b>保障标识</b>：在金额输入框下方，横排三张小卡（图标 + 两行小字），每张对齐上面两个金额按钮，向下滑动查看；底部固定区只有 ₱ 金额和 Deposit。</li>
+    <li><b>其余同 v7</b>：Tips 点 Got It 或 ✕ 进付款页、教程返回 Tips、金额为空不显示底栏；面板 740 居中、金额按钮原宽一排 6 个、8 个支付方式可左右滑动、二维码页两栏。</li>
+  </ol>
+  <p class="dim">演示说明：底图是安卓 Chrome 横屏真机截图，网页可视区约 863×318；内嵌式渠道的付款页都用 QRPh 页示意；第三方付款页是示意页；余额高亮只是演示提示，真实产品只刷新数字；Confirm Deposit 确认弹框等界面没做，规则以 Figma 方案页为准。勾选上方「模拟 iOS 拦截新标签页」可看 Tips 弹窗和教程。</p>
+</div>
+<script>
+(function(){
+  const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+  const dev=$('#device'), stage=$('#stage');
+  const DW=969.7, DH=435.61;
+  const WX=50.76, WY=117.42, WW=862.88, WH=318.18, mq=matchMedia('(orientation:landscape) and (max-height:520px)');
+  function fit(){
+    const W=stage.clientWidth, H=stage.clientHeight;
+    if(mq.matches){ // 手机横屏：裁掉状态栏和地址栏，网页区铺满
+      const s=Math.min(W/WW, H/WH);
+      Object.assign(dev.style,{transformOrigin:'0 0',left:(W/2-(WX+WW/2)*s)+'px',top:(-WY*s)+'px',transform:`scale(${s})`});
+      dev.classList.add('crop');
+    }else{
+      const s=Math.min(W/DW, H/DH)*.98;
+      Object.assign(dev.style,{transformOrigin:'',left:'',top:'',transform:`translate(-50%,-50%) scale(${s})`});
+      dev.classList.remove('crop');
+    }
+  }
+  new ResizeObserver(fit).observe(stage); fit();
+
+  const CH={gcash:{n:'GCash',emb:false,url:'m.gcash.com/payment/checkout'},bankcard:{n:'Bankcard',emb:true},otc:{n:'OTC',emb:true},qrph:{n:'QRPh',emb:true},grabpay:{n:'GrabPay',emb:false,url:'pay.grab.com/checkout'},instapay:{n:'InstaPay',emb:true},dpay:{n:'DPAY',emb:true},instore:{n:'In-Store',emb:true}};
+  const S0={bal:59.14,ch:'gcash',amt:100,agree:false,open:false,pane:'form',pending:null,tab:'game',noShow:false};
+  let S=JSON.parse(JSON.stringify(S0));
+  const fmt=(v,d)=>v.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+  const short=v=>Number.isInteger(v)?fmt(v,0):fmt(v,2);
+  const txId=()=>{const d=new Date(),p=n=>String(n).padStart(2,'0');let r='';for(let i=0;i<10;i++)r+=Math.floor(Math.random()*10);return d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+p(d.getHours())+p(d.getMinutes())+p(d.getSeconds())+r+'D';};
+
+  function render(){
+    $('#mask').classList.toggle('on',S.open);
+    $('#drawer').classList.toggle('on',S.open);
+    $$('.pane').forEach(p=>p.classList.toggle('on',p.dataset.pane===S.pane));
+    $$('.tt').forEach(t=>t.classList.toggle('on',t.dataset.act==='tab-'+(S.doc||'terms')));
+    $$('.tdoc').forEach(d=>d.classList.toggle('on',d.dataset.doc===(S.doc||'terms')));
+    $('#cmask').classList.toggle('on',!!S.confirm);$('#csheet').classList.toggle('on',!!S.confirm);
+    $('.tagree').style.display=S.termsConfirm===false?'none':'';
+    $$('.chip').forEach(c=>c.classList.toggle('on',c.dataset.ch===S.ch));
+    $$('.amt').forEach(a=>a.classList.toggle('on',+a.dataset.v===S.amt));
+    $('#ftAmt').textContent='₱ '+(S.amt>0?short(S.amt):'0');
+    $('#ft').classList.toggle('off',$('#amtIn').value.trim()===''); // 同线上：金额为空时不显示提交栏
+    $('#agree').classList.toggle('on',S.agree);
+    $('#noShow').classList.toggle('on',S.noShow);
+    $('#bal').textContent=fmt(S.bal,2);
+    $('#tabPay').classList.toggle('on',S.tab==='pay');
+    $('#tabOk').classList.toggle('on',S.tab==='ok');
+    dev.classList.toggle('newtab',S.tab!=='game');
+    $('#addr').textContent=S.tab==='pay'?CH[S.pending?.ch||S.ch].url:'gzone.ph/deposit/result';
+    const p=S.pending;
+    $('#arrive').disabled=!(p&&p.emb&&!p.paid&&S.tab==='game');
+    const where=S.tab==='game'?'游戏标签页':(S.tab==='pay'?'新标签页 · 第三方付款页':'新标签页 · 充值成功页');
+    const dr=S.open?('抽屉打开（'+({form:'充值表单',qr:'内嵌付款页',guide:'教程',terms:'协议页'})[S.pane]+'）'+(S.confirm?' · 确认框打开':'')):'抽屉关闭';
+    $('#status').innerHTML=`当前：<b>${where}</b> · ${dr} · 余额 ₱${fmt(S.bal,2)}`+(p&&!p.paid?` · 待到账订单 <b>₱${fmt(p.amt,2)}（${CH[p.ch].n}）</b>`:'');
+  }
+  function flash(){const b=$('#bal');b.classList.remove('flash');void b.offsetWidth;b.classList.add('flash');setTimeout(()=>b.classList.remove('flash'),1400);}
+  function credit(p){p.paid=true;S.bal=Math.round((S.bal+p.amt)*100)/100;}
+  function openConfirm(){$('#csAmt').textContent='₱'+short(S.amt);$('#csVia').textContent='Via '+CH[S.ch].n;S.confirm=true;} // Confirm Deposit：底部弹出（同竖版）
+  function openPay(p){$('#payLogo').innerHTML=$(`.chip[data-ch=${p.ch}] .lg`).innerHTML;$('#payAmt').textContent='₱ '+fmt(p.amt,2);S.tab='pay';} // 新开标签页进入第三方付款页
+
+  document.addEventListener('click',e=>{
+    const chip=e.target.closest('.chip'); if(chip){S.ch=chip.dataset.ch;render();return;}
+    const amt=e.target.closest('.amt'); if(amt){S.amt=+amt.dataset.v;$('#amtIn').value=String(S.amt);render();return;}
+    const el=e.target.closest('[data-act]'); if(!el)return;
+    switch(el.dataset.act){
+      case 'open': S.open=true;S.pane='form';S.sess=(S.sess||0)+1;setTimeout(fade,0);nudge();$('#ring').style.display='none';$('.pane[data-pane=form] .body').scrollTop=0;break;
+      case 'close': S.open=false;break;
+      case 'clear': S.amt=0;$('#amtIn').value='';$('#amtIn').focus();break;
+      case 'agree': S.agree=!S.agree;break;
+      case 'deposit':{
+        if(!(S.amt>0)){$('#amtIn').focus();return;}
+        if(!S.agree){$('#agreeTips').classList.add('on');break;} // 协议没勾选：先弹协议 Tips（同竖版）
+        openConfirm();break;}
+      case 'agree-ok': S.agree=true;$('#agreeTips').classList.remove('on');openConfirm();break; // Agree：自动勾选并继续
+      case 'agree-cancel': $('#agreeTips').classList.remove('on');break; // Cancel：不继续
+      case 'confirm-close': S.confirm=false;break; // 关闭确认框，不建单
+      case 'confirm-go':{S.confirm=false; // Confirm — Credited in Seconds：这时才建单，按渠道继续（同竖版）
+        const c=CH[S.ch];
+        if(c.emb){S.pending={ch:S.ch,amt:S.amt,emb:true,paid:false,sess:S.sess};$('#qrAmt').textContent='Amount: ₱ '+fmt(S.amt,2);$('#qrTx').textContent=txId();S.pane='qr';$('#qR').scrollTop=0;}
+        else if($('#iosT').checked){S.iosWait={ch:S.ch,amt:S.amt,sess:S.sess};$('#tips').classList.add('on');} // iOS Safari 拦截新标签页：先弹 Tips，此时还没建单
+        else{S.pending={ch:S.ch,amt:S.amt,emb:false,paid:false,sess:S.sess};openPay(S.pending);}
+        break;}
+      case 'back': S.pane='form';break;
+      case 'terms': case 'privacy': S.doc=el.dataset.act;S.pane='terms';S.termsConfirm=true;S.backTo=null;document.getElementById('tBody').scrollTop=0;break; // 点协议行的链接：面板内打开协议页（带 I Agree），停在对应页签
+      case 'terms2': case 'privacy2': S.doc=el.dataset.act.slice(0,-1);S.pane='terms';S.termsConfirm=false;S.backTo='agreeTips';$('#agreeTips').classList.remove('on');document.getElementById('tBody').scrollTop=0;break; // 协议 Tips 里的链接：打开协议页（没有 I Agree），返回回到协议 Tips
+      case 'tab-terms': S.doc='terms';document.getElementById('tBody').scrollTop=0;break;
+      case 'tab-privacy': S.doc='privacy';document.getElementById('tBody').scrollTop=0;break;
+      case 'terms-back': S.pane='form';if(S.backTo==='agreeTips')$('#agreeTips').classList.add('on');S.backTo=null;break; // 返回：回到充值表单（从协议 Tips 打开的回到 Tips），已选内容不变
+      case 'terms-agree': S.agree=true;S.pane='form';break; // I Agree：回到表单并勾选协议（同线上）
+      case 'tips-close':{$('#tips').classList.remove('on'); // Got It 或 ✕：这时才建单，并新开标签页进付款页（同竖版）
+        const w=S.iosWait;if(w){S.pending={ch:w.ch,amt:w.amt,emb:false,paid:false,sess:w.sess};S.iosWait=null;openPay(S.pending);}break;}
+      case 'noshow': S.noShow=!S.noShow;break;
+      case 'guide': $('#tips').classList.remove('on');S.pane='guide';$('.pane.guide .body').scrollTop=0;break;
+      case 'guide-back': S.pane='form';$('#tips').classList.add('on');break; // 教程返回回到 Tips 弹窗（同竖版）
+      case 'pay-ok':{const p=S.pending;credit(p);if(S.open&&p.sess===S.sess){S.open=false;S.pane='form';}
+        $('#okAmt').textContent='₱ '+fmt(p.amt,2);$('#okType').textContent=CH[p.ch].n;
+        const d=new Date(),q=n=>String(n).padStart(2,'0');let h=d.getHours();const ap=h>=12?'PM':'AM';h=h%12||12;
+        $('#okTime').textContent=`${q(d.getMonth()+1)}/${q(d.getDate())}/${d.getFullYear()} ${q(h)}:${q(d.getMinutes())}:${q(d.getSeconds())}${ap}`;
+        $('#okScroll').scrollTop=0;S.tab='ok';break;}
+      case 'pay-back': S.tab='game';S.open=false;S.pane='form';break;
+      case 'back-gz': S.tab='game';setTimeout(flash,350);break;
+    }
+    render();
+  });
+  $('#amtIn').addEventListener('input',e=>{let v=e.target.value.replace(/[^\d.]/g,'');const i=v.indexOf('.');if(i>=0)v=v.slice(0,i+1)+v.slice(i+1).replace(/\./g,'').slice(0,2);e.target.value=v;S.amt=parseFloat(v)||0;render();});
+  $('#arrive').addEventListener('click',()=>{const p=S.pending;if(!p||p.paid)return;credit(p);if(S.open&&p.sess===S.sess)S.open=false;render();setTimeout(flash,300);});
+  $('#reset').addEventListener('click',()=>{S=JSON.parse(JSON.stringify(S0));$('#amtIn').value='100';$('#tips').classList.remove('on');$('#agreeTips').classList.remove('on');$('#iosT').checked=false;$('#ring').style.display='';render();});
+  $('#iosT').addEventListener('change',render);
+  const chips=$('#chips'); // 电脑上用滚轮横向滑动支付方式
+  const fade=()=>{const m=chips.scrollWidth-chips.clientWidth;chips.classList.toggle('fl',chips.scrollLeft>2);chips.classList.toggle('fr',chips.scrollLeft<m-2);};
+  chips.addEventListener('scroll',fade,{passive:true});
+  let drag=null,moved=false; // 电脑上按住拖动横滑
+  chips.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse'||e.button!==0)return;drag={x:e.clientX,sl:chips.scrollLeft,k:chips.getBoundingClientRect().width/chips.offsetWidth};moved=false;});
+  window.addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-drag.x;if(!moved&&Math.abs(dx)>4){moved=true;chips.classList.add('drag');}if(moved)chips.scrollLeft=drag.sl-dx/drag.k;});
+  window.addEventListener('pointerup',()=>{if(!drag)return;drag=null;chips.classList.remove('drag');});
+  chips.addEventListener('click',e=>{if(moved){e.stopPropagation();e.preventDefault();moved=false;}},true);
+  let nudged=false; // 首次打开轻轻往左带一下再回来，提示可左右滑
+  function nudge(){if(nudged)return;nudged=true;setTimeout(()=>{chips.scrollTo({left:96,behavior:'smooth'});setTimeout(()=>chips.scrollTo({left:0,behavior:'smooth'}),700);},500);}
+  chips.addEventListener('wheel',e=>{if(Math.abs(e.deltaY)>Math.abs(e.deltaX)){chips.scrollLeft+=e.deltaY;e.preventDefault();}},{passive:false});
+  render();
+})();
+</script>
+</body>
+</html>

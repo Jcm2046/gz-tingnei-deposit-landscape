@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<title>厅内充值 · 横版演示 v11</title>
+<title>厅内充值 · 横版演示 v12</title>
 <style>
 :root{--f:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro","Helvetica Neue",Roboto,"Segoe UI","PingFang SC",Arial,sans-serif;--gold:#eac070;--red:#de4444}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -27,8 +27,6 @@ img{display:block}
 .ctl button:hover:not(:disabled){border-color:var(--gold);color:#fff}
 .ctl button:disabled{opacity:.4;cursor:not-allowed}
 .ctl button.pri{background:#4a3b1c;border-color:var(--gold);color:var(--gold)}
-.ctl label{display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;user-select:none}
-.ctl input{accent-color:var(--gold)}
 .status{padding:0 16px 6px;font-size:12px;color:#8f98a6;min-height:18px}
 .status b{color:var(--gold);font-weight:500}
 .stage{position:relative;width:100%;height:min(calc(100vh - 96px),calc((100vw - 24px)*.4492));min-height:220px}
@@ -46,7 +44,6 @@ img{display:block}
   .top .sub,.status{display:none}
   .ctl{gap:6px;flex-wrap:nowrap}
   .ctl button{height:26px;padding:0 8px;font-size:12px;white-space:nowrap}
-  .ctl label{font-size:12px;white-space:nowrap}
   .stage{height:calc(100vh - 36px);height:calc(100dvh - 36px)}
   .device.crop{border-radius:0;box-shadow:none}
 }
@@ -66,8 +63,8 @@ img{display:block}
 /* ---------- 蒙层 + 右侧抽屉 ---------- */
 .mask{position:absolute;inset:0;background:rgba(0,0,0,.6);opacity:0;pointer-events:none;transition:opacity .3s;z-index:10}
 .mask.on{opacity:1;pointer-events:auto}
-.drawer{position:absolute;top:0;bottom:0;left:calc(50% - 370px);width:740px;background:#2f3542;border-radius:20px 20px 0 0;transform:translateY(105%);transition:transform .3s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;overflow:hidden;z-index:20}
-.drawer.on{transform:none;box-shadow:0 -6px 24px rgba(0,0,0,.35)}
+.drawer{position:absolute;top:0;bottom:0;left:calc(50% - 370px);width:740px;background:#2f3542;border-radius:20px 20px 0 0;transform:translateY(105%);visibility:hidden;transition:transform .3s cubic-bezier(.2,.8,.2,1),visibility 0s .3s;display:flex;flex-direction:column;overflow:hidden;z-index:20} /* 收起后隐藏（等滑出动画走完）：键盘 Tab 的焦点进不来，浏览器也就不会为了露出焦点把可视区滚走 */
+.drawer.on{transform:none;visibility:visible;transition:transform .3s cubic-bezier(.2,.8,.2,1);box-shadow:0 -6px 24px rgba(0,0,0,.35)}
 .pane{display:none;flex-direction:column;flex:1;min-height:0}
 .pane.on{display:flex}
 .hd{height:44px;flex:none;display:flex;align-items:center;padding:0 16px}
@@ -193,8 +190,8 @@ img{display:block}
 .tips .rd i{position:relative;width:18px;height:20px}
 .tips .rd i img{width:18px;height:20px}
 .tips .rd.on i::after{content:"";position:absolute;left:5px;top:6px;width:8px;height:8px;border-radius:50%;background:var(--gold)}
-.tips .bt{display:flex;gap:12px;padding:16px}
-.tips .bt button{flex:1;height:44px;border-radius:12px;font:600 16px/24px var(--f)}
+.tips .bt{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:12px;padding:16px} /* 两颗按钮等宽（同竖版 UI 稿） */
+.tips .bt button{min-width:0;padding:0;height:44px;border-radius:12px;font:600 16px/24px var(--f)}
 .b-out{border:1.5px solid var(--red)!important;color:#f25555!important}
 /* 新标签页：第三方付款页（示意）与充值成功页 */
 .tab{position:absolute;inset:0;z-index:60;display:none}
@@ -250,8 +247,8 @@ img{display:block}
 .q-r .row{flex:none;width:100%}
 .cmask{position:absolute;inset:0;background:rgba(0,0,0,.6);z-index:30;opacity:0;pointer-events:none;transition:opacity .3s}
 .cmask.on{opacity:1;pointer-events:auto}
-.csheet{position:absolute;bottom:0;left:calc(50% - 195px);width:390px;background:#2f3542;border-radius:20px 20px 0 0;z-index:31;transform:translateY(105%);transition:transform .3s cubic-bezier(.2,.8,.2,1)}
-.csheet.on{transform:none}
+.csheet{position:absolute;bottom:0;left:calc(50% - 195px);width:390px;background:#2f3542;border-radius:20px 20px 0 0;z-index:31;transform:translateY(105%);visibility:hidden;transition:transform .3s cubic-bezier(.2,.8,.2,1),visibility 0s .3s} /* 收起后隐藏，道理同充值面板 */
+.csheet.on{transform:none;visibility:visible;transition:transform .3s cubic-bezier(.2,.8,.2,1)}
 .cs-hd{position:relative;padding:16px 0;text-align:center;font:600 16px/24px var(--f);color:#fff}
 .cs-x{position:absolute;right:16px;top:0;height:100%;display:grid;place-items:center}
 .cs-x img{width:12px;height:12px;opacity:.75}
@@ -266,17 +263,282 @@ img{display:block}
 .atips .t{height:58px}
 .atips .tx{padding:4px 12px;color:#8f98a6}
 .atips .tx u{color:#fff;cursor:pointer}
+/* ================= v12 新增 ================= */
+/* ---------- 模拟场景菜单（演示控制条） ---------- */
+.top{position:relative}
+#simBtn i{display:none;margin-left:6px;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--gold);color:#181b21;font:600 11px/16px var(--f);font-style:normal;vertical-align:1px}
+#simBtn.has i{display:inline-block}
+#simBtn[aria-expanded=true]{border-color:var(--gold);color:#fff}
+.sim{position:absolute;right:16px;top:calc(100% - 2px);z-index:200;width:max-content;max-width:calc(100vw - 32px);max-height:calc(100vh - 64px);overflow:auto;display:none;grid-template-columns:repeat(5,auto);gap:10px 22px;padding:12px 14px;border-radius:12px;background:#1f232c;border:1px solid #3a4150;box-shadow:0 12px 32px rgba(0,0,0,.6)}
+.sim.on{display:grid}
+.sim fieldset{border:0;margin:0;padding:0;min-width:0;display:flex;flex-direction:column;gap:7px}
+.sim legend{padding:0;margin-bottom:7px;font-size:12px;line-height:16px;color:var(--gold)}
+.sim label{display:flex;align-items:flex-start;gap:6px;font-size:12px;line-height:16px;color:#dfe3ea;cursor:pointer;user-select:none}
+.sim label.sl{flex-direction:column;align-items:stretch;gap:3px;cursor:default}
+.sim input{accent-color:var(--gold);margin:1px 0 0;flex:none;width:14px;height:14px}
+.sim select{height:26px;border-radius:6px;background:#2a2f3b;color:#dfe3ea;border:1px solid #3a4150;font-size:12px;padding:0 4px;min-width:0;width:100%}
+.sim small{color:#8f98a6;font-size:11px}
+@media (max-width:1120px){.sim{left:16px;width:auto;grid-template-columns:repeat(auto-fit,minmax(176px,1fr))}}
+@media (orientation:landscape) and (max-height:520px){
+  .sim{left:8px;right:8px;top:100%;width:auto;max-width:none;max-height:calc(100vh - 40px);max-height:calc(100dvh - 40px);grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px 12px;padding:8px 10px}
+}
+/* ---------- 表单：骨架屏、维护态、二级渠道 ---------- */
+.sk{display:block;background:#3a4150;border-radius:10px;animation:sk 1.2s ease-in-out infinite}
+@keyframes sk{0%,100%{opacity:.5}50%{opacity:1}}
+.chips-sk{display:none;height:45px}
+.chips-sk .sk{width:108px;height:45px}
+.amts-sk{display:none;grid-template-columns:repeat(6,1fr);gap:8px}
+.amts-sk .sk{height:44px}
+.fm.skel .chips,.fm.skel .subw,.fm.skel .amts,.fm.skel .sp{display:none}
+.fm.skel .inw{pointer-events:none} /* 加载占位期间金额输入框先不能点 */
+.fm.skel .chips-sk{display:block}
+.fm.skel .amts-sk{display:grid}
+.lg .txc{font:700 14px/20px var(--f);color:#fff;white-space:nowrap}
+.mt{display:none;position:absolute;inset:0;border-radius:10px;background:rgba(0,0,0,.5);z-index:2}
+.mt b{position:absolute;left:0;right:0;bottom:0;height:12px;display:flex;align-items:center;justify-content:center;border-radius:0 0 10px 10px;background:#383f4d;font:500 9px/12px var(--f);color:#fff;white-space:nowrap}
+.mnt .mt{display:block}
+.subw{display:none;margin-top:6px;background:#242933;border-radius:12px;padding:12px 12px 11px}
+.subw.on{display:block}
+.subr{display:flex;align-items:center;gap:4px;min-width:0}
+.all{flex:none;width:54px;height:38px;border-radius:10px;background:#242933;border:1px solid rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;gap:2px;font:400 14px/20px var(--f);color:#fff}
+.all svg{width:12px;height:12px;flex:none}
+.subs{position:relative;flex:1;min-width:0;display:flex;align-items:center;overflow-x:auto;scrollbar-width:none;overscroll-behavior-x:contain;cursor:grab}
+.subs::-webkit-scrollbar{display:none}
+.subs.drag{cursor:grabbing}
+.sch{flex:none;width:98px;height:45px;margin-right:8px;border-radius:10px;background:#383f4d;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;padding:0 4px;font:700 12px/16px var(--f);color:#fff;white-space:nowrap}
+.sch:last-child{margin-right:0}
+.sch.on{background:#48453f;box-shadow:inset 0 0 0 1.5px var(--gold)}
+.sch .ck,.bk .ck{display:none;position:absolute;right:0;bottom:0;width:16px;height:16px;background:var(--gold);border-radius:10px 0 10px 0;place-items:center}
+.sch.on .ck,.bk.on .ck{display:grid}
+.sch .ck img,.bk .ck img{width:12px;height:12px}
+.sch.trx{height:38px;border-radius:7px;background:none;padding:0;box-shadow:none}
+.sch.trx img{width:98px;height:38px}
+/* ---------- All Banks（面板内） ---------- */
+.bkg{display:grid;grid-template-columns:repeat(6,1fr);gap:7px;padding:3px 12px 4px}
+.bk{aspect-ratio:105/45;min-width:0;border-radius:10px;background:#383f4d;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;padding:0 4px;font:700 13px/16px var(--f);color:#fff;white-space:nowrap}
+.bk.on{background:#48453f;box-shadow:inset 0 0 0 1.5px var(--gold)}
+.bk.trx{aspect-ratio:114/44;background:none;border-radius:0;padding:0;box-shadow:none}
+.bk.trx img{width:100%;height:100%}
+.bkf{flex:none;padding:10px 12px 12px}
+.bkf .btn-red{width:100%}
+/* ---------- 快捷金额角标、输入框占位和红字 ---------- */
+.amt .rb{position:absolute;left:-1px;top:-1px;width:30px;height:30px;z-index:1;pointer-events:none}
+.inp input::placeholder{font:400 14px/28px var(--f);color:#8f98a6;opacity:1}
+.tip{display:none;margin:4px 0;font:400 12px/16px var(--f);color:#e04f5f;text-align:left}
+.tip.on{display:block}
+/* ---------- LoadCentral、Bayad Center 说明卡 ---------- */
+.info{display:none;background:#21262e;border-radius:12px;padding:12px;text-align:left}
+.info h5{margin:0 0 8px;font:700 16px/28px var(--f);color:#fff}
+.info p{margin:0;font:400 12px/18px var(--f);color:#8f98a6}
+.info p+p{margin-top:8px}
+.info p b{font-weight:400;color:var(--gold)}
+.info .nw{white-space:nowrap}
+#lcCard.on{display:flex;gap:16px}
+#lcCard .c1{width:280px;flex:none}
+#lcCard .dv{width:1px;flex:none;background:rgba(255,255,255,.1)}
+#lcCard .c2{flex:1;min-width:0}
+#lcCard .c2 img{width:300px;height:321px}
+#bayadCard.on{display:grid;grid-template-columns:280px 150px 1fr;gap:16px}
+#bayadCard p+p{margin-top:0}
+#bayadCard .bc{width:73px;height:96px}
+#bayadCard .ba{width:92px;height:78px;margin-top:8px}
+/* ---------- E-Voucher ---------- */
+.vch{display:none}
+.vch.on{display:flex}
+.vch .v1{width:350px;flex:none;padding-right:12px;display:flex;flex-direction:column}
+.vin{height:44px;flex:none;background:#181b21;border-radius:12px;padding:0 12px;display:flex;align-items:center;gap:12px}
+.vin img{width:12px;height:18px;flex:none}
+.vin input{flex:1;min-width:0;background:none;border:0;outline:0;color:#fff;font:400 14px/22px var(--f);padding:0;caret-color:var(--red);letter-spacing:.5px}
+.vin input::placeholder{color:#6b6676;opacity:1;letter-spacing:0}
+.verr{margin:0;height:20px;flex:none;padding-top:2px;font:400 12px/16px var(--f);color:#ff6d4c;visibility:hidden;white-space:nowrap}
+.verr.on{visibility:visible}
+.vbtn{height:44px;flex:none;border-radius:20px;border:1px solid transparent;margin-bottom:10px;font:600 14px/22px var(--f);color:rgba(255,255,255,.6);background:linear-gradient(104deg,#886c47 9.63%,#86583b 93.64%);cursor:not-allowed}
+.vbtn.ok{color:#fff;background:linear-gradient(104deg,#fdb756 9.63%,#f78336 93.64%);border-color:#fdc858;box-shadow:0 0 10px rgba(255,123,57,.4);cursor:pointer}
+.vbtn.ok:active{filter:brightness(.94)}
+.vch .v2{flex:1;min-width:0}
+.vch .v2 h6{margin:0 0 5px;font:700 14px/19px var(--f);color:#b9b3c8}
+.vch .v2 img{width:366px;height:114px}
+/* ---------- 底部固定区：Rewards 行、Deposit 置灰 ---------- */
+.ft-amt{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.rw{display:none;align-items:center;height:20px}
+.rw.on{display:flex}
+.rw-t{flex:none;margin-right:8px;font:400 14px/20px var(--f);color:#fff}
+.rw-s{flex:1;min-width:0;display:flex;align-items:center;overflow-x:auto;overflow-y:hidden;scrollbar-width:none}
+.rw-s::-webkit-scrollbar{display:none}
+.rw-c{flex:none;display:flex;align-items:center}
+.rw-c img{flex:none;width:20px;height:20px;position:relative;z-index:1}
+.rw-c b{height:18px;margin-left:-15px;padding:0 4px 0 18px;border-radius:999px;background:#46331a;border:1px solid #907d4e;font:700 14px/16px var(--f);color:var(--gold);white-space:nowrap}
+.btn-red:disabled{background:#3a4250;color:#8f98a6;cursor:not-allowed;filter:none}
+.bolt .b2{display:none}
+.btn-red:disabled .b1{display:none}
+.btn-red:disabled .b2{display:block}
+.cs-badge img{width:20px;height:20px;flex:none}
+/* ---------- 键盘弹起（示意）：面板缩到键盘上方，只留金额输入框和 ₱ 金额 + Deposit ---------- */
+.kb{position:absolute;left:0;right:0;bottom:0;height:170px;background:#202124;z-index:25;display:none;flex-direction:column;padding:6px 8px 8px}
+.kb.on{display:flex}
+.kb-t{flex:none;padding:0 4px 4px;font:400 11px/14px var(--f);color:#9aa0a6}
+.kb-g{flex:1;min-height:0;display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(3,1fr);gap:6px}
+.kb-g button{background:#3c4043;border-radius:8px;color:#e8eaed;font:500 18px/1 Roboto,var(--f)}
+.kb-g button:active{background:#5f6368}
+.kb-g .kb-done{grid-column:span 3;background:#8ab4f8;color:#202124;font-size:15px;font-weight:600}
+.drawer.kbm{top:auto;bottom:170px}
+.drawer.kbm .hd,.drawer.kbm .fm>*:not(#amtCard),.drawer.kbm .amts,.drawer.kbm .rw,.drawer.kbm .agree{display:none}
+.drawer.kbm .pane,.drawer.kbm .body{flex:none}
+/* 排法（规格 2.9）：上内边距 12 → 输入框 44 → 红字（有才显示）→ 间距 8 → ₱ 金额 + Deposit 一行 44 → 下内边距 10 */
+.drawer.kbm .fm{padding:12px 12px 0}
+.drawer.kbm .fm.nof{padding-bottom:10px}
+.drawer.kbm .card{background:none;padding:0}
+.drawer.kbm .ft{border-top:0;background:none;padding:8px 12px 10px}
+/* ---------- 弹窗通用外壳 ---------- */
+.dlg{width:350px;border-radius:16px;background:#2f3542;position:relative}
+.dlg .dt{height:56px;display:flex;align-items:center;justify-content:center;font:600 16px/24px var(--f);color:#fff}
+.dlg .dx{position:absolute;right:12px;top:16px;width:24px;height:24px;display:grid;place-items:center}
+.dlg .dx img{width:12px;height:12px}
+.dlg .db{padding:12px 16px;font:400 14px/22px var(--f);color:#dce3ec;text-align:center}
+.dlg .db.w{color:#fff}
+.dlg .df{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:12px;padding:16px} /* 一颗按钮通栏，两颗按钮等宽 */
+.dlg .df button{min-width:0;padding:0;height:44px;border-radius:12px;font:600 16px/24px var(--f)}
+#dAml .df,#dKyc7 .df{display:flex}
+.dlg .dr{display:flex;align-items:center;gap:16px;padding:4px 16px 0;text-align:left}
+.dlg .dr p{margin:0;flex:1;min-width:0;font:400 14px/22px var(--f);color:#fff}
+.dlg .dc{flex:1;min-width:0}
+.dlg.w292{width:292px}.dlg.w371{width:371px}.dlg.w480{width:480px}.dlg.w520{width:520px}.dlg.w560{width:560px}
+.dlg .mi{width:134px;height:132px;flex:none}
+#dSys .db{padding:12px;line-height:18px}
+/* VIP 奖励待领取 */
+.vipc{width:80px;height:100px;margin:4px auto 0;border-radius:10px;background:#242933;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
+.vipc span{font:400 11px/14px var(--f);color:#dce3ec;text-align:center;white-space:nowrap}
+.vipc img{width:32px;height:32px}
+.vipc b{font:700 14px/18px var(--f);color:var(--gold)}
+/* 防沉迷 Notice */
+#dAnti .dt{font-weight:700}
+#dAnti .sp-img{width:250px;height:131px;flex:none;border-radius:12px}
+#dAnti .ph{margin:0;font:italic 400 14px/22px var(--f);color:#8f98a6}
+#dAnti .gs{display:inline-block;margin-top:12px;border-bottom:1px solid var(--gold);font:500 13px/20px var(--f);color:var(--gold)}
+#dAnti .df{padding-top:20px}
+#dAnti.strong .dx,#dAnti.strong [data-act=anti-continue]{display:none}
+/* eKYC */
+.ekph{width:200px;height:125px;flex:none;border-radius:8px;background:#3a4150;border:1px dashed #5b6475;display:grid;place-items:center;padding:0 12px;font:400 12px/18px var(--f);color:#b8c0cc;text-align:center}
+#dEkyc .et{font:500 14px/22px var(--f);color:#fff}
+#dEkyc .eb{margin-top:4px;font:400 14px/22px var(--f);color:#8f98a6}
+#dKyc7 .db{padding:16px 16px 0;line-height:20px}
+#dKyc7 .df{justify-content:center;padding:12px 16px}
+#dKyc7 .df button{flex:none;width:90%;height:36px;font:700 14px/20px var(--f)}
+/* 反洗钱 */
+#dAml .dt{height:40px}
+#dAml .dx{top:8px}
+#dAml .dr{align-items:flex-start;gap:12px;padding:12px 12px 0}
+#dAml .ai{width:94px;height:100px;flex:none;object-fit:contain}
+#dAml .at{flex:1;min-width:0;font:400 14px/20px var(--f);color:#b9b3c8}
+#dAml .at p{margin:0;font:inherit;color:inherit}
+#dAml .at .li{padding-left:12px;text-indent:-7px}
+#dAml .df{align-items:center;padding:16px 12px 12px}
+#dAml .cs{flex:none;width:auto;height:auto;padding:6px 20px;border-radius:20px;background:linear-gradient(180deg,#51ce68,#1f8b33);border:1px solid rgba(159,255,144,.5);display:grid;place-items:center}
+#dAml .cs svg{width:22px;height:22px}
+#dAml .df .btn-red{flex:1;font-weight:700}
+/* E-Voucher 结果弹窗 */
+#dVok .vs{font:400 14px/20px var(--f);color:#b9b3c8;text-align:center}
+#dVok .va{padding:8px 0 4px;font:700 28px/36px var(--f);color:#ffdf5f;text-align:center}
+#dVok .df button{height:36px;font:600 14px/20px var(--f)}
+#dVfail{text-align:center}
+#dVfail .dlg{padding:20px 16px 16px}
+#dVfail img{width:90px;height:90px;margin:0 auto}
+#dVfail p{margin:12px 0 0;font:400 14px/22px var(--f);color:#b9b3c8}
+#dVfail .btn-red{width:204px;height:36px;margin:34px auto 0;font:600 14px/20px var(--f)}
+/* ---------- 全屏 loading ---------- */
+.ld{position:absolute;inset:0;z-index:45;background:rgba(0,0,0,.65);display:none;align-items:center;justify-content:center}
+.ld.on{display:flex}
+.ld-c{width:292px;border-radius:12px;background:#2f3542;padding:16px;display:flex;flex-direction:column;align-items:center}
+.ld-c img{width:38px;height:38px}
+.ld-c p{margin:12px 0 0;font:400 14px/22px var(--f);color:#dce3ec;text-align:center}
+.ld-c span{font:400 12px/18px var(--f);color:#8f98a6;text-align:center}
+/* ---------- Toast ---------- */
+.toast{position:absolute;left:0;right:0;top:25%;z-index:50;display:flex;justify-content:center;pointer-events:none;visibility:hidden;opacity:0;transform:scale(.8);transition:opacity .3s,transform .3s cubic-bezier(.68,-.55,.265,1.55),visibility 0s .3s}
+.toast.on{visibility:visible;opacity:1;transform:none;transition:opacity .3s,transform .3s cubic-bezier(.68,-.55,.265,1.55)}
+.toast span{max-width:312px;padding:12px 16px;border-radius:12px;background:rgba(0,0,0,.75);color:#fff;font:500 16px/20px var(--f);text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.15);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+/* ---------- 内嵌付款页：AUB、Hybrid、Pay&Go ---------- */
+.q-l.aub{background:url(assets/v12/aub_card_bg.png) center top/cover no-repeat}
+.q-l.hyb{background:url(assets/v12/hybrid_card_bg.png) center top/cover no-repeat}
+.qr-box.r8 .wb{border-radius:8px}
+.q-c{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.aub-logo{width:80px;height:24.86px;margin-bottom:12px}
+.aub-t{font:400 12px/18px var(--f);color:#fff}
+.aub-a{margin-top:2px;font:700 14px/22px var(--f);color:#de4444}
+.aub-n{margin:4px 0 0;max-width:400px;font:400 11px/16px var(--f);color:#a59fb3}
+.aub-r{width:100%;margin-top:20px;font-weight:500}
+.hyb-logo{width:80px;height:47.29px}
+.hyb-a{margin-top:6px;font:600 18px/28px var(--f);color:var(--gold)}
+.q-c .qr-note{margin-top:4px}
+.hyb-b{margin-top:10px;padding:0 72px;font:700 14px/22px var(--f)}
+.q-c .qr-tx{margin-top:10px}
+.q-c .qr-tx b{font-weight:400}
+.pgo{padding:0 12px 12px;text-align:center;font:400 14px/21px var(--f);color:#fff}
+.pg-top{display:flex;gap:12px;align-items:stretch;padding-top:4px}
+.pg-h{width:300px;flex:none;position:relative;overflow:hidden;border-radius:16px;padding:13px 16px 16px;display:flex;flex-direction:column;align-items:center}
+.pg-h::before{content:"";position:absolute;inset:0;background:url(assets/v12/gz_logo_card.png) center calc(50% - 30px)/contain no-repeat;opacity:.3}
+.pg-h::after{content:"";position:absolute;inset:0;background:rgba(36,41,51,.8);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.pg-h>*{position:relative;z-index:1}
+.pg-logo{width:100%;height:56px;margin-bottom:14px;background:url(assets/v12/gz_logo_card.png) center/auto 100% no-repeat}
+.pg-code{font:700 20px/28px var(--f);color:var(--gold)}
+.pg-v{margin-top:8px;color:#8f98a6}
+.pg-d{flex:1;min-width:0;border-radius:12px;background:#242933;padding:16px 12px;display:flex;flex-direction:column;justify-content:space-between;gap:19px}
+.pg-d div{display:flex;justify-content:space-between;gap:12px}
+.pg-d span{flex:none;color:#8f98a6}
+.pg-d b{font-weight:500;text-align:right;word-break:break-all}
+.pg-t{margin:16px 0 8px;font:500 14px/21px var(--f);color:#fff;text-align:left}
+.pg-ol{margin:0 0 0 5px;padding:0 8px 0 12px;font:400 12px/16px var(--f);color:#8f98a6;text-align:left}
+.pg-ol li{margin-bottom:8px}
+/* ---------- 付款结果页：确认中 ---------- */
+.okw{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;padding:36px 16px 16px}
+.okw-logo{width:135px;height:83px;flex:none}
+.okw p{margin:24px 0 0;font:400 14px/20px var(--f);color:#dce3ec;text-align:center}
+.okw .ok-lic{margin-top:auto}
+/* ---------- 协议页「滑到底部」按钮 ---------- */
+.pane.terms{position:relative}
+.tfab{position:absolute;right:16px;bottom:40px;z-index:3;width:48px;height:48px;border-radius:50%;background:#3a4250;box-shadow:0 6px 16px rgba(0,0,0,.25);display:grid;place-items:center;transition:opacity .2s,transform .2s}
+.tfab.off{opacity:0;transform:scale(.6);pointer-events:none;visibility:hidden;transition:opacity .2s,transform .2s,visibility 0s .2s}
+.tfab svg{width:22px;height:22px}
 </style>
 </head>
 <body>
 <div class="top">
-  <h1>【充提】厅内充值改造 · 横版演示 v11</h1>
-  <span class="sub">补上 Confirm Deposit 确认框和协议 Tips（同竖版）；协议页用线上全文</span>
-  <select class="ver" aria-label="对比旧版本" onchange="if(this.value)location.href=this.value"><option value="">对比旧版本</option><option value="v10/">v10 没有确认框</option><option value="v9/">v9 成功页金额在下</option><option value="v8/">v8 保障标识在底栏</option><option value="v7/">v7 交互对齐 Figma 方案</option><option value="v6/">v6 去 How To Deposit、渠道可滑</option><option value="v5/">v5 居中加宽</option><option value="v4/">v4 右侧窄抽屉 + 金额一排</option><option value="v3/">v3 底部居中两栏</option><option value="v2/">v2 右侧宽抽屉两栏</option><option value="v1/">v1 只换容器</option></select>
+  <h1>【充提】厅内充值改造 · 横版演示 v12</h1>
+  <span class="sub">补齐线上竖版有、横版还缺的界面、弹窗和状态；点「模拟场景」切换</span>
+  <select class="ver" aria-label="对比旧版本" onchange="if(this.value)location.href=this.value"><option value="">对比旧版本</option><option value="v11/">v11 没有二级渠道和各类弹窗</option><option value="v10/">v10 没有确认框</option><option value="v9/">v9 成功页金额在下</option><option value="v8/">v8 保障标识在底栏</option><option value="v7/">v7 交互对齐 Figma 方案</option><option value="v6/">v6 去 How To Deposit、渠道可滑</option><option value="v5/">v5 居中加宽</option><option value="v4/">v4 右侧窄抽屉 + 金额一排</option><option value="v3/">v3 底部居中两栏</option><option value="v2/">v2 右侧宽抽屉两栏</option><option value="v1/">v1 只换容器</option></select>
   <div class="ctl">
-    <label title="模拟 iOS Safari 拦截新标签页"><input type="checkbox" id="iosT"> 模拟 iOS 拦截新标签页</label>
+    <button id="simBtn" aria-expanded="false" aria-controls="simPanel" title="选择要模拟的情况">模拟场景 ▾<i id="simN"></i></button>
     <button class="pri" id="arrive" disabled>模拟到账（当前订单）</button>
     <button id="reset">重置</button>
+  </div>
+  <!-- 模拟场景菜单：点「模拟场景」展开，再点或点外面收起 -->
+  <div class="sim" id="simPanel" role="group" aria-label="模拟场景">
+    <fieldset><legend>账号和活动</legend>
+      <label><input type="checkbox" id="simNew"><span>新玩家（没有充值记录）</span></label>
+      <label><input type="checkbox" id="simPromo"><span>有存款活动（显示 Rewards 行）</span></label>
+      <label><input type="checkbox" id="simTiers"><span>9 个金额档位</span></label>
+      <label><input type="checkbox" id="simVip"><span>VIP 奖励待领取<small>（打开面板时弹）</small></span></label>
+      <label><input type="checkbox" id="simNoPhone"><span>没绑手机号<small>（选 Pay&amp;Go 时弹）</small></span></label>
+    </fieldset>
+    <fieldset><legend>渠道</legend>
+      <label><input type="checkbox" id="simMaintOne"><span>DPAY 维护中</span></label>
+      <label><input type="checkbox" id="simMaintAll"><span>全部渠道维护</span></label>
+      <label><input type="checkbox" id="simSysBtn"><span>系统维护：Deposit 置灰</span></label>
+      <label><input type="checkbox" id="simSysPop"><span>系统维护公告<small>（打开面板时弹）</small></span></label>
+    </fieldset>
+    <fieldset><legend>点 Deposit 时</legend>
+      <label class="sl">防沉迷存款限额<select id="simAnti"><option value="off">关</option><option value="weak">弱提醒</option><option value="strong">强提醒</option></select></label>
+      <label class="sl">eKYC<select id="simEkyc"><option value="ok">已认证</option><option value="weak">Account Security 弱弹窗</option><option value="strong">Account Security 强弹窗</option><option value="d7">7 天强制 KYC</option></select></label>
+      <label><input type="checkbox" id="simAml"><span>反洗钱标记</span></label>
+    </fieldset>
+    <fieldset><legend>点 Confirm 后</legend>
+      <label class="sl">扫码类渠道的付款页<select id="simRet"><option value="qr">QRPh 二维码页</option><option value="aub">AUB 二维码页（示意）</option><option value="hyb">Hybrid 页（示意）</option><option value="url">返回网页地址</option></select></label>
+      <label><input type="checkbox" id="simTimeout"><span>建单超时</span></label>
+      <label><input type="checkbox" id="simRate"><span>QRPh 付款页点 App 时接口限流</span></label>
+      <label><input type="checkbox" id="iosT"><span>iOS Safari（先弹 Tips）</span></label>
+    </fieldset>
+    <fieldset><legend>其他</legend>
+      <label><input type="checkbox" id="simKb"><span>键盘弹起<small>（建议做法）</small></span></label>
+    </fieldset>
   </div>
 </div>
 <div class="status" id="status"></div>
@@ -294,30 +556,58 @@ img{display:block}
         <!-- 充值表单：沿用竖版 01.A -->
         <section class="pane on" data-pane="form">
           <div class="hd g3"><span></span><span class="ttl">Deposit</span><button class="ib" data-act="close" aria-label="关闭"><img src="assets/close.svg" alt=""></button></div>
-          <div class="body">
-            <div class="fm">
+          <div class="body" id="fBody">
+            <div class="fm" id="fm">
               <div>
-                                <div class="chips" id="chips">
-                  <button class="chip on" data-ch="gcash"><span class="lg"><img src="assets/logo_gcash.svg" style="width:73px;height:18px" alt="GCash"></span><i class="ck"><img src="assets/chip_check.svg" alt=""></i></button>
-                  <button class="chip" data-ch="bankcard"><span class="lg" style="gap:5.8px"><img src="assets/logo_bankcard_icon.svg" style="width:23.7px;height:18px" alt=""><img src="assets/logo_bankcard_word.svg" style="width:53.58px;height:10.72px" alt="Bankcard"></span><i class="ck"><img src="assets/chip_check.svg" alt=""></i></button>
-                  <button class="chip" data-ch="otc"><span class="lg"><img src="assets/logo_otc_icon.svg" style="width:20px;height:20px" alt=""><span class="otc">OTC</span></span><i class="ck"><img src="assets/chip_check.svg" alt=""></i></button>
-                  <button class="chip" data-ch="qrph"><span class="lg"><img src="assets/logo_qrph.png" style="width:66px;height:15.7px" alt="QRPh"></span><i class="ck"><img src="assets/chip_check.svg" alt=""></i></button>
-                  <button class="chip" data-ch="grabpay"><span class="lg"><img src="assets/logo_grabpay.svg" style="width:79.2px;height:17.73px" alt="GrabPay"></span><i class="ck"><img src="assets/chip_check.svg" alt=""></i></button>
-                  <button class="chip" data-ch="instapay"><span class="lg"><span class="ip"><img src="assets/logo_x31221.png" alt="InstaPay"></span></span><i class="ck"><img src="assets/chip_check.svg" alt=""></i></button>
-                  <button class="chip" data-ch="dpay"><span class="lg"><img src="assets/logo_dpay.svg" style="width:48.63px;height:13px" alt="DPAY"></span><i class="ck"><img src="assets/chip_check.svg" alt=""></i></button>
-                  <button class="chip" data-ch="instore"><span class="lg" style="gap:3px"><img src="assets/logo_gz_instore.svg" style="width:30px;height:16.67px" alt=""><span class="ins">In-Store</span></span><i class="ck"><img src="assets/chip_check.svg" alt=""></i></button>
+                <!-- 一级渠道：前 8 个顺序不变，后面加 E-Voucher、Traxion 两张文字卡（线上是否启用待确认） -->
+                <div class="chips" id="chips">
+                  <button class="chip on" data-ch="gcash"><span class="lg"><img src="assets/logo_gcash.svg" style="width:73px;height:18px" alt="GCash"></span><i class="ck"><img src="assets/chip_check.svg" alt=""></i><i class="mt"><b>Under Maintenance</b></i></button>
+                  <button class="chip" data-ch="bankcard"><span class="lg" style="gap:5.8px"><img src="assets/logo_bankcard_icon.svg" style="width:23.7px;height:18px" alt=""><img src="assets/logo_bankcard_word.svg" style="width:53.58px;height:10.72px" alt="Bankcard"></span><i class="ck"><img src="assets/chip_check.svg" alt=""></i><i class="mt"><b>Under Maintenance</b></i></button>
+                  <button class="chip" data-ch="otc"><span class="lg"><img src="assets/logo_otc_icon.svg" style="width:20px;height:20px" alt=""><span class="otc">OTC</span></span><i class="ck"><img src="assets/chip_check.svg" alt=""></i><i class="mt"><b>Under Maintenance</b></i></button>
+                  <button class="chip" data-ch="qrph"><span class="lg"><img src="assets/logo_qrph.png" style="width:66px;height:15.7px" alt="QRPh"></span><i class="ck"><img src="assets/chip_check.svg" alt=""></i><i class="mt"><b>Under Maintenance</b></i></button>
+                  <button class="chip" data-ch="grabpay"><span class="lg"><img src="assets/logo_grabpay.svg" style="width:79.2px;height:17.73px" alt="GrabPay"></span><i class="ck"><img src="assets/chip_check.svg" alt=""></i><i class="mt"><b>Under Maintenance</b></i></button>
+                  <button class="chip" data-ch="instapay"><span class="lg"><span class="ip"><img src="assets/logo_x31221.png" alt="InstaPay"></span></span><i class="ck"><img src="assets/chip_check.svg" alt=""></i><i class="mt"><b>Under Maintenance</b></i></button>
+                  <button class="chip" data-ch="dpay"><span class="lg"><img src="assets/logo_dpay.svg" style="width:48.63px;height:13px" alt="DPAY"></span><i class="ck"><img src="assets/chip_check.svg" alt=""></i><i class="mt"><b>Under Maintenance</b></i></button>
+                  <button class="chip" data-ch="instore"><span class="lg" style="gap:3px"><img src="assets/logo_gz_instore.svg" style="width:30px;height:16.67px" alt=""><span class="ins">In-Store</span></span><i class="ck"><img src="assets/chip_check.svg" alt=""></i><i class="mt"><b>Under Maintenance</b></i></button>
+                  <button class="chip" data-ch="voucher"><span class="lg"><span class="txc">E-Voucher</span></span><i class="ck"><img src="assets/chip_check.svg" alt=""></i><i class="mt"><b>Under Maintenance</b></i></button>
+                  <button class="chip" data-ch="traxion"><span class="lg"><span class="txc">Traxion</span></span><i class="ck"><img src="assets/chip_check.svg" alt=""></i><i class="mt"><b>Under Maintenance</b></i></button>
                 </div>
+                <!-- 加载占位：渠道一排 1 个灰色占位卡 -->
+                <div class="chips-sk"><i class="sk"></i></div>
+                <!-- 二级渠道一排：Bankcard 的银行、OTC 的子渠道、Traxion 的机构；4 个及以上时最左边有 All -->
+                <div class="subw" id="subw"><div class="subr"><button class="all" id="allBtn" data-act="all">All<svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" stroke="#fff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="subs" id="subs"></div></div></div>
               </div>
-              <div class="card">
-                                <div class="amts" id="amts">
-                  <button class="amt on" data-v="100">₱ 100</button>
-                  <button class="amt" data-v="200">₱ 200</button>
-                  <button class="amt" data-v="300">₱ 300</button>
-                  <button class="amt" data-v="500">₱ 500</button>
-                  <button class="amt" data-v="1000">₱ 1,000</button>
-                  <button class="amt" data-v="2000">₱ 2,000</button>
+              <!-- LoadCentral（线上 payTypeName 是 LC）：横版说明卡分左右两栏 -->
+              <div class="info sp" id="lcCard">
+                <div class="c1"><h5>How To Deposit</h5><p><span class="nw">Give the cashier your registered phone number or</span><br>GameZone ID: <b>Matteo</b></p><p>then pay the amount you selected.</p></div>
+                <i class="dv"></i>
+                <div class="c2"><h5>Physical Store</h5><img src="assets/v12/lc_stores.png" alt="Physical Store"></div>
+              </div>
+              <!-- Bayad Center：横版说明卡分三栏 -->
+              <div class="info sp" id="bayadCard">
+                <div><h5>How To Deposit</h5><p>Give the cashier your registered phone number or GameZone ID: <b>Matteo</b></p><p>then pay the amount you selected.</p></div>
+                <div><h5>Physical Store</h5><img class="bc" src="assets/v12/bayad_center.png" alt="Bayad Center"></div>
+                <div><h5>Bayad App</h5><p>Bayad app bills payment is another quick way to top up.</p><img class="ba" src="assets/v12/bayad_app.png" alt="Bayad App"></div>
+              </div>
+              <!-- E-Voucher（线上 payTypeName 是 LazadaVoucher）：横版左右两栏 -->
+              <div class="vch sp" id="vch">
+                <div class="v1">
+                  <div class="vin"><img src="assets/v12/voucher_input_icon.png" alt=""><input id="vIn" inputmode="numeric" autocomplete="off" placeholder="Enter your E-Voucher Code" aria-label="E-Voucher Code"></div>
+                  <p class="verr" id="vErr">Please enter the correct 12-digit code</p>
+                  <button class="vbtn" id="vBtn" data-act="vsubmit" disabled>Submit</button>
+                  <div class="agree" id="agreeV" data-act="agree"><span class="cb"><i><img src="assets/chip_check.svg" alt=""></i></span><p>I agree with the <u data-act="vterms">Terms of Use</u> &amp; <u data-act="vprivacy">Privacy Policy</u>, and confirm that I am at least 21 years old.</p></div>
                 </div>
-                <div class="inp"><img src="assets/icon_peso.svg" alt=""><input id="amtIn" inputmode="decimal" value="100" aria-label="Deposit amount"><button class="clr" data-act="clear" aria-label="清空"><img src="assets/icon_clear.svg" alt=""></button></div>
+                <div class="v2"><h6>How To Use</h6><img src="assets/v12/voucher_steps.png" alt="How To Use"></div>
+              </div>
+              <div class="card" id="amtCard">
+                <!-- 快捷金额：默认选中的那一档左上角有 RECENT 或 HOT 角标 -->
+                <div class="amts" id="amts"></div>
+                <!-- 加载占位：6 个灰块 -->
+                <div class="amts-sk"><i class="sk"></i><i class="sk"></i><i class="sk"></i><i class="sk"></i><i class="sk"></i><i class="sk"></i></div>
+                <div class="inw">
+                  <div class="inp"><img src="assets/icon_peso.svg" alt=""><input id="amtIn" inputmode="decimal" autocomplete="off" value="100" placeholder="Min 10 - Max 100,000" aria-label="Deposit amount"><button class="clr" id="clr" data-act="clear" aria-label="清空"><img src="assets/icon_clear.svg" alt=""></button></div>
+                  <p class="tip" id="amtTip"></p>
+                </div>
               </div>
               <!-- 保障标识：放在金额下方，横版排成一排三张小卡（图标 + 两行小字），每张对齐上面两个金额按钮 -->
               <div class="trust">
@@ -328,9 +618,17 @@ img{display:block}
             </div>
           </div>
           <div class="ft" id="ft">
-            <div class="ft-row"><span class="ft-amt" id="ftAmt">₱ 100</span><button class="btn-red" data-act="deposit"><span class="bolt"><img src="assets/icon_bolt.svg" alt=""></span>Deposit</button></div>
+            <div class="ft-row"><span class="ft-amt" id="ftAmt">₱ 100</span><button class="btn-red" id="depBtn" data-act="deposit"><span class="bolt"><img class="b1" src="assets/icon_bolt.svg" alt=""><img class="b2" src="assets/v12/bolt_grey.png" alt=""></span>Deposit</button></div>
+            <!-- Rewards 行：有存款活动且金额大于 0 时出现 -->
+            <div class="rw" id="rw"><span class="rw-t">Rewards</span><div class="rw-s"><span class="rw-c"><img src="assets/v12/rw_bonus.png" alt="Bonus Credits"><b id="rwAmt">₱20</b></span></div></div>
             <div class="agree" id="agree" data-act="agree"><span class="cb"><i><img src="assets/chip_check.svg" alt=""></i></span><p>I agree with the <u data-act="terms">Terms of Use</u> &amp; <u data-act="privacy">Privacy Policy</u>, and confirm that I am at least 21 years old.</p></div>
           </div>
+        </section>
+        <!-- All Banks：竖版是底部抽屉（3 列），横版放进面板（6 列），点 Confirm 才生效 -->
+        <section class="pane banks" data-pane="banks">
+          <div class="hd"><button class="ib" data-act="banks-back" aria-label="返回"><span class="chev"><span><img src="assets/back.svg" alt=""></span></span></button><span class="ttl">All Banks</span><button class="ib" data-act="close" aria-label="关闭"><img src="assets/close.svg" alt=""></button></div>
+          <div class="body" id="bkBody"><div class="bkg" id="bkg"></div></div>
+          <div class="bkf"><button class="btn-red" data-act="banks-ok">Confirm</button></div>
         </section>
         <!-- 内嵌式付款页：沿用竖版「内嵌式渠道半浮层」 -->
         <section class="pane" data-pane="qr">
@@ -346,13 +644,74 @@ img{display:block}
               <div class="qr-note"><b>IMPORTANT NOTE:</b>Please make sure to use this QR code only Once and deposit the exact amount shown as above</div>
               <div class="qr-tx">Transaction: <b id="qrTx">202505131133043193543997D</b></div>
               <div class="scan-t">Scan with app to deposit</div>
-              <div class="row"><span class="l"><img src="assets/app_g.png" alt="">Deposit using Gcash</span><span class="open">Open</span></div>
-              <div class="row"><span class="l"><img src="assets/app_bank.png" alt="">Deposit using Gcash</span><span class="open">Open</span></div>
-              <div class="row"><span class="l"><img src="assets/app_maya.png" alt="">Deposit using Gcash</span><span class="open">Open</span></div>
-              <div class="row"><span class="l"><img src="assets/app_g.png" alt="">Deposit using Gcash</span><span class="open">Open</span></div>
-              <div class="row"><span class="l"><img src="assets/app_g.png" alt="">Deposit using Gcash</span><span class="open">Open</span></div>
-              <div class="row"><span class="l"><img src="assets/app_g.png" alt="">Deposit using Gcash</span><span class="open">Open</span></div>
+              <div class="row"><span class="l"><img src="assets/app_g.png" alt="">Deposit using Gcash</span><button class="open" data-act="app-open" data-i="0">Open</button></div>
+              <div class="row"><span class="l"><img src="assets/app_bank.png" alt="">Deposit using Gcash</span><button class="open" data-act="app-open" data-i="1">Open</button></div>
+              <div class="row"><span class="l"><img src="assets/app_maya.png" alt="">Deposit using Gcash</span><button class="open" data-act="app-open" data-i="2">Open</button></div>
+              <div class="row"><span class="l"><img src="assets/app_g.png" alt="">Deposit using Gcash</span><button class="open" data-act="app-open" data-i="3">Open</button></div>
+              <div class="row"><span class="l"><img src="assets/app_g.png" alt="">Deposit using Gcash</span><button class="open" data-act="app-open" data-i="4">Open</button></div>
+              <div class="row"><span class="l"><img src="assets/app_g.png" alt="">Deposit using Gcash</span><button class="open" data-act="app-open" data-i="5">Open</button></div>
             </div>
+          </div>
+        </section>
+        <!-- AUB 二维码页（示意，线上是否启用待确认）：横版左右两栏，左栏二维码，右栏信息和 Return -->
+        <section class="pane" data-pane="aub">
+          <div class="hd"><button class="ib" data-act="back" aria-label="返回"><span class="chev"><span><img src="assets/back.svg" alt=""></span></span></button><span class="ttl"></span><button class="ib" data-act="close" aria-label="关闭"><img src="assets/close.svg" alt=""></button></div>
+          <div class="qcols">
+            <div class="q-l aub">
+              <div class="qr-box r8"><i class="wb"></i><span class="code"><img src="assets/qr_code_src.png" alt="QR"></span><i class="cw"></i><span class="cl"><img src="assets/qr_center_src.png" alt=""></span></div>
+            </div>
+            <div class="q-c" id="aubR">
+              <img class="aub-logo" src="assets/v12/aub_logo.png" alt="AUB">
+              <div class="aub-t">GAME PLUS<br>Transaction: <span id="aubTx">202505131133043193543997D</span></div>
+              <div class="aub-a">Amount: <span id="aubAmt">PHP 100.00</span></div>
+              <p class="aub-n">IMPORTANT NOTE: Please make sure to use this QR code only ONCE and deposit the EXACT AMOUNT shown as above</p>
+              <button class="btn-red aub-r" data-act="close">Return</button>
+            </div>
+          </div>
+        </section>
+        <!-- Hybrid 页（示意，线上是否启用待确认）：横版左右两栏；页内没有 Return -->
+        <section class="pane" data-pane="hyb">
+          <div class="hd"><button class="ib" data-act="back" aria-label="返回"><span class="chev"><span><img src="assets/back.svg" alt=""></span></span></button><span class="ttl"></span><button class="ib" data-act="close" aria-label="关闭"><img src="assets/close.svg" alt=""></button></div>
+          <div class="qcols">
+            <div class="q-l hyb">
+              <div class="qr-box r8"><i class="wb"></i><span class="code"><img src="assets/qr_code_src.png" alt="QR"></span><i class="cw"></i><span class="cl"><img src="assets/qr_center_src.png" alt=""></span></div>
+            </div>
+            <div class="q-c" id="hybR">
+              <img class="hyb-logo" src="assets/v12/gz_logo_card.png" alt="GameZone">
+              <div class="hyb-a" id="hybAmt">Amount: ₱ 100.00</div>
+              <div class="qr-note"><b>IMPORTANT NOTE:</b>Please make sure to use this QR code only ONCE and deposit the exact amount shown as above</div>
+              <button class="btn-red hyb-b" data-act="hyb-open">Open In GCash</button>
+              <div class="qr-tx">Transaction: <b id="hybTx">202505131133043193543997D</b></div>
+            </div>
+          </div>
+        </section>
+        <!-- Pay&Go 现金码页（没有二维码）：上面左头卡右明细卡，下面通栏 How To Cash In，整页上下滑动 -->
+        <section class="pane" data-pane="paygo">
+          <div class="hd"><button class="ib" data-act="back" aria-label="返回"><span class="chev"><span><img src="assets/back.svg" alt=""></span></span></button><span class="ttl"></span><button class="ib" data-act="close" aria-label="关闭"><img src="assets/close.svg" alt=""></button></div>
+          <div class="body pgo" id="pgBody">
+            <div class="pg-top">
+              <div class="pg-h" id="pgHead">
+                <i class="pg-logo" role="img" aria-label="GameZone"></i>
+                <div>Cash in code</div>
+                <div class="pg-code" id="pgCode">482913</div>
+                <div class="pg-v">Valid For 2 Hours, Please Take A Screenshot.</div>
+              </div>
+              <div class="pg-d" id="pgDetail">
+                <div><span>Amount Due</span><b id="pgDue">PHP 200.00</b></div>
+                <div><span>Cash In Amount</span><b id="pgCash">PHP 200.00</b></div>
+                <div><span>Service Fee</span><b>PHP 0.00</b></div>
+                <div><span>Vaild Until</span><b id="pgUntil">2026-Nov-23 18:44:49</b></div>
+                <div><span>Transaction:</span><b id="pgTx">202505131133043193543997D</b></div>
+              </div>
+            </div>
+            <h3 class="pg-t">How To Cash In</h3>
+            <ol class="pg-ol">
+              <li>Visit A Pay&amp;Go Kiosk, Tap "Cash In" On The Display Screen, And Select GameZone.</li>
+              <li>Enter Your 6-Digit Cash In Code, Amount, And Your GameZone Registered Mobile Number.</li>
+              <li>Insert The Exact Cash Amount Into The Machine (The Kiosk Does Not Provide Change).</li>
+              <li>Make Sure The Cash-In Is Successful (Check SMS Or Balance) Before Leaving The Store.</li>
+              <li>PIN Code Can Be Used Within Its Validity. Reapplying Will Automatically Extend The Validity.</li>
+            </ol>
           </div>
         </section>
         <!-- 协议页：竖版点链接打开整页 Terms & Policies（两个页签），横版放进面板，表头和页签合成一行 -->
@@ -588,6 +947,8 @@ img{display:block}
             <!-- 从协议行打开时（同线上 confirm 模式）：滑到底出现 I Agree，点了回到表单并勾选协议 -->
             <div class="tagree"><button class="btn-red" data-act="terms-agree">I Agree</button></div>
           </div>
+          <!-- 「滑到底部」悬浮按钮（同线上）：正文没滑到底时显示，滑到底后隐藏 -->
+          <button class="tfab" id="tFab" data-act="tfab" aria-label="滑到底部"><svg viewBox="0 0 22 22" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 3v11.5M6 10l5 5 5-5M5.5 19h11"/></svg></button>
         </section>
         <!-- 教程：竖版是整页，横版放进抽屉 -->
         <section class="pane guide" data-pane="guide">
@@ -595,7 +956,16 @@ img{display:block}
           <div class="body"><img src="assets/tut_cards.jpg" alt="教程"></div>
         </section>
       </aside>
-      <!-- iOS 拦截新标签页时的 Tips 弹窗：沿用竖版，居中 -->
+      <!-- 键盘弹起（示意）：仿真数字键盘，面板缩到它上方 -->
+      <div class="kb" id="kb">
+        <div class="kb-t">键盘（示意）</div>
+        <div class="kb-g">
+          <button data-k="1">1</button><button data-k="2">2</button><button data-k="3">3</button><button data-k="4">4</button><button data-k="5">5</button>
+          <button data-k="6">6</button><button data-k="7">7</button><button data-k="8">8</button><button data-k="9">9</button><button data-k="0">0</button>
+          <button data-k=".">.</button><button data-k="del" aria-label="删除">⌫</button><button class="kb-done" data-k="done">完成</button>
+        </div>
+      </div>
+      <!-- iOS Safari 先弹的 Tips 弹窗：沿用竖版，居中 -->
       <div class="dmask" id="tips">
         <div class="tips">
           <div class="t">Tips</div>
@@ -610,8 +980,8 @@ img{display:block}
       <div class="csheet" id="csheet">
         <div class="cs-hd">Confirm Deposit<button class="cs-x" data-act="confirm-close" aria-label="关闭"><img src="assets/close.svg" alt=""></button></div>
         <div class="cs-box">
-          <div class="cs-amt" id="csAmt">₱100</div>
-          <div class="cs-badge"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10.5846 1.2L3.2 10.9263H8.61538L7.63077 18.8L16 8.14737H10.0923L10.5846 1.2Z" fill="#3D8BFF"/></svg>Bilis ng GameZone! Pasok agad ang funds!</div>
+          <div class="cs-amt" id="csAmt">₱100.00</div>
+          <div class="cs-badge"><img src="assets/v12/bolt_blue.png" alt="">Bilis ng GameZone! Pasok agad ang funds!</div>
           <p class="cs-via" id="csVia">Via GCash</p>
         </div>
         <div class="cs-bt"><button class="btn-red cs-btn" data-act="confirm-go">Confirm — Credited in Seconds</button></div>
@@ -624,6 +994,122 @@ img{display:block}
           <div class="bt"><button class="b-out" data-act="agree-cancel">Cancel</button><button class="btn-red" data-act="agree-ok">Agree</button></div>
         </div>
       </div>
+      <!-- ========== v12 补的弹窗：带插图的竖版是图上字下，横版改成左图右文 ========== -->
+      <!-- 渠道维护：点维护中的渠道。点按钮或 ✕ 切到第一个可用渠道，点蒙层只关闭 -->
+      <div class="dmask" id="dMaint">
+        <div class="dlg w480">
+          <div class="dt">Under Maintenance</div>
+          <button class="dx" data-act="maint-ok" aria-label="关闭"><img src="assets/tips_close.svg" alt=""></button>
+          <div class="dr"><img class="mi" src="assets/v12/maintain_gcash.png" alt=""><p id="maintTx">DPAY is currently under maintenance. Alas is on it! Your funds are safe. Please use another payment method for now.</p></div>
+          <div class="df"><button class="btn-red" data-act="maint-ok">Try Another Method</button></div>
+        </div>
+      </div>
+      <!-- Pay&Go 没绑手机号 -->
+      <div class="dmask" id="dPhone">
+        <div class="dlg">
+          <div class="dt">Mobile Number Required</div>
+          <button class="dx" data-act="phone-x" aria-label="关闭"><img src="assets/tips_close.svg" alt=""></button>
+          <div class="db w">To use this payment channel, please link your mobile number before making a deposit.</div>
+          <div class="df"><button class="btn-red" data-act="phone-link">Link Now</button></div>
+        </div>
+      </div>
+      <!-- 系统维护公告：每次打开面板时弹；没有右上关闭，点蒙层不关 -->
+      <div class="dmask" id="dSys">
+        <div class="dlg w371">
+          <div class="dt">System Maintenance</div>
+          <div class="db">System is under maintenance.</div>
+          <div class="df"><button class="btn-red" data-act="sys-ok">OK</button></div>
+        </div>
+      </div>
+      <!-- VIP 奖励待领取：打开面板约 0.8 秒后自动弹；点蒙层不关 -->
+      <div class="dmask" id="dVip">
+        <div class="dlg w292">
+          <div class="dt">Congratulations!</div>
+          <button class="dx" data-act="vip-x" aria-label="关闭"><img src="assets/tips_close.svg" alt=""></button>
+          <div class="vipc"><span>Bonus Credits</span><img src="assets/v12/rw_bonus.png" alt=""><b>₱100</b></div>
+          <div class="df"><button class="btn-red" data-act="vip-claim">Claim Now</button></div>
+        </div>
+      </div>
+      <!-- 防沉迷存款限额：强提醒没有 ✕ 和 Continue -->
+      <div class="dmask" id="dAnti">
+        <div class="dlg w560">
+          <div class="dt">Notice</div>
+          <button class="dx" data-act="anti-continue" aria-label="关闭"><img src="assets/tips_close.svg" alt=""></button>
+          <div class="dr"><img class="sp-img" src="assets/v12/spokesperson.png" alt="">
+            <div class="dc"><p class="ph">（提醒文案由运营在 OMS 防沉迷配置里填写）</p><button class="gs" data-act="anti-settings">Go To Settings</button></div></div>
+          <div class="df"><button class="b-out" data-act="anti-continue">Continue</button><button class="btn-red" data-act="anti-break">Take a Break</button></div>
+        </div>
+      </div>
+      <!-- eKYC：Account Security（弱、强两种只差在点 ✕ 的结果） -->
+      <div class="dmask" id="dEkyc">
+        <div class="dlg w480">
+          <div class="dt">Account Security</div>
+          <button class="dx" data-act="ekyc-x" aria-label="关闭"><img src="assets/tips_close.svg" alt=""></button>
+          <div class="dr"><div class="ekph">eKYC 状态插图（线上素材）</div>
+            <div class="dc"><div class="et">Please Complete KYC Verification</div><div class="eb">（提示文案由后端返回）</div></div></div>
+          <div class="df"><button class="btn-red" data-act="ekyc-verify">Verify Now</button></div>
+        </div>
+      </div>
+      <!-- eKYC：7 天强制 KYC -->
+      <div class="dmask" id="dKyc7">
+        <div class="dlg">
+          <div class="dt">Notice</div>
+          <button class="dx" data-act="kyc7-x" aria-label="关闭"><img src="assets/tips_close.svg" alt=""></button>
+          <div class="db w">According to PAGCOR<br>regulations, users must complete KYC<br>verification first.</div>
+          <div class="df"><button class="btn-red" data-act="kyc7-go">GO</button></div>
+        </div>
+      </div>
+      <!-- 反洗钱：协议通过后检查；弹了就不再弹 Confirm Deposit -->
+      <div class="dmask" id="dAml">
+        <div class="dlg w520">
+          <div class="dt">Account Security Alert</div>
+          <button class="dx" data-act="aml-ok" aria-label="关闭"><img src="assets/tips_close.svg" alt=""></button>
+          <div class="dr"><img class="ai" src="assets/v12/aml_icon.png" alt="">
+            <div class="at"><p>Your account requires a standard review based on our security policies and regulatory requirements. Some features are temporarily unavailable.</p><p class="li">• Deposits are currently disabled.</p><p class="li">• You may be asked to manage your remaining balance.</p><p>For help, please contact Support.</p></div></div>
+          <div class="df"><button class="cs" data-act="aml-cs" aria-label="客服"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 13v-1a8 8 0 0 1 16 0v1"/><rect x="2.5" y="12.5" width="4.5" height="7" rx="2" fill="#fff" stroke="none"/><rect x="17" y="12.5" width="4.5" height="7" rx="2" fill="#fff" stroke="none"/><path d="M19.5 19.5v.2a2.3 2.3 0 0 1-2.3 2.3H13.5"/></svg></button><button class="btn-red" data-act="aml-ok">I Got It</button></div>
+        </div>
+      </div>
+      <!-- 接口限流：QRPh 付款页点 App 列表某一行时的请求被限流才弹 -->
+      <div class="dmask" id="dRate">
+        <div class="dlg">
+          <div class="dt">Notice!</div>
+          <button class="dx" data-act="rate-ok" aria-label="关闭"><img src="assets/tips_close.svg" alt=""></button>
+          <div class="db">We're experiencing high traffic at the moment. Please try again in a few moments.</div>
+          <div class="df"><button class="btn-red" data-act="rate-ok">OK</button></div>
+        </div>
+      </div>
+      <!-- Pay Now 提示：扫码类渠道返回网页地址 -->
+      <div class="dmask" id="dPayNow">
+        <div class="dlg">
+          <div class="dt">Tips</div>
+          <button class="dx" data-act="paynow-x" aria-label="关闭"><img src="assets/tips_close.svg" alt=""></button>
+          <div class="db">Your payment page will open in a new tab. Tap Pay Now to continue.</div>
+          <div class="df"><button class="btn-red" data-act="paynow-go">Pay Now</button></div>
+        </div>
+      </div>
+      <!-- E-Voucher 成功 -->
+      <div class="dmask" id="dVok">
+        <div class="dlg">
+          <div class="dt">Congratulations</div>
+          <div class="vs">Deposit Successful</div>
+          <div class="va" id="vokAmt">₱ 500</div>
+          <div class="df"><button class="btn-red" data-act="vok-ok">OK</button></div>
+        </div>
+      </div>
+      <!-- E-Voucher 失败：没有标题栏 -->
+      <div class="dmask" id="dVfail">
+        <div class="dlg w292">
+          <img src="assets/v12/voucher_failed.png" alt="">
+          <p>Something wrong, Please try<br>again later</p>
+          <button class="btn-red" data-act="vfail-ok">OK</button>
+        </div>
+      </div>
+      <!-- 全屏 loading：点 Confirm 后每一单都有 -->
+      <div class="ld" id="loading">
+        <div class="ld-c"><img src="assets/v12/loading.webp" alt=""><p id="ldT">Connecting to GCash...</p><span>Please don't close this page</span></div>
+      </div>
+      <!-- Toast：距顶 25%、水平居中，同一时刻只留一条 -->
+      <div class="toast" id="toast" role="status"><span></span></div>
       <!-- 新标签页 1：第三方付款页（示意） -->
       <div class="tab tab-pay" id="tabPay">
         <div class="pay-top"><span class="lg" id="payLogo"></span><span>第三方付款页（示意，非真实页面）</span></div>
@@ -635,8 +1121,14 @@ img{display:block}
           <div class="pay-tip">新标签页打开，原游戏标签页保留</div>
         </div>
       </div>
-      <!-- 新标签页 2：充值成功页（方案 C） -->
+      <!-- 新标签页 2：付款结果页。先显示「确认中」，查到成功后换成充值成功页（方案 C） -->
       <div class="tab tab-ok" id="tabOk">
+        <!-- 确认中：只有 Logo、一行字和牌照，没有按钮 -->
+        <div class="okw" id="okWait">
+          <img class="okw-logo" src="assets/ok_gz_logo.svg" alt="GameZone">
+          <p>Confirming your deposit...</p>
+          <div class="ok-lic"><span>Officially Licensed by</span><img class="pg" src="assets/ok_pagcor.png" alt="PAGCOR"><img class="rg" src="assets/ok_21.png" alt="21+"></div>
+        </div>
         <!-- 横版：左边打勾和成功金额，右边充值信息、按钮和牌照，一屏放下 -->
         <div class="ok2" id="okScroll">
           <div class="okc-l">
@@ -664,19 +1156,61 @@ img{display:block}
   </div>
 </div>
 <div class="notes">
-  <h2>v11：在 v10 基础上补确认弹窗（11/23 用户：横版没有确认弹窗，和竖版冲突）</h2>
+  <h2>v12：把线上竖版有、横版演示还缺的界面、弹窗和状态补齐（11/24）</h2>
+  <p><b>怎么看</b>：点右上角「模拟场景」，勾选或选择一种情况，再照常点充值走一遍。「重置」会把页面和全部模拟项恢复到刚打开的样子。已定的排版没动：面板 740 居中、表头 44、渠道一排、6 个快捷金额一排、保障标识横排三张小卡、Confirm Deposit 确认框、协议 Tips、协议页、QRPh 两栏、教程、成功页两栏。</p>
+  <h2>这一版补了什么</h2>
   <ol>
-    <li><b>Confirm Deposit 确认框</b>：点 Deposit 后照竖版弹出（竖版是底部抽屉，宽 390），横版在面板上方从底部弹出、水平居中，高度约 271，在可视区内：金额、Bilis ng GameZone! Pasok agad ang funds!、Via 渠道名，点 Confirm — Credited in Seconds 才建单并按渠道继续，点 ✕ 关闭不建单。</li>
-    <li><b>协议 Tips</b>：协议没勾选时点 Deposit 先弹（同竖版，居中、宽 350、无关闭），Cancel 不继续，Agree 自动勾选后弹确认框；Tips 里的链接打开协议页（没有 I Agree），返回回到 Tips。</li>
-    <li><b>iOS Safari Tips 建单时机更正</b>：弹出时还没建单，点 Got It 或 ✕ 时才建单并新开付款页（同竖版代码）。</li>
-    <li><b>协议页正文</b>：换成线上 Terms &amp; Policies 全文（2026-10-21 版本，Terms Of Use 42 个章节、Privacy Policy 13 个章节）。</li>
-<li><b>快捷金额去掉 +24 角标</b>：6 个金额按钮只显示金额。</li>
-    <li><b>充值成功页</b>：左右两栏一屏放下。左栏自上而下 Logo、金额（放上面、最醒目）、打勾盾牌和 Deposit Successful（都缩小）；右栏充值信息（Type、User account、Time）、Back to GameZone 和牌照。</li>
-    <li><b>协议页</b>：点协议行里的 Terms of Use 或 Privacy Policy，在充值面板内打开 Terms &amp; Policies（竖版是整页）；表头和页签合成一行（左返回、中间两个页签、右关闭），停在点的那个页签，正文按面板宽度排、上下滑动；滑到底出现 I Agree，点了回到充值表单并勾选协议；只点返回则回到表单，已选渠道、金额和勾选不变（打开方式和交互同线上，线上竖版是盖在充值浮层上的整屏 Terms &amp; Policies）。</li>
-    <li><b>保障标识</b>：在金额输入框下方，横排三张小卡（图标 + 两行小字），每张对齐上面两个金额按钮，向下滑动查看；底部固定区只有 ₱ 金额和 Deposit。</li>
-    <li><b>其余同 v7</b>：Tips 点 Got It 或 ✕ 进付款页、教程返回 Tips、金额为空不显示底栏；面板 740 居中、金额按钮原宽一排 6 个、8 个支付方式可左右滑动、二维码页两栏。</li>
+    <li><b>二级渠道一排</b>：选 Bankcard 出现 17 家银行，选 OTC 出现 Pay&amp;Go、LoadCentral、Bayad Center，选 Traxion 出现 14 个机构。4 个及以上时最左边有 All，点开 All Banks（竖版是底部抽屉、3 列，横版放进面板、6 列），点格子只是临时选中，点 Confirm 才生效。这一排会把金额区往下挤：首屏只露出快捷金额的上半截，金额输入框要向下滑才看得到（照线上的堆叠顺序，没有另做排法）。</li>
+    <li><b>快捷金额</b>：默认选中的那一档左上角有角标，有充值记录标 RECENT，没有充值记录标 HOT；可以切成 9 个档位（每排 6 个，自动换成两排）；打开面板的头 0.4 秒是加载占位（金额 6 个灰块、渠道 1 张灰卡）。右上角的 +N 奖励角标按已定口径不显示。</li>
+    <li><b>金额输入框</b>：清空后显示 Min 10 - Max 100,000，清空按钮消失，底部固定区整条隐藏；金额不到 10、或 Pay&amp;Go 的金额不是 100 的倍数时，输入框正下方出红字；点到别处后自动改成合法金额。横屏下这行红字正好被底部固定区挡住，演示在红字出现时把表单往上滑一点让它露出来，红字消失再滑回去。这是<b>演示的做法，红字放在哪里待 UI 确认</b>。</li>
+    <li><b>渠道维护</b>：维护中的渠道卡变暗并写 Under Maintenance，点它不切换渠道，而是弹 Under Maintenance 弹窗；全部渠道维护时常驻一条提示 Under Maintenance. Please switch Payment Methods。</li>
+    <li><b>三种特殊渠道</b>：LoadCentral、Bayad Center 只有说明卡，没有金额区和 Deposit（横版把说明卡分成左右两栏、三栏）；E-Voucher 是输入 12 位凭证码加 Submit（横版左边输入和按钮、右边 How To Use），成功、失败各一个弹窗。</li>
+    <li><b>底部固定区</b>：有存款活动时多一行 Rewards；系统维护时 Deposit 置灰、点不了。</li>
+    <li><b>键盘弹起</b>：面板缩到键盘上方，表头、渠道、快捷金额、保障标识、Rewards 行和协议行暂时收起，只留金额输入框（含红字）和「₱ 金额 + Deposit」一行。这是方案里的<b>建议做法，待开发确认</b>（线上现在没有针对键盘做任何处理）。</li>
+    <li><b>点 Deposit 后的检查</b>，顺序同线上：防沉迷 Notice → eKYC（Account Security，或 7 天强制 KYC 的 Notice）→ 协议 Tips → 反洗钱 Account Security Alert → Confirm Deposit。防沉迷、eKYC、反洗钱、渠道维护这四个弹窗带插图，竖版是图在上、字在下，高度超过横屏可视区，横版改成左图右文。</li>
+    <li><b>其他弹窗</b>：Pay&amp;Go 没绑手机号的 Mobile Number Required、系统维护公告、VIP 奖励待领取的 Congratulations!、扫码类渠道返回网页地址时的 Pay Now 提示、接口限流的 Notice!。</li>
+    <li><b>点 Confirm 后</b>：每一单都先出全屏 loading（Connecting to 渠道名...）。演示里停 0.8 秒就进下一步；建单超时会提示 Connection timeout, please try again（线上是 10 秒，演示缩短为 3 秒）。</li>
+    <li><b>内嵌付款页</b>：在 QRPh 二维码页之外，补了 AUB 二维码页、Hybrid 页和 Pay&amp;Go 现金码页（没有二维码：上面左边现金码、右边订单明细，下面是 How To Cash In 五步）。Pay&amp;Go 到账后过 3 秒才自动关闭面板（线上如此）。</li>
+    <li><b>付款结果页</b>：先显示 1 秒 Confirming your deposit...（只有 Logo、这一行字和牌照），再换成充值成功页。</li>
+    <li><b>协议页</b>：右下角有一个圆形的「滑到底部」按钮，点了滑到正文底部，滑到底后消失（线上有，厅内协议页也显示）。</li>
+    <li><b>两处改成和线上一致</b>：在第三方付款页点「不付款，直接切回游戏标签页」，面板保持原样，渠道和金额都在（以前的演示会把面板关掉）；Confirm Deposit 里的金额带千分位和两位小数，例如 ₱100.00（底部固定区的金额按竖版 UI 稿仍是 ₱ 100）。</li>
   </ol>
-  <p class="dim">演示说明：底图是安卓 Chrome 横屏真机截图，网页可视区约 863×318；内嵌式渠道的付款页都用 QRPh 页示意；第三方付款页是示意页；余额高亮只是演示提示，真实产品只刷新数字；Confirm Deposit 确认弹框等界面没做，规则以 Figma 方案页为准。勾选上方「模拟 iOS 拦截新标签页」可看 Tips 弹窗和教程。</p>
+  <h2>几条线上规则（演示照做）</h2>
+  <ol>
+    <li><b>iOS Safari 的 Tips</b>：没勾过 Don't show this again 的 iOS Safari 玩家，用新开标签页付款的渠道时，<b>每次点 Confirm 都先弹</b>，不是被拦了才弹。弹出时还没建单，点 Got It 或 ✕ 才建单并新开付款页。勾了 Don't show this again 再点 Got It 或 ✕ 之后不再弹（演示里点「重置」恢复）。</li>
+    <li><b>协议</b>：协议没勾选点 Deposit 先弹协议 Tips。账号需要完整条款确认时不弹 Tips，直接打开协议页（这一种只在这里说明，「模拟场景」里没有对应的项）。</li>
+    <li><b>渠道维护弹窗</b>：点 Try Another Method 或 ✕ 会自动切到第一个可用渠道；点弹窗外面只关闭、不切换。</li>
+    <li><b>eKYC 的 Account Security</b>：弱弹窗点 ✕ 可以继续充值，强弹窗点 ✕ 充值中断；点 Verify Now 都是去认证页、本次充值中断。</li>
+    <li><b>接口限流的 Notice!</b>：这条链路上只有一处会弹，就是 QRPh 付款页里点 App 列表某一行时。点 Deposit、点 Confirm 的请求被限流时，线上既不弹窗也没有提示。</li>
+    <li><b>全部渠道维护时</b>：线上不弹渠道维护弹窗，只有那条常驻提示，所以演示里这时点渠道没有反应；Bankcard、OTC 下面的子渠道也一起显示成维护中。</li>
+  </ol>
+  <h2>哪些是示意（不是线上的真实画面或文案）</h2>
+  <ol>
+    <li>防沉迷 Notice 的正文：线上由运营在 OMS 防沉迷配置里填写，演示写的是灰色占位说明。</li>
+    <li>eKYC Account Security 的插图和正文：插图没取到线上素材，用灰色占位块；正文由后端返回，演示写的是占位说明。</li>
+    <li>VIP 奖励待领取弹窗里奖品卡的排法细节、配色和字号：线上代码只查到卡片尺寸（80×100）和内容（奖品名在上、图标加金额在下）。</li>
+    <li>协议页「滑到底部」按钮的底色：线上取主题色，具体色值没查到，演示用 #3A4250；图标是照描述画的。反洗钱弹窗里的耳机图标也是照描述画的。</li>
+    <li>去绑定手机号、去 eKYC 认证、回首页、去 Responsible Gaming 设置页、打开客服、唤起 App 这些会离开充值面板的操作，演示只弹一条带括号的提示，例如「去绑定手机号页（平台页面，演示不做）」。</li>
+    <li>第三方付款页和它的网址、AUB 和 Hybrid 页里的二维码、底图上的游戏大厅，都是示意。余额变化时的高亮只是演示提示，真实产品只刷新数字。</li>
+    <li>仿真键盘只是为了看面板怎么缩，不是真实键盘；点它右下角的「完成」等于关掉「键盘弹起」这个模拟项。</li>
+  </ol>
+  <h2>哪些是示例值</h2>
+  <ol>
+    <li>快捷金额 9 个档位里的后 3 个（₱3,000、₱5,000、₱10,000）。</li>
+    <li>Rewards 行的金额：按当前金额的 20% 显示。₱100 对应 ₱20 是 UAT 截图里的真实例子，其余金额是按比例推的。</li>
+    <li>E-Voucher 充值成功的 ₱500；凭证码输 0000 0000 0000 看失败弹窗，输其他 12 位数字看成功弹窗。</li>
+    <li>VIP 奖励的 ₱100、Pay&amp;Go 的现金码 482913 和手续费 PHP 0.00、各付款页的单号、成功页的 User account（Matteo）。</li>
+    <li>系统维护公告的标题和正文：线上取站点配置，演示用的是组件默认值 System Maintenance 和 System is under maintenance.。</li>
+    <li>Bankcard 的 17 家银行：名单和顺序照 UAT 的 All Banks 截图。线上每张银行卡是后台配的图片（选中的样子也是图片自带的），演示没有这些图，用文字卡加统一的选中样式代替。</li>
+  </ol>
+  <h2>线上是否启用，待确认</h2>
+  <ol>
+    <li><b>E-Voucher、Traxion</b>：线上代码里有这两种渠道，但渠道列表由后端下发，生产环境有没有打开没查到，所以放在渠道一排的最后。</li>
+    <li><b>AUB、Hybrid</b>：线上是两种独立的渠道类型，是否启用、排在渠道列表的哪里都没查到。演示不给它们单独的渠道卡，只能在「模拟场景 → 扫码类渠道的付款页」里切换来看页面。</li>
+    <li><b>OTC 下面的子渠道</b>：Pay&amp;Go、LoadCentral、Bayad Center 三个是照 UAT 截图放的，生产环境开了哪几个待确认。</li>
+    <li>InstaPay、DPAY、GameZone In-Store 在演示里按「新开标签页付款」示意，线上实际怎么付款要以生产的渠道清单为准。</li>
+  </ol>
+  <p class="dim">演示说明：底图是安卓 Chrome 横屏真机截图，网页可视区约 863×318；手机上请横屏看（会裁掉手机外壳，只显示网页可视区）。文案以竖版 UI 稿为准，所以协议行是 I agree with the Terms of Use &amp; Privacy Policy…、成功页时间是 12 小时制。规则以 Figma 方案页为准。</p>
 </div>
 <script>
 (function(){
@@ -697,103 +1231,400 @@ img{display:block}
     }
   }
   new ResizeObserver(fit).observe(stage); fit();
+  [$('#web'),dev,stage].forEach(el=>el.addEventListener('scroll',()=>{if(el.scrollTop||el.scrollLeft){el.scrollTop=0;el.scrollLeft=0;}})); // 这三层本身不滚动：万一被浏览器滚走（例如为了露出键盘焦点、页内查找），马上归位
 
-  const CH={gcash:{n:'GCash',emb:false,url:'m.gcash.com/payment/checkout'},bankcard:{n:'Bankcard',emb:true},otc:{n:'OTC',emb:true},qrph:{n:'QRPh',emb:true},grabpay:{n:'GrabPay',emb:false,url:'pay.grab.com/checkout'},instapay:{n:'InstaPay',emb:true},dpay:{n:'DPAY',emb:true},instore:{n:'In-Store',emb:true}};
-  const S0={bal:59.14,ch:'gcash',amt:100,agree:false,open:false,pane:'form',pending:null,tab:'game',noShow:false};
-  let S=JSON.parse(JSON.stringify(S0));
+  // ---------- 数据 ----------
+  const A="assets/v12/"; // v12 素材目录。脚本里的素材地址都以双引号加素材目录名开头，存档时按老办法替换路径前缀即可
+  const CK='<i class="ck"><img src="assets/chip_check.svg" alt=""></i>', MT='<i class="mt"><b>Under Maintenance</b></i>';
+  // Bankcard 的 17 家银行：名单和顺序照 UAT 的 All Banks 截图
+  const BANKS=['BDO','BPI','CARD Bank','CIMB Bank','CTBC Bank','Chinabank','DBP','Equicom','Landbank','Maybank','Metrobank','PNB','RCBC Bankard','Security Bank','PSBank','UnionBank','EastWest'];
+  const OTC=['Pay&Go','LoadCentral','Bayad Center'];
+  // Traxion 的 14 个机构（线上写死在前端，界面上只显示图片）
+  const TRX=[['cebl','Cebuana Lhuillier'],['cvm','CVM Pawnshop'],['ecpy','ECPay (GCash/Payment Centers)'],['mlh','M. Lhuillier'],['plwn','Palawan Pawnshop'],['posb','Posible Partners (Family Mart, Phoenix)'],['prhb','Perahub'],['rdp','RD Pawnshop'],['rds','Robinsons Dept Store'],['rlnt','RuralNet Banks and Coops'],['smr','SM Dept/Supermarket/Savemore Counter'],['tbtg','Tambunting Pawnshop'],['ussc','USSC'],['vlrc','Villarica Pawnshop']];
+  // kind：url = 返回三方网页地址、新开标签页付款；scan = 扫码类（按「扫码类渠道的付款页」模拟项分流）；otc = 看子渠道；voucher = 凭证码。网址都是示意
+  const CH={
+    gcash:{n:'GCash',kind:'url',url:'m.gcash.com/payment/checkout'},
+    bankcard:{n:'Bankcard',kind:'scan',url:'pay.example.com/qrph/checkout',subs:BANKS},
+    otc:{n:'OTC',kind:'otc',subs:OTC},
+    qrph:{n:'QRPh',kind:'scan',url:'pay.example.com/qrph/checkout'},
+    grabpay:{n:'GrabPay',kind:'url',url:'pay.grab.com/checkout'},
+    instapay:{n:'InstaPay',kind:'url',url:'pay.example.com/instapay/checkout'},
+    dpay:{n:'DPAY',kind:'url',url:'pay.example.com/dpay/checkout'},
+    instore:{n:'In-Store',kind:'url',url:'pay.example.com/in-store/checkout'},
+    voucher:{n:'E-Voucher',kind:'voucher'},
+    traxion:{n:'Traxion',kind:'url',url:'pay.example.com/traxion/checkout',trx:true}
+  };
+  const ORDER=Object.keys(CH);
+  const PANE={form:'充值表单',banks:'All Banks',qr:'QRPh 付款页',aub:'AUB 付款页',hyb:'Hybrid 付款页',paygo:'Pay&Go 现金码页',guide:'教程',terms:'协议页'};
+  const LAST=100; // 账号上次充值的金额（示例）：RECENT 角标标在这一档
+
+  // ---------- 状态 ----------
+  const S0={bal:59.14,ch:'gcash',sub:{bankcard:0,otc:0,traxion:0},str:'100',amt:100,touched:false,agree:false,open:false,pane:'form',pending:null,tab:'game',noShow:false,noShowSaved:false,sess:0,skel:false,confirm:false,flow:null,iosWait:null,bk:null,doc:'terms',termsConfirm:true,backTo:null,vcode:'',vipDue:false,vipShown:false,okWait:false};
+  let S=JSON.parse(JSON.stringify(S0)), gen=0;
+  const later=(ms,fn)=>{const g=gen;setTimeout(()=>{if(g===gen)fn();},ms);}; // 「重置」后旧的定时不再生效
+  const on=id=>$('#'+id).checked, val=id=>$('#'+id).value; // 读模拟项
   const fmt=(v,d)=>v.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
   const short=v=>Number.isInteger(v)?fmt(v,0):fmt(v,2);
-  const txId=()=>{const d=new Date(),p=n=>String(n).padStart(2,'0');let r='';for(let i=0;i<10;i++)r+=Math.floor(Math.random()*10);return d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+p(d.getHours())+p(d.getMinutes())+p(d.getSeconds())+r+'D';};
+  const trunc2=v=>Math.floor(v*100+1e-6)/100; // 截断到两位小数，不四舍五入（同线上 Confirm Deposit）
+  const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  const p2=n=>String(n).padStart(2,'0');
+  const txId=()=>{const d=new Date();let r='';for(let i=0;i<10;i++)r+=Math.floor(Math.random()*10);return d.getFullYear()+p2(d.getMonth()+1)+p2(d.getDate())+p2(d.getHours())+p2(d.getMinutes())+p2(d.getSeconds())+r+'D';};
+  const show=id=>$('#'+id).classList.add('on'), hide=id=>$('#'+id).classList.remove('on');
+  const modal=()=>$$('.dmask.on').length>0||S.confirm||$('#loading').classList.contains('on'); // 有弹窗、确认框或 loading 盖着
+
+  // ---------- 渠道 ----------
+  const isPayGo=()=>S.ch==='otc'&&S.sub.otc===0, isLC=()=>S.ch==='otc'&&S.sub.otc===1, isBayad=()=>S.ch==='otc'&&S.sub.otc===2, isVoucher=()=>S.ch==='voucher';
+  const basic=()=>!isLC()&&!isBayad()&&!isVoucher(); // 有金额区和底部固定区的渠道
+  const dispName=()=>{const c=CH[S.ch];return c.subs?c.subs[S.sub[S.ch]]:c.n;}; // Via 和 loading 里的渠道显示名：有子渠道时用子渠道名
+  const maint=ch=>on('simMaintAll')||(on('simMaintOne')&&ch==='dpay');
+  const subMaint=ch=>on('simMaintAll')&&!!CH[ch].subs; // 全部渠道维护时，Bankcard、OTC 的子渠道一起显示成维护中
+  const firstAvail=()=>ORDER.find(c=>!maint(c))||null;
+  function autoSwitch(){if(maint(S.ch)){const f=firstAvail();if(f){S.ch=f;return true;}}return false;} // 选中的渠道在维护：自动切到第一个可用渠道
+  function guardPayGo(){ // Pay&Go 没绑手机号：弹 Mobile Number Required，并切到 LoadCentral。表单不在眼前时（有别的弹窗、在别的页面、正在走充值流程）先不弹，回到表单再弹
+    if(S.open&&S.tab==='game'&&S.pane==='form'&&!S.skel&&!S.flow&&!modal()&&isPayGo()&&on('simNoPhone')){S.sub.otc=1;show('dPhone');}}
+  function afterPick(){guardPayGo();if(document.activeElement!==amtIn)fixAmt();}
+  function pickCh(ch){
+    if(on('simMaintAll'))return; // 全部渠道维护：线上不弹渠道维护弹窗，只有常驻提示
+    if(maint(ch)){$('#maintTx').textContent=CH[ch].n+' is currently under maintenance. Alas is on it! Your funds are safe. Please use another payment method for now.';show('dMaint');return;} // 维护中的渠道：不切换，弹渠道维护弹窗
+    if(S.ch!==ch){S.ch=ch;afterPick();}
+  }
+  function closePanel(){S.open=false;S.flow=null;S.confirm=false;S.bk=null;S.backTo=null;S.iosWait=null; // 关面板：没走完的充值流程、还开着的弹窗和 loading 一并收掉
+    document.querySelectorAll('.dmask.on').forEach(d=>d.classList.remove('on'));loading(null);}
+  function settle(){guardPayGo();render();tryVip();} // 每次操作收尾：补上之前没弹成的没绑手机号弹窗，刷新界面，再看 VIP 奖励弹窗该不该弹
+
+  // ---------- 金额 ----------
+  const tiers=()=>on('simTiers')?[100,200,300,500,1000,2000,3000,5000,10000]:[100,200,300,500,1000,2000];
+  function badgeTier(){const t=tiers(); // 角标标在哪一档，也是默认选中的那一档（规则同线上）
+    if(on('simNew')){if(t.includes(200))return 200;const lo=t.filter(v=>v<200);return lo.length?lo[lo.length-1]:t[0];} // 没有充值记录：HOT 标 ₱200；没有 200 取小于它的最大档，再没有取最小档
+    if(t.includes(LAST))return LAST;const hi=t.find(v=>v>LAST);return hi||t[t.length-1]; // 有充值记录：RECENT 标等于上次金额的档；没有取大于它的最小档，再没有取小于它的最大档
+  }
+  function setStr(v){S.str=v;S.amt=parseFloat(v)||0;}
+  const filt=v=>{v=v.replace(/[^\d.]/g,'');const i=v.indexOf('.');if(i>=0)v=v.slice(0,i+1)+v.slice(i+1).replace(/\./g,'').slice(0,2);return v;}; // 只允许数字，小数最多 2 位
+  function fixAmt(){ // 失焦自动修正：小于 10 改成 10，大于 100,000 改成 100,000，Pay&Go 向下取整到 100 的倍数（小于 100 改成 100）
+    if(S.str===''||!basic())return;
+    let a=S.amt;if(a<10)a=10;if(a>100000)a=100000;if(isPayGo()){a=Math.floor(a/100)*100;if(a<100)a=100;}
+    if(a!==S.amt||!/^(0|[1-9]\d*)(\.\d{1,2})?$/.test(S.str))setStr(String(a));
+  }
+  const tipText=()=>{if(!basic()||S.str==='')return'';const a=S.amt;
+    if(a>0&&a<10)return'Minimum amount P 10';
+    if(isPayGo()&&a>0&&a%100!==0)return'Please Enter An Amount In Multiples Of 100 (E.G 200, 500, 1000)';
+    return'';};
+
+  // ---------- Toast：同一时刻只留一条，默认 3 秒消失 ----------
+  const MAINT_ALL='Under Maintenance. Please switch Payment Methods';
+  let toastT=0;
+  function toast(msg,sticky){const t=$('#toast');clearTimeout(toastT);t.firstElementChild.textContent=msg;t.dataset.sticky=sticky?'1':'';t.classList.add('on');
+    if(!sticky)toastT=setTimeout(()=>{t.classList.remove('on');syncMaintToast();},3000);}
+  function hideToast(){clearTimeout(toastT);const t=$('#toast');t.classList.remove('on');t.dataset.sticky='';}
+  function syncMaintToast(){ // 全部渠道维护：面板开着时常驻一条提示，关掉模拟项或关闭面板才消失
+    const t=$('#toast'), need=on('simMaintAll')&&S.open, showing=t.classList.contains('on'), sticky=t.dataset.sticky==='1';
+    if(need){if(!showing)toast(MAINT_ALL,true);}
+    else if(showing&&sticky)hideToast();
+  }
+
+  // ---------- 全屏 loading ----------
+  function loading(name){const l=$('#loading');if(name==null){l.classList.remove('on');return;}$('#ldT').textContent='Connecting to '+name+'...';l.classList.add('on');}
+  function connect(o,fn){ // 点 Confirm（或 iOS Tips 里点 Got It、✕）后：先出全屏 loading，演示里停 0.8 秒再进下一步
+    loading(o.name);
+    const live=()=>S.open&&o.sess===S.sess; // loading 期间面板被关掉了（例如另一笔订单这时到账）：不再往下走
+    if(on('simTimeout')){later(3000,()=>{if(live()){loading(null);toast('Connection timeout, please try again');}settle();});return;} // 建单超时：线上 10 秒，演示缩短为 3 秒；面板和表单保持原样，不建单
+    later(800,()=>{if(live()){loading(null);fn();}settle();});
+  }
+
+  // ---------- 点 Deposit / Submit 后的检查（顺序同线上） ----------
+  const STEPS={deposit:['anti','ekyc','agree','aml','confirm'],voucher:['ekyc','agree','vresult']};
+  function runFlow(i){const f=S.flow;if(!f)return;const st=STEPS[f.type];
+    for(;i<st.length;i++){f.i=i;const k=st[i];
+      if(k==='anti'){if(val('simAnti')!=='off'){show('dAnti');return;}} // 防沉迷存款限额
+      else if(k==='ekyc'){const v=val('simEkyc');if(v==='weak'||v==='strong'){f.strong=v==='strong';show('dEkyc');return;}if(v==='d7'){show('dKyc7');return;}} // eKYC
+      else if(k==='agree'){if(!S.agree){show('agreeTips');return;}} // 协议没勾选：先弹协议 Tips
+      else if(k==='aml'){if(on('simAml')){show('dAml');return;}} // 反洗钱标记：弹了就不再弹 Confirm Deposit
+      else if(k==='confirm'){S.confirm=true;return;} // Confirm Deposit：底部弹出（同竖版）；金额和 Via 在 render 里填
+      else if(k==='vresult'){S.flow=null; // E-Voucher：凭证码 0000 0000 0000 看失败弹窗，其他 12 位码看成功弹窗（余额加 ₱500，示例金额）
+        if(S.vcode==='000000000000')show('dVfail');else{S.bal=Math.round((S.bal+500)*100)/100;show('dVok');}return;}
+    }}
+  const next=()=>{if(S.flow)runFlow(S.flow.i+1);};
+
+  // ---------- 建单和分流 ----------
+  function mkOrder(o,page){S.pending={ch:o.ch,name:o.name,amt:o.amt,page,emb:page!=='tab',paid:false,sess:o.sess,tx:txId()};}
+  function route(o){
+    if(o.paygo){mkOrder(o,'paygo');openEmb('paygo');return;} // OTC 的 Pay&Go：现金码页
+    if(o.kind==='scan'){const r=val('simRet'); // QRPh、Bankcard：按「扫码类渠道的付款页」
+      if(r==='url'){mkOrder(o,'tab');show('dPayNow');return;} // 返回网页地址：订单已建，先弹 Pay Now 提示
+      mkOrder(o,r);openEmb(r);return;}
+    if(on('iosT')&&!S.noShowSaved){S.iosWait=o;show('tips');return;} // iOS Safari 没勾过不再提示：先弹 Tips，此时还没建单
+    mkOrder(o,'tab');openPay(S.pending); // 其余：返回三方网页地址，新开标签页付款
+  }
+  function openEmb(page){const p=S.pending, amt2=fmt(p.amt,2);
+    if(page==='qr'){$('#qrAmt').textContent='Amount: ₱ '+amt2;$('#qrTx').textContent=p.tx;$('#qR').scrollTop=0;}
+    else if(page==='aub'){$('#aubAmt').textContent='PHP '+amt2;$('#aubTx').textContent=p.tx;}
+    else if(page==='hyb'){$('#hybAmt').textContent='Amount: ₱ '+amt2;$('#hybTx').textContent=p.tx;}
+    else if(page==='paygo'){const u=new Date(Date.now()+2*3600*1000), M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      $('#pgDue').textContent=$('#pgCash').textContent='PHP '+p.amt.toFixed(2);
+      $('#pgUntil').textContent=`${u.getFullYear()}-${M[u.getMonth()]}-${p2(u.getDate())} ${p2(u.getHours())}:${p2(u.getMinutes())}:${p2(u.getSeconds())}`;
+      $('#pgTx').textContent=p.tx;$('#pgBody').scrollTop=0;}
+    S.pane=page;
+  }
+  function openPay(p){$('#payLogo').innerHTML=$(`.chip[data-ch=${p.ch}] .lg`).innerHTML;$('#payAmt').textContent='₱ '+fmt(p.amt,2);S.tab='pay';} // 新开标签页进入第三方付款页
+  function credit(p){p.paid=true;S.bal=Math.round((S.bal+p.amt)*100)/100;}
+  function flash(){const b=$('#bal');b.classList.remove('flash');void b.offsetWidth;b.classList.add('flash');setTimeout(()=>b.classList.remove('flash'),1400);}
+
+  // ---------- 打开面板 ----------
+  function openPanel(){
+    S.open=true;S.pane='form';S.sess++;S.skel=true;S.vipDue=false;S.vipShown=false;S.flow=null;S.confirm=false;S.bk=null;S.backTo=null;
+    $('#ring').style.display='none';$('#fBody').scrollTop=0;
+    const sess=S.sess;
+    if(on('simSysPop'))show('dSys'); // 系统维护公告：每次打开面板时弹
+    later(400,()=>{if(!S.open||S.sess!==sess)return; // 头 400 毫秒是骨架屏，之后换成真实内容
+      S.skel=false;
+      if(!S.touched)setStr(String(badgeTier())); // 玩家没手动操作过：自动选中带角标的那一档
+      autoSwitch();guardPayGo();render();fade();revealChip(false);nudge();centerSub(false);});
+    later(800,()=>{if(!S.open||S.sess!==sess)return;S.vipDue=true;tryVip();}); // VIP 奖励待领取：打开约 0.8 秒后自动弹
+  }
+  function tryVip(){ // 同一次打开只弹一次；有别的弹窗开着（例如系统维护公告）、不在充值表单或正在走充值流程时，等回到表单再弹
+    if(S.open&&S.tab==='game'&&S.pane==='form'&&!S.flow&&S.vipDue&&!S.vipShown&&!S.skel&&on('simVip')&&!modal()){S.vipShown=true;show('dVip');render();}
+  }
+
+  // ---------- 渲染 ----------
+  const amtIn=$('#amtIn'), vIn=$('#vIn'), subsBox=$('#subs'), tB=$('#tBody');
+  let amtKey='', subKey='', bkKey='', lastTip='', lastPane='form';
+  const kbOn=()=>on('simKb')&&S.open&&S.tab==='game'&&S.pane==='form'&&basic()&&!S.skel&&!modal();
+  function renderAmts(){const t=tiers(), b=badgeTier(), hot=on('simNew'), key=t.join()+'|'+b+'|'+hot;
+    if(key!==amtKey){amtKey=key;$('#amts').innerHTML=t.map(v=>`<button class="amt" data-v="${v}">${v===b?`<img class="rb" src="${A}badge_${hot?'hot':'recent'}.png" alt="${hot?'HOT':'RECENT'}">`:''}₱ ${fmt(v,0)}</button>`).join('');}
+    $$('#amts .amt').forEach(a=>a.classList.toggle('on',S.str!==''&&+a.dataset.v===S.amt)); // 输入值等于某个档位时自动选中该档位
+  }
+  function renderSubs(){const c=CH[S.ch], has=!!(c.subs||c.trx)&&!S.skel;$('#subw').classList.toggle('on',has);if(!has)return;
+    const sel=S.sub[S.ch];
+    if(subKey!==S.ch){subKey=S.ch;
+      subsBox.innerHTML=c.trx?TRX.map((t,i)=>`<button class="sch trx" data-i="${i}" aria-label="${t[1]}"><img src="${A}traxion/${t[0]}.png" alt="${t[1]}"></button>`).join('')
+        :c.subs.map((n,i)=>`<button class="sch" data-i="${i}"><span>${esc(n)}</span>${CK}${MT}</button>`).join('');
+      $('#allBtn').style.display=(c.trx?TRX:c.subs).length>=4?'':'none'; // 4 个及以上才有 All
+      subsBox.scrollLeft=0;}
+    const m=subMaint(S.ch);
+    $$('#subs .sch').forEach((el,i)=>{el.classList.toggle('on',i===sel);el.classList.toggle('mnt',m);
+      if(c.trx){const im=el.firstChild, src=A+'traxion/'+TRX[i][0]+(i===sel?'-active':'')+'.png';if(im.getAttribute('src')!==src)im.setAttribute('src',src);}});
+  }
+  function renderBanks(){const b=S.bk;if(!b)return;const c=CH[b.ch];
+    if(bkKey!==b.ch){bkKey=b.ch;
+      $('#bkg').innerHTML=c.trx?TRX.map((t,i)=>`<button class="bk trx" data-i="${i}" aria-label="${t[1]}"><img src="${A}traxion/${t[0]}.png" alt="${t[1]}"></button>`).join('')
+        :c.subs.map((n,i)=>`<button class="bk" data-i="${i}"><span>${esc(n)}</span>${CK}${MT}</button>`).join('');}
+    const m=subMaint(b.ch);
+    $$('#bkg .bk').forEach((el,i)=>{el.classList.toggle('on',i===b.i);el.classList.toggle('mnt',m);
+      if(c.trx){const im=el.firstChild, src=A+'traxion/'+TRX[i][0]+(i===b.i?'-active':'')+'.png';if(im.getAttribute('src')!==src)im.setAttribute('src',src);}});
+  }
+  function centerSub(smooth){const el=subsBox.querySelector('.sch.on');if(!el||!subsBox.clientWidth)return; // 选中的子渠道滑到中间
+    subsBox.scrollTo({left:Math.max(0,el.offsetLeft-(subsBox.clientWidth-el.offsetWidth)/2),behavior:smooth?'smooth':'auto'});}
+  let tipFrom=null; // 为了露出红字把表单往上滑过：记下滑之前和之后的位置，红字消失后滑回去（玩家自己又滑过就不动）
+  function revealTip(){const tip=$('#amtTip'), b=$('#fBody');if(!tip.classList.contains('on')||!b.clientHeight)return; // 红字被底部固定区挡住时，把表单滑到能看到红字
+    const br=b.getBoundingClientRect(), tr=tip.getBoundingClientRect(), k=br.height/b.offsetHeight||1, d=(tr.bottom-br.bottom)/k+6;
+    if(d>0){const from=tipFrom?tipFrom.from:b.scrollTop;b.scrollTop+=d;tipFrom={from,to:b.scrollTop};}}
+  function unrevealTip(){const b=$('#fBody');if(tipFrom&&Math.abs(b.scrollTop-tipFrom.to)<2)b.scrollTop=tipFrom.from;tipFrom=null;}
+  function revealChip(smooth){const el=chips.querySelector('.chip.on');if(!el||!chips.clientWidth)return; // 选中的渠道卡没有完整露出来时，把它滑进来（左右各留 12）
+    const cr=chips.getBoundingClientRect(), er=el.getBoundingClientRect(), k=cr.width/chips.offsetWidth||1;
+    const l=(er.left-cr.left)/k+chips.scrollLeft, r=l+er.width/k, sl=chips.scrollLeft, w=chips.clientWidth;
+    const x=l<sl+12?l-12:(r>sl+w-12?r+12-w:null);
+    if(x!=null)chips.scrollTo({left:Math.max(0,x),behavior:smooth?'smooth':'auto'});}
+  function fab(){const need=tB.scrollHeight-tB.clientHeight>2, end=tB.scrollTop+tB.clientHeight>=tB.scrollHeight-2;$('#tFab').classList.toggle('off',!need||end);} // 「滑到底部」按钮：正文没滑到底时显示；滑到底、或正文不需要滑动时隐藏
 
   function render(){
+    const kb=kbOn(), b=basic(), dr=$('#drawer');
     $('#mask').classList.toggle('on',S.open);
-    $('#drawer').classList.toggle('on',S.open);
+    dr.classList.toggle('on',S.open);dr.classList.toggle('kbm',kb);$('#kb').classList.toggle('on',kb);
     $$('.pane').forEach(p=>p.classList.toggle('on',p.dataset.pane===S.pane));
     $$('.tt').forEach(t=>t.classList.toggle('on',t.dataset.act==='tab-'+(S.doc||'terms')));
     $$('.tdoc').forEach(d=>d.classList.toggle('on',d.dataset.doc===(S.doc||'terms')));
-    $('#cmask').classList.toggle('on',!!S.confirm);$('#csheet').classList.toggle('on',!!S.confirm);
     $('.tagree').style.display=S.termsConfirm===false?'none':'';
-    $$('.chip').forEach(c=>c.classList.toggle('on',c.dataset.ch===S.ch));
-    $$('.amt').forEach(a=>a.classList.toggle('on',+a.dataset.v===S.amt));
+    $('#cmask').classList.toggle('on',!!S.confirm);$('#csheet').classList.toggle('on',!!S.confirm);
+    if(S.confirm){$('#csAmt').textContent='₱'+fmt(trunc2(S.amt),2);$('#csVia').textContent='Via '+dispName();} // 金额带千分位和两位小数（截断，不四舍五入）；有子渠道时 Via 后面是子渠道名
+    $('#dAnti').classList.toggle('strong',val('simAnti')==='strong'); // 防沉迷强提醒：没有 ✕ 和 Continue
+    // 表单
+    $('#fm').classList.toggle('skel',S.skel);
+    $$('.chip').forEach(c=>{c.classList.toggle('on',c.dataset.ch===S.ch);c.classList.toggle('mnt',maint(c.dataset.ch));});
+    renderSubs();renderAmts();renderBanks();
+    $('#lcCard').classList.toggle('on',isLC()&&!S.skel);$('#bayadCard').classList.toggle('on',isBayad()&&!S.skel);$('#vch').classList.toggle('on',isVoucher()&&!S.skel);
+    $('#amtCard').style.display=(b||S.skel)?'':'none'; // LoadCentral、Bayad Center、E-Voucher 不显示金额卡
+    const shown=S.skel?'':S.str;if(amtIn.value!==shown)amtIn.value=shown;
+    amtIn.inputMode=kb?'none':'decimal'; // 键盘弹起（示意）时用页面里的仿真键盘输入，手机上不再另外弹系统键盘
+    $('#clr').style.display=shown===''?'none':''; // 金额为空：清空按钮不显示
+    const tip=S.skel?'':tipText(), tEl=$('#amtTip');tEl.textContent=tip;tEl.classList.toggle('on',tip!=='');
+    const ftOff=S.skel||!b||S.str==='';
+    $('#ft').classList.toggle('off',ftOff);$('#fm').classList.toggle('nof',ftOff); // 同线上：金额为空时不显示提交栏；LoadCentral、Bayad Center、E-Voucher 也不显示
     $('#ftAmt').textContent='₱ '+(S.amt>0?short(S.amt):'0');
-    $('#ft').classList.toggle('off',$('#amtIn').value.trim()===''); // 同线上：金额为空时不显示提交栏
-    $('#agree').classList.toggle('on',S.agree);
+    $('#rw').classList.toggle('on',on('simPromo')&&S.amt>0);$('#rwAmt').textContent='₱'+(S.amt*.2).toLocaleString('en-US',{maximumFractionDigits:2}); // Rewards 行：示例按当前金额的 20%
+    $('#depBtn').disabled=on('simSysBtn'); // 系统维护：Deposit 置灰
+    $('#agree').classList.toggle('on',S.agree);$('#agreeV').classList.toggle('on',S.agree);
+    const vs=S.vcode.replace(/(\d{4})(?=\d)/g,'$1 ');if(vIn.value!==vs)vIn.value=vs; // 凭证码每 4 位加一个空格
+    $('#vErr').classList.toggle('on',S.vcode.length>12);
+    const vok=S.vcode.length===12&&!on('simSysBtn');$('#vBtn').disabled=!vok;$('#vBtn').classList.toggle('ok',vok);
     $('#noShow').classList.toggle('on',S.noShow);
     $('#bal').textContent=fmt(S.bal,2);
+    // 新标签页
+    const p=S.pending;
     $('#tabPay').classList.toggle('on',S.tab==='pay');
     $('#tabOk').classList.toggle('on',S.tab==='ok');
+    $('#okWait').style.display=S.okWait?'':'none';$('#okScroll').style.display=S.okWait?'none':'';
     dev.classList.toggle('newtab',S.tab!=='game');
-    $('#addr').textContent=S.tab==='pay'?CH[S.pending?.ch||S.ch].url:'gzone.ph/deposit/result';
-    const p=S.pending;
+    $('#addr').textContent=S.tab==='pay'?CH[p?p.ch:S.ch].url:'gzone.ph/deposit/result';
+    // 控制条
     $('#arrive').disabled=!(p&&p.emb&&!p.paid&&S.tab==='game');
-    const where=S.tab==='game'?'游戏标签页':(S.tab==='pay'?'新标签页 · 第三方付款页':'新标签页 · 充值成功页');
-    const dr=S.open?('抽屉打开（'+({form:'充值表单',qr:'内嵌付款页',guide:'教程',terms:'协议页'})[S.pane]+'）'+(S.confirm?' · 确认框打开':'')):'抽屉关闭';
-    $('#status').innerHTML=`当前：<b>${where}</b> · ${dr} · 余额 ₱${fmt(S.bal,2)}`+(p&&!p.paid?` · 待到账订单 <b>₱${fmt(p.amt,2)}（${CH[p.ch].n}）</b>`:'');
+    const n=$$('#simPanel input:checked').length+$$('#simPanel select').filter(s=>s.selectedIndex>0).length;
+    $('#simN').textContent=n||'';$('#simBtn').classList.toggle('has',n>0);
+    const where=S.tab==='game'?'游戏标签页':(S.tab==='pay'?'新标签页 · 第三方付款页':'新标签页 · '+(S.okWait?'付款结果确认中':'充值成功页'));
+    const st=S.open?('抽屉打开（'+PANE[S.pane]+'）'+(S.confirm?' · 确认框打开':'')+(kb?' · 键盘弹起':'')):'抽屉关闭';
+    $('#status').innerHTML=`当前：<b>${where}</b> · ${st} · 余额 ₱${fmt(S.bal,2)}`+(p&&!p.paid?` · 待到账订单 <b>₱${fmt(p.amt,2)}（${esc(p.name)}）</b>`:'');
+    syncMaintToast();
+    if(tip!==lastTip){if(tip)revealTip();else unrevealTip();}lastTip=tip;
+    if(S.pane==='terms')fab();
+    const vis=chips.clientWidth>0; // 首次横滑提示还没走完，渠道一排就被收起（进了 All Banks、协议页，或键盘弹起）：等它回来时直接归位
+    if(vis&&!chipsVis&&nudging){nudging=false;chips.scrollLeft=0;fade();}chipsVis=vis;
+    if(S.pane==='form'&&lastPane!=='form'&&S.open)centerSub(false);lastPane=S.pane;
+    // 被盖住的那一层不接收键盘焦点：上面有弹窗、确认框、loading 或新标签页时，下面的按钮用 Tab 键也选不到（鼠标本来就被蒙层挡住）
+    const top2=$$('.dmask.on').length>0||$('#loading').classList.contains('on')||S.tab!=='game';
+    const cs=$('#csheet'), hot=$('.hot'), ae=document.activeElement;
+    dr.inert=!S.open||top2||!!S.confirm;cs.inert=!S.confirm||top2;$('#kb').inert=!kb;hot.inert=S.open||S.tab!=='game';
+    if(ae&&ae!==document.body&&((dr.inert&&dr.contains(ae))||(cs.inert&&cs.contains(ae))||(hot.inert&&ae===hot)))ae.blur(); // 焦点还留在刚被盖住的那一层上（例如刚点过 Deposit）：收回，免得这时按回车又点了一次
   }
-  function flash(){const b=$('#bal');b.classList.remove('flash');void b.offsetWidth;b.classList.add('flash');setTimeout(()=>b.classList.remove('flash'),1400);}
-  function credit(p){p.paid=true;S.bal=Math.round((S.bal+p.amt)*100)/100;}
-  function openConfirm(){$('#csAmt').textContent='₱'+short(S.amt);$('#csVia').textContent='Via '+CH[S.ch].n;S.confirm=true;} // Confirm Deposit：底部弹出（同竖版）
-  function openPay(p){$('#payLogo').innerHTML=$(`.chip[data-ch=${p.ch}] .lg`).innerHTML;$('#payAmt').textContent='₱ '+fmt(p.amt,2);S.tab='pay';} // 新开标签页进入第三方付款页
 
+  // ---------- 点击 ----------
   document.addEventListener('click',e=>{
-    const chip=e.target.closest('.chip'); if(chip){S.ch=chip.dataset.ch;render();return;}
-    const amt=e.target.closest('.amt'); if(amt){S.amt=+amt.dataset.v;$('#amtIn').value=String(S.amt);render();return;}
-    const el=e.target.closest('[data-act]'); if(!el)return;
+    const t=e.target;
+    if(e.detail>1&&t.closest('#web')&&!t.closest('#kb'))return; // 双击的第二下不算：第一下可能已经把弹窗、页面或标签页换掉，第二下会点到刚露出来的东西上（线上关弹窗有过渡动画，挡得住这一下）。仿真键盘连按同一个键除外
+    if(t.id==='dMaint'){hide('dMaint');settle();return;} // 渠道维护弹窗：点蒙层只关闭、不切换
+    const key=t.closest('#kb [data-k]');
+    if(key){const k=key.dataset.k; // 仿真键盘：数字和小数点写进金额输入框；「完成」收起键盘（等于关掉模拟项）
+      if(k==='done'){$('#simKb').checked=false;amtIn.blur();fixAmt();}
+      else{S.touched=true;setStr(filt(k==='del'?S.str.slice(0,-1):S.str+k));amtIn.focus();}
+      settle();return;}
+    const chip=t.closest('.chip'); if(chip){const was=S.ch;pickCh(chip.dataset.ch);settle();if(S.ch!==was)revealChip(true);return;} // 点到只露出一半的渠道卡：选中后把它滑进来（点维护中的卡不换选中，也就不滑）
+    const sub=t.closest('.sch'); if(sub){if(!subMaint(S.ch)){S.sub[S.ch]=+sub.dataset.i;afterPick();}settle();centerSub(true);return;}
+    const bk=t.closest('.bk'); if(bk){if(S.bk&&!subMaint(S.bk.ch))S.bk.i=+bk.dataset.i;render();return;} // All Banks 里点格子只是临时选中；维护中的点了没反应
+    const amt=t.closest('.amt'); if(amt){S.touched=true;setStr(amt.dataset.v);settle();return;}
+    const el=t.closest('[data-act]'); if(!el)return;
     switch(el.dataset.act){
-      case 'open': S.open=true;S.pane='form';S.sess=(S.sess||0)+1;setTimeout(fade,0);nudge();$('#ring').style.display='none';$('.pane[data-pane=form] .body').scrollTop=0;break;
-      case 'close': S.open=false;break;
-      case 'clear': S.amt=0;$('#amtIn').value='';$('#amtIn').focus();break;
+      case 'open': if(!S.open)openPanel();break; // 面板已经开着时入口被蒙层盖住，鼠标点不到；这里再挡一下键盘回车
+      case 'close': closePanel();break;
+      case 'clear': S.touched=true;setStr('');amtIn.focus();break;
       case 'agree': S.agree=!S.agree;break;
-      case 'deposit':{
-        if(!(S.amt>0)){$('#amtIn').focus();return;}
-        if(!S.agree){$('#agreeTips').classList.add('on');break;} // 协议没勾选：先弹协议 Tips（同竖版）
-        openConfirm();break;}
-      case 'agree-ok': S.agree=true;$('#agreeTips').classList.remove('on');openConfirm();break; // Agree：自动勾选并继续
-      case 'agree-cancel': $('#agreeTips').classList.remove('on');break; // Cancel：不继续
-      case 'confirm-close': S.confirm=false;break; // 关闭确认框，不建单
-      case 'confirm-go':{S.confirm=false; // Confirm — Credited in Seconds：这时才建单，按渠道继续（同竖版）
-        const c=CH[S.ch];
-        if(c.emb){S.pending={ch:S.ch,amt:S.amt,emb:true,paid:false,sess:S.sess};$('#qrAmt').textContent='Amount: ₱ '+fmt(S.amt,2);$('#qrTx').textContent=txId();S.pane='qr';$('#qR').scrollTop=0;}
-        else if($('#iosT').checked){S.iosWait={ch:S.ch,amt:S.amt,sess:S.sess};$('#tips').classList.add('on');} // iOS Safari 拦截新标签页：先弹 Tips，此时还没建单
-        else{S.pending={ch:S.ch,amt:S.amt,emb:false,paid:false,sess:S.sess};openPay(S.pending);}
-        break;}
+      case 'deposit':
+        if(on('simSysBtn'))return;
+        fixAmt(); // 金额还没改成合法值（例如用仿真键盘输入、输入框没有失焦过）：先改再往下走
+        if(!(S.amt>0)){amtIn.focus();render();return;}
+        S.flow={type:'deposit',i:0};runFlow(0);break; // 防沉迷 → eKYC → 协议 Tips → 反洗钱 → Confirm Deposit
+      case 'vsubmit': // E-Voucher 的 Submit：先过 eKYC 和协议，再出结果
+        if(S.vcode.length!==12||on('simSysBtn'))return;
+        S.flow={type:'voucher',i:0};runFlow(0);break;
+      // 二级渠道的 All Banks
+      case 'all': S.bk={ch:S.ch,i:S.sub[S.ch]};S.pane='banks';$('#bkBody').scrollTop=0;break;
+      case 'banks-ok': if(!S.bk||subMaint(S.bk.ch))return; // 点 Confirm 才生效并回到充值表单；选中的是维护中的则没反应
+        S.sub[S.bk.ch]=S.bk.i;S.bk=null;S.pane='form';afterPick();break;
+      case 'banks-back': S.bk=null;S.pane='form';break; // 左上返回：不生效，直接回表单
+      // 渠道维护、没绑手机号、系统维护公告、VIP 奖励
+      case 'maint-ok':{hide('dMaint');const f=firstAvail();if(f&&f!==S.ch){S.ch=f;afterPick();}settle();revealChip(true);return;} // 点按钮或 ✕：关闭并自动切到第一个可用渠道（切过去的那张卡不在眼前就滑进来）
+      case 'phone-link': hide('dPhone');toast('去绑定手机号页（平台页面，演示不做）');break;
+      case 'phone-x': hide('dPhone');break;
+      case 'sys-ok': hide('dSys');break;
+      case 'vip-claim': hide('dVip');toast('奖励已领取（示意）');break;
+      case 'vip-x': hide('dVip');break;
+      // 点 Deposit 后的各个弹窗
+      case 'anti-continue': hide('dAnti');next();break; // Continue 或 ✕：继续后面的检查
+      case 'anti-break': closePanel();toast('回到首页（平台页面，演示不做）');break; // Take a Break：关闭弹窗和面板（线上是回首页）
+      case 'anti-settings': toast('去 Responsible Gaming 设置页（平台页面，演示不做）');break;
+      case 'ekyc-verify': hide('dEkyc');S.flow=null;toast('去 eKYC 认证页（平台页面，演示不做）');break; // 本次充值中断
+      case 'ekyc-x': hide('dEkyc');if(S.flow&&S.flow.strong)S.flow=null;else next();break; // 弱弹窗点 ✕ 继续，强弹窗点 ✕ 中断
+      case 'kyc7-go': hide('dKyc7');S.flow=null;toast('去 eKYC 认证页（平台页面，演示不做）');break;
+      case 'kyc7-x': hide('dKyc7');S.flow=null;break;
+      case 'agree-ok': S.agree=true;hide('agreeTips');next();break; // Agree：自动勾选并继续
+      case 'agree-cancel': hide('agreeTips');S.flow=null;break; // Cancel：不继续
+      case 'aml-ok': hide('dAml');S.flow=null;break; // I Got It 或 ✕：关闭，充值中断
+      case 'aml-cs': toast('打开客服（平台页面，演示不做）');break;
+      case 'vok-ok': hide('dVok');S.vcode='';break; // 点 OK 关闭并清空输入
+      case 'vfail-ok': hide('dVfail');break;
+      case 'confirm-close': S.confirm=false;S.flow=null;break; // 关闭确认框，不建单
+      case 'confirm-go':{S.confirm=false;S.flow=null; // Confirm — Credited in Seconds：确认框关闭，同时出全屏 loading，之后才建单并按渠道继续
+        const o={ch:S.ch,name:dispName(),amt:S.amt,sess:S.sess,kind:CH[S.ch].kind,paygo:isPayGo()};
+        connect(o,()=>route(o));break;}
+      case 'paynow-go': hide('dPayNow');if(S.pending)openPay(S.pending);break; // Pay Now：新开标签页进付款页
+      case 'paynow-x': hide('dPayNow');break; // ✕：关闭，订单已建但不付款，面板保持原样
+      // 内嵌付款页
       case 'back': S.pane='form';break;
-      case 'terms': case 'privacy': S.doc=el.dataset.act;S.pane='terms';S.termsConfirm=true;S.backTo=null;document.getElementById('tBody').scrollTop=0;break; // 点协议行的链接：面板内打开协议页（带 I Agree），停在对应页签
-      case 'terms2': case 'privacy2': S.doc=el.dataset.act.slice(0,-1);S.pane='terms';S.termsConfirm=false;S.backTo='agreeTips';$('#agreeTips').classList.remove('on');document.getElementById('tBody').scrollTop=0;break; // 协议 Tips 里的链接：打开协议页（没有 I Agree），返回回到协议 Tips
-      case 'tab-terms': S.doc='terms';document.getElementById('tBody').scrollTop=0;break;
-      case 'tab-privacy': S.doc='privacy';document.getElementById('tBody').scrollTop=0;break;
-      case 'terms-back': S.pane='form';if(S.backTo==='agreeTips')$('#agreeTips').classList.add('on');S.backTo=null;break; // 返回：回到充值表单（从协议 Tips 打开的回到 Tips），已选内容不变
+      case 'app-open': // QRPh 页的 App 列表：接口限流时弹 Notice!；否则第 2 行示意没装 App，其余行示意唤起成功
+        if(on('simRate'))show('dRate');
+        else toast(el.dataset.i==='1'?'App not detected. Please try another e-wallet or banking app':'已唤起 App（示意）');
+        break;
+      case 'rate-ok': hide('dRate');break; // OK 或 ✕：关闭，仍留在付款页
+      case 'hyb-open': toast('已唤起 GCash（示意）');break;
+      // 协议页
+      case 'terms': case 'privacy': case 'vterms': case 'vprivacy': S.doc=el.dataset.act.replace(/^v/,'');S.pane='terms';S.termsConfirm=true;S.backTo=null;tB.scrollTop=0;break; // 点协议行的链接：面板内打开协议页（带 I Agree），停在对应页签
+      case 'terms2': case 'privacy2': S.doc=el.dataset.act.slice(0,-1);S.pane='terms';S.termsConfirm=false;S.backTo='agreeTips';hide('agreeTips');tB.scrollTop=0;break; // 协议 Tips 里的链接：打开协议页（没有 I Agree），返回回到协议 Tips
+      case 'tab-terms': S.doc='terms';tB.scrollTop=0;break;
+      case 'tab-privacy': S.doc='privacy';tB.scrollTop=0;break;
+      case 'terms-back': S.pane='form';if(S.backTo==='agreeTips')show('agreeTips');S.backTo=null;break; // 返回：回到充值表单（从协议 Tips 打开的回到 Tips），已选内容不变
       case 'terms-agree': S.agree=true;S.pane='form';break; // I Agree：回到表单并勾选协议（同线上）
-      case 'tips-close':{$('#tips').classList.remove('on'); // Got It 或 ✕：这时才建单，并新开标签页进付款页（同竖版）
-        const w=S.iosWait;if(w){S.pending={ch:w.ch,amt:w.amt,emb:false,paid:false,sess:w.sess};S.iosWait=null;openPay(S.pending);}break;}
+      case 'tfab': tB.scrollTo({top:tB.scrollHeight,behavior:'smooth'});return; // 平滑滑到正文底部
+      // iOS Safari Tips
+      case 'tips-close':{hide('tips');if(S.noShow)S.noShowSaved=true; // 勾了 Don't show this again 再点 Got It 或 ✕：之后不再弹
+        const w=S.iosWait;S.iosWait=null;
+        if(w)connect(w,()=>{mkOrder(w,'tab');openPay(S.pending);}); // Got It 或 ✕：这时才建单，并新开标签页进付款页（同竖版）
+        break;}
       case 'noshow': S.noShow=!S.noShow;break;
-      case 'guide': $('#tips').classList.remove('on');S.pane='guide';$('.pane.guide .body').scrollTop=0;break;
-      case 'guide-back': S.pane='form';$('#tips').classList.add('on');break; // 教程返回回到 Tips 弹窗（同竖版）
-      case 'pay-ok':{const p=S.pending;credit(p);if(S.open&&p.sess===S.sess){S.open=false;S.pane='form';}
-        $('#okAmt').textContent='₱ '+fmt(p.amt,2);$('#okType').textContent=CH[p.ch].n;
-        const d=new Date(),q=n=>String(n).padStart(2,'0');let h=d.getHours();const ap=h>=12?'PM':'AM';h=h%12||12;
-        $('#okTime').textContent=`${q(d.getMonth()+1)}/${q(d.getDate())}/${d.getFullYear()} ${q(h)}:${q(d.getMinutes())}:${q(d.getSeconds())}${ap}`;
-        $('#okScroll').scrollTop=0;S.tab='ok';break;}
-      case 'pay-back': S.tab='game';S.open=false;S.pane='form';break;
+      case 'guide': hide('tips');S.pane='guide';$('.pane.guide .body').scrollTop=0;break;
+      case 'guide-back': S.pane='form';show('tips');break; // 教程返回回到 Tips 弹窗（同竖版）
+      // 新标签页
+      case 'pay-ok':{const p=S.pending;if(!p)break; // 付款成功：结果页先显示 1 秒「确认中」，查到成功后换成成功页，同时游戏标签页关面板、刷余额
+        $('#okAmt').textContent='₱ '+fmt(p.amt,2);$('#okType').textContent=p.name;
+        const d=new Date();let h=d.getHours();const ap=h>=12?'PM':'AM';h=h%12||12;
+        $('#okTime').textContent=`${p2(d.getMonth()+1)}/${p2(d.getDate())}/${d.getFullYear()} ${p2(h)}:${p2(d.getMinutes())}:${p2(d.getSeconds())}${ap}`;
+        $('#okScroll').scrollTop=0;S.tab='ok';S.okWait=true;
+        later(1000,()=>{S.okWait=false;credit(p);if(S.open&&p.sess===S.sess){closePanel();S.pane='form';}render();});
+        break;}
+      case 'pay-back': S.tab='game';break; // 不付款切回：面板保持原样（渠道、金额都在）
       case 'back-gz': S.tab='game';setTimeout(flash,350);break;
     }
-    render();
+    settle();
   });
-  $('#amtIn').addEventListener('input',e=>{let v=e.target.value.replace(/[^\d.]/g,'');const i=v.indexOf('.');if(i>=0)v=v.slice(0,i+1)+v.slice(i+1).replace(/\./g,'').slice(0,2);e.target.value=v;S.amt=parseFloat(v)||0;render();});
-  $('#arrive').addEventListener('click',()=>{const p=S.pending;if(!p||p.paid)return;credit(p);if(S.open&&p.sess===S.sess)S.open=false;render();setTimeout(flash,300);});
-  $('#reset').addEventListener('click',()=>{S=JSON.parse(JSON.stringify(S0));$('#amtIn').value='100';$('#tips').classList.remove('on');$('#agreeTips').classList.remove('on');$('#iosT').checked=false;$('#ring').style.display='';render();});
-  $('#iosT').addEventListener('change',render);
-  const chips=$('#chips'); // 电脑上用滚轮横向滑动支付方式
+
+  // ---------- 输入 ----------
+  amtIn.addEventListener('input',e=>{S.touched=true;setStr(filt(e.target.value));render();});
+  amtIn.addEventListener('blur',()=>{fixAmt();render();});
+  vIn.addEventListener('input',e=>{S.vcode=e.target.value.replace(/\D/g,'').slice(0,16);render();}); // 只收数字；超过 12 位时出红字
+  ['pointerdown','mousedown'].forEach(n=>{$('#kb').addEventListener(n,e=>e.preventDefault());$('#clr').addEventListener(n,e=>e.preventDefault());}); // 点仿真键盘、点清空按钮时不让输入框失焦（失焦会先把金额改成合法值，红字消失、内容挪位，这一下就点空了）
+  tB.addEventListener('scroll',fab,{passive:true});
+
+  // ---------- 控制条 ----------
+  $('#arrive').addEventListener('click',()=>{const p=S.pending;if(!p||p.paid||!p.emb)return;credit(p);
+    const shut=()=>{if(S.open&&p.sess===S.sess)closePanel();render();setTimeout(flash,300);}; // 到账：自动关闭面板、刷新余额
+    if(p.page==='paygo'&&S.open&&S.pane==='paygo'&&p.sess===S.sess){render(); // 停在 Pay&Go 现金码页时：收到后 3 秒才自动关闭面板（线上如此）
+      later(3000,shut);return;}
+    shut();});
+  $('#reset').addEventListener('click',()=>{gen++;S=JSON.parse(JSON.stringify(S0));
+    $$('#simPanel input').forEach(i=>{i.checked=false;});$$('#simPanel select').forEach(s=>{s.selectedIndex=0;}); // 全部模拟项恢复默认
+    $$('.dmask.on').forEach(d=>d.classList.remove('on'));loading(null);hideToast();$('#ring').style.display='';subKey=bkKey='';lastTip='';tipFrom=null;
+    nudging=false;chips.scrollLeft=0;$('#fBody').scrollTop=0;render();fade();}); // 渠道一排和表单也滑回开头
+  const simBtn=$('#simBtn'), simPanel=$('#simPanel');
+  const simShow=v=>{simPanel.classList.toggle('on',v);simBtn.setAttribute('aria-expanded',v?'true':'false');};
+  simBtn.addEventListener('click',e=>{if(e.detail>1)return;simShow(!simPanel.classList.contains('on'));}); // 模拟场景：点按钮展开，再点或点外面收起（双击的第二下不算，免得刚展开又收起）
+  document.addEventListener('click',e=>{if(simPanel.classList.contains('on')&&!e.target.closest('#simPanel,#simBtn'))simShow(false);},true);
+  simPanel.addEventListener('change',e=>{const id=e.target.id; // 模拟项一改就生效
+    if((id==='simNew'||id==='simTiers')&&!S.touched&&!S.skel)setStr(String(badgeTier()));
+    const sw=(id==='simMaintOne'||id==='simMaintAll')&&autoSwitch(); // 选中的渠道变成维护中：自动切到第一个可用渠道
+    if(sw&&document.activeElement!==amtIn)fixAmt();
+    settle();if(sw)revealChip(true);});
+
+  // ---------- 横向滑动：电脑上滚轮横滑、按住拖动 ----------
+  function hscroll(el){let drag=null,moved=false;
+    el.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse'||e.button!==0)return;drag={x:e.clientX,sl:el.scrollLeft,k:el.getBoundingClientRect().width/el.offsetWidth};moved=false;});
+    window.addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-drag.x;if(!moved&&Math.abs(dx)>4){moved=true;el.classList.add('drag');}if(moved)el.scrollLeft=drag.sl-dx/drag.k;});
+    window.addEventListener('pointerup',()=>{if(!drag)return;drag=null;el.classList.remove('drag');});
+    el.addEventListener('click',e=>{if(moved){e.stopPropagation();e.preventDefault();moved=false;}},true);
+    el.addEventListener('wheel',e=>{if(Math.abs(e.deltaY)>Math.abs(e.deltaX)){el.scrollLeft+=e.deltaY;e.preventDefault();}},{passive:false});}
+  const chips=$('#chips');
   const fade=()=>{const m=chips.scrollWidth-chips.clientWidth;chips.classList.toggle('fl',chips.scrollLeft>2);chips.classList.toggle('fr',chips.scrollLeft<m-2);};
   chips.addEventListener('scroll',fade,{passive:true});
-  let drag=null,moved=false; // 电脑上按住拖动横滑
-  chips.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse'||e.button!==0)return;drag={x:e.clientX,sl:chips.scrollLeft,k:chips.getBoundingClientRect().width/chips.offsetWidth};moved=false;});
-  window.addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-drag.x;if(!moved&&Math.abs(dx)>4){moved=true;chips.classList.add('drag');}if(moved)chips.scrollLeft=drag.sl-dx/drag.k;});
-  window.addEventListener('pointerup',()=>{if(!drag)return;drag=null;chips.classList.remove('drag');});
-  chips.addEventListener('click',e=>{if(moved){e.stopPropagation();e.preventDefault();moved=false;}},true);
-  let nudged=false; // 首次打开轻轻往左带一下再回来，提示可左右滑
-  function nudge(){if(nudged)return;nudged=true;setTimeout(()=>{chips.scrollTo({left:96,behavior:'smooth'});setTimeout(()=>chips.scrollTo({left:0,behavior:'smooth'}),700);},500);}
-  chips.addEventListener('wheel',e=>{if(Math.abs(e.deltaY)>Math.abs(e.deltaX)){chips.scrollLeft+=e.deltaY;e.preventDefault();}},{passive:false});
+  hscroll(chips);hscroll(subsBox);
+  let nudged=false, nudging=false, chipsVis=false; // 首次打开轻轻往左带一下再回来，提示可左右滑（排在骨架屏之后）
+  function nudge(){if(nudged||!chips.clientWidth||chips.scrollLeft>2)return;nudged=nudging=true; // 渠道一排这时不在眼前（例如键盘弹起），就留到下次打开再提示
+    setTimeout(()=>{chips.scrollTo({left:96,behavior:'smooth'});
+      setTimeout(()=>{chips.scrollTo({left:0,behavior:'smooth'});setTimeout(()=>{if(chips.clientWidth)nudging=false;},500);},700);},150);} // 提示还没走完渠道一排就被收起：等它回来时直接归位（见 render 末尾）
   render();
 })();
 </script>
