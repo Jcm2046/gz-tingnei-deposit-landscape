@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<title>厅内充值 · 横版演示 v13</title>
+<title>厅内充值 · 横版演示 v14</title>
 <style>
 :root{--f:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro","Helvetica Neue",Roboto,"Segoe UI","PingFang SC",Arial,sans-serif;--gold:#eac070;--red:#de4444}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -340,10 +340,13 @@ img{display:block}
 #bayadCard p+p{margin-top:0}
 #bayadCard .bc{width:73px;height:96px}
 #bayadCard .ba{width:92px;height:78px;margin-top:8px}
-/* ---------- E-Voucher ---------- */
+/* ---------- E-Voucher（v14 起左右对调：左栏 How To Use 和三步图，右栏输入框、红字、Submit、协议行） ---------- */
 .vch{display:none}
 .vch.on{display:flex}
-.vch .v1{width:350px;flex:none;padding-right:12px;display:flex;flex-direction:column}
+.vch .vhow{flex:1;min-width:0}
+.vch .vhow h6{margin:0 0 5px;font:700 14px/19px var(--f);color:#b9b3c8}
+.vch .vhow img{width:366px;height:114px}
+.vch .vform{width:350px;flex:none;padding-left:12px;display:flex;flex-direction:column} /* 右栏宽 350，里面的控件宽 338、靠右，12 的空隙留在两栏中间 */
 .vin{height:44px;flex:none;background:#181b21;border-radius:12px;padding:0 12px;display:flex;align-items:center;gap:12px}
 .vin img{width:12px;height:18px;flex:none}
 .vin input{flex:1;min-width:0;background:none;border:0;outline:0;color:#fff;font:400 14px/22px var(--f);padding:0;caret-color:var(--red);letter-spacing:.5px}
@@ -353,9 +356,6 @@ img{display:block}
 .vbtn{height:44px;flex:none;border-radius:20px;border:1px solid transparent;margin-bottom:10px;font:600 14px/22px var(--f);color:rgba(255,255,255,.6);background:linear-gradient(104deg,#886c47 9.63%,#86583b 93.64%);cursor:not-allowed}
 .vbtn.ok{color:#fff;background:linear-gradient(104deg,#fdb756 9.63%,#f78336 93.64%);border-color:#fdc858;box-shadow:0 0 10px rgba(255,123,57,.4);cursor:pointer}
 .vbtn.ok:active{filter:brightness(.94)}
-.vch .v2{flex:1;min-width:0}
-.vch .v2 h6{margin:0 0 5px;font:700 14px/19px var(--f);color:#b9b3c8}
-.vch .v2 img{width:366px;height:114px}
 /* ---------- 底部固定区：Deposit 置灰（v13 起没有 Rewards 行） ---------- */
 .ft-amt{min-width:0;overflow:hidden;text-overflow:ellipsis}
 .btn-red:disabled{background:#3a4250;color:#8f98a6;cursor:not-allowed;filter:none}
@@ -395,11 +395,6 @@ img{display:block}
 .dlg.w292{width:292px}.dlg.w371{width:371px}.dlg.w480{width:480px}.dlg.w520{width:520px}.dlg.w560{width:560px}
 .dlg .mi{width:134px;height:132px;flex:none}
 #dSys .db{padding:12px;line-height:18px}
-/* VIP 奖励待领取 */
-.vipc{width:80px;height:100px;margin:4px auto 0;border-radius:10px;background:#242933;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
-.vipc span{font:400 11px/14px var(--f);color:#dce3ec;text-align:center;white-space:nowrap}
-.vipc img{width:32px;height:32px}
-.vipc b{font:700 14px/18px var(--f);color:var(--gold)}
 /* 防沉迷 Notice */
 #dAnti .dt{font-weight:700}
 #dAnti .sp-img{width:250px;height:131px;flex:none;border-radius:12px}
@@ -492,9 +487,9 @@ img{display:block}
 </head>
 <body>
 <div class="top">
-  <h1>【充提】厅内充值改造 · 横版演示 v13</h1>
-  <span class="sub">去掉输入框下方的红字和 Rewards 行；点「模拟场景」切换</span>
-  <select class="ver" aria-label="对比旧版本" onchange="if(this.value)location.href=this.value"><option value="">对比旧版本</option><option value="v12/">v12 有红字提示和 Rewards 行</option><option value="v11/">v11 没有二级渠道和各类弹窗</option><option value="v10/">v10 没有确认框</option><option value="v9/">v9 成功页金额在下</option><option value="v8/">v8 保障标识在底栏</option><option value="v7/">v7 交互对齐 Figma 方案</option><option value="v6/">v6 去 How To Deposit、渠道可滑</option><option value="v5/">v5 居中加宽</option><option value="v4/">v4 右侧窄抽屉 + 金额一排</option><option value="v3/">v3 底部居中两栏</option><option value="v2/">v2 右侧宽抽屉两栏</option><option value="v1/">v1 只换容器</option></select>
+  <h1>【充提】厅内充值改造 · 横版演示 v14</h1>
+  <span class="sub">E-Voucher 左右对调、去掉 VIP 弹窗；点「模拟场景」切换</span>
+  <select class="ver" aria-label="对比旧版本" onchange="if(this.value)location.href=this.value"><option value="">对比旧版本</option><option value="v13/">v13 凭证码在左、有 VIP 弹窗</option><option value="v12/">v12 有红字提示和 Rewards 行</option><option value="v11/">v11 没有二级渠道和各类弹窗</option><option value="v10/">v10 没有确认框</option><option value="v9/">v9 成功页金额在下</option><option value="v8/">v8 保障标识在底栏</option><option value="v7/">v7 交互对齐 Figma 方案</option><option value="v6/">v6 去 How To Deposit、渠道可滑</option><option value="v5/">v5 居中加宽</option><option value="v4/">v4 右侧窄抽屉 + 金额一排</option><option value="v3/">v3 底部居中两栏</option><option value="v2/">v2 右侧宽抽屉两栏</option><option value="v1/">v1 只换容器</option></select>
   <div class="ctl">
     <button id="simBtn" aria-expanded="false" aria-controls="simPanel" title="选择要模拟的情况">模拟场景 ▾<i id="simN"></i></button>
     <button class="pri" id="arrive" disabled>模拟到账（当前订单）</button>
@@ -505,7 +500,6 @@ img{display:block}
     <fieldset><legend>账号和活动</legend>
       <label><input type="checkbox" id="simNew"><span>新玩家（没有充值记录）</span></label>
       <label><input type="checkbox" id="simTiers"><span>9 个金额档位</span></label>
-      <label><input type="checkbox" id="simVip"><span>VIP 奖励待领取<small>（打开面板时弹）</small></span></label>
       <label><input type="checkbox" id="simNoPhone"><span>没绑手机号<small>（选 Pay&amp;Go 时弹）</small></span></label>
     </fieldset>
     <fieldset><legend>渠道</legend>
@@ -578,15 +572,15 @@ img{display:block}
                 <div><h5>Physical Store</h5><img class="bc" src="assets/v12/bayad_center.png" alt="Bayad Center"></div>
                 <div><h5>Bayad App</h5><p>Bayad app bills payment is another quick way to top up.</p><img class="ba" src="assets/v12/bayad_app.png" alt="Bayad App"></div>
               </div>
-              <!-- E-Voucher（线上 payTypeName 是 LazadaVoucher）：横版左右两栏 -->
+              <!-- E-Voucher（线上 payTypeName 是 LazadaVoucher）：横版左右两栏，v14 起左栏 How To Use 和三步图、右栏输入和按钮 -->
               <div class="vch sp" id="vch">
-                <div class="v1">
+                <div class="vhow"><h6>How To Use</h6><img src="assets/v12/voucher_steps.png" alt="How To Use"></div>
+                <div class="vform">
                   <div class="vin"><img src="assets/v12/voucher_input_icon.png" alt=""><input id="vIn" inputmode="numeric" autocomplete="off" placeholder="Enter your E-Voucher Code" aria-label="E-Voucher Code"></div>
                   <p class="verr" id="vErr">Please enter the correct 12-digit code</p>
                   <button class="vbtn" id="vBtn" data-act="vsubmit" disabled>Submit</button>
                   <div class="agree" id="agreeV" data-act="agree"><span class="cb"><i><img src="assets/chip_check.svg" alt=""></i></span><p>I agree with the <u data-act="vterms">Terms of Use</u> &amp; <u data-act="vprivacy">Privacy Policy</u>, and confirm that I am at least 21 years old.</p></div>
                 </div>
-                <div class="v2"><h6>How To Use</h6><img src="assets/v12/voucher_steps.png" alt="How To Use"></div>
               </div>
               <div class="card" id="amtCard">
                 <!-- 快捷金额：默认选中的那一档左上角有 RECENT 或 HOT 角标 -->
@@ -1007,15 +1001,6 @@ img{display:block}
           <div class="df"><button class="btn-red" data-act="sys-ok">OK</button></div>
         </div>
       </div>
-      <!-- VIP 奖励待领取：打开面板约 0.8 秒后自动弹；点蒙层不关 -->
-      <div class="dmask" id="dVip">
-        <div class="dlg w292">
-          <div class="dt">Congratulations!</div>
-          <button class="dx" data-act="vip-x" aria-label="关闭"><img src="assets/tips_close.svg" alt=""></button>
-          <div class="vipc"><span>Bonus Credits</span><img src="assets/v12/rw_bonus.png" alt=""><b>₱100</b></div>
-          <div class="df"><button class="btn-red" data-act="vip-claim">Claim Now</button></div>
-        </div>
-      </div>
       <!-- 防沉迷存款限额：强提醒没有 ✕ 和 Continue -->
       <div class="dmask" id="dAnti">
         <div class="dlg w560">
@@ -1142,13 +1127,19 @@ img{display:block}
   </div>
 </div>
 <div class="notes">
+  <h2>v14：在 v13 上改两样（11/24）</h2>
+  <ol>
+    <li><b>E-Voucher 兑换表单左右对调</b>：左边是 How To Use 和三步图，右边是凭证码输入框、Submit 和协议勾选行。每一栏里的上下顺序、文案、尺寸，凭证码超过 12 位时的红字，成功和失败弹窗都没变。</li>
+    <li><b>去掉 VIP 奖励待领取弹窗</b>：厅内充值不弹 VIP 奖励待领取弹窗。「模拟场景」里的「VIP 奖励待领取」一项也一起去掉。</li>
+  </ol>
+  <p class="dim">要看改之前的样子，在上面的「对比旧版本」里选 v13。</p>
   <h2>v13：在 v12 上去掉两样（11/24）</h2>
   <ol>
     <li><b>去掉输入框下方的红字提示</b>：横版不显示输入框下方的红字提示，输入不合法的金额失焦后自动修正（不到 10 改成 10，超过 100,000 改成 100,000，Pay&amp;Go 向下取整到 100 的倍数）。</li>
     <li><b>去掉底部固定区的 Rewards 行</b>：「模拟场景」里的「有存款活动」一项也一起去掉。</li>
   </ol>
   <p class="dim">要看去掉之前的样子，在上面的「对比旧版本」里选 v12。</p>
-  <h2>v12：把线上竖版有、横版演示还缺的界面、弹窗和状态补齐（v13 保留，上面两样除外）</h2>
+  <h2>v12：把线上竖版有、横版演示还缺的界面、弹窗和状态补齐（除了上面 v13、v14 改掉的，其余保留）</h2>
   <p><b>怎么看</b>：点右上角「模拟场景」，勾选或选择一种情况，再照常点充值走一遍。「重置」会把页面和全部模拟项恢复到刚打开的样子。已定的排版没动：面板 740 居中、表头 44、渠道一排、6 个快捷金额一排、保障标识横排三张小卡、Confirm Deposit 确认框、协议 Tips、协议页、QRPh 两栏、教程、成功页两栏。</p>
   <h2>v12 补了什么</h2>
   <ol>
@@ -1156,11 +1147,11 @@ img{display:block}
     <li><b>快捷金额</b>：默认选中的那一档左上角有角标，有充值记录标 RECENT，没有充值记录标 HOT；可以切成 9 个档位（每排 6 个，自动换成两排）；打开面板的头 0.4 秒是加载占位（金额 6 个灰块、渠道 1 张灰卡）。右上角的 +N 奖励角标按已定口径不显示。</li>
     <li><b>金额输入框</b>：清空后显示 Min 10 - Max 100,000，清空按钮消失，底部固定区整条隐藏；金额不到 10、超过 100,000、或 Pay&amp;Go 的金额不是 100 的倍数时，点到别处后自动改成合法金额（v13 起输入框下方不再显示红字提示）。</li>
     <li><b>渠道维护</b>：维护中的渠道卡变暗并写 Under Maintenance，点它不切换渠道，而是弹 Under Maintenance 弹窗；全部渠道维护时常驻一条提示 Under Maintenance. Please switch Payment Methods。</li>
-    <li><b>三种特殊渠道</b>：LoadCentral、Bayad Center 只有说明卡，没有金额区和 Deposit（横版把说明卡分成左右两栏、三栏）；E-Voucher 是输入 12 位凭证码加 Submit（横版左边输入和按钮、右边 How To Use），成功、失败各一个弹窗。</li>
+    <li><b>三种特殊渠道</b>：LoadCentral、Bayad Center 只有说明卡，没有金额区和 Deposit（横版把说明卡分成左右两栏、三栏）；E-Voucher 是输入 12 位凭证码加 Submit（横版左边 How To Use 和三步图、右边输入和按钮，v14 起左右对调），成功、失败各一个弹窗。</li>
     <li><b>底部固定区</b>：系统维护时 Deposit 置灰、点不了（v13 起没有 Rewards 行）。</li>
     <li><b>键盘弹起</b>：面板缩到键盘上方，表头、渠道、快捷金额、保障标识和协议行暂时收起，只留金额输入框和「₱ 金额 + Deposit」一行。这是方案里的<b>建议做法，待开发确认</b>（线上现在没有针对键盘做任何处理）。</li>
     <li><b>点 Deposit 后的检查</b>，顺序同线上：防沉迷 Notice → eKYC（Account Security，或 7 天强制 KYC 的 Notice）→ 协议 Tips → 反洗钱 Account Security Alert → Confirm Deposit。防沉迷、eKYC、反洗钱、渠道维护这四个弹窗带插图，竖版是图在上、字在下，高度超过横屏可视区，横版改成左图右文。</li>
-    <li><b>其他弹窗</b>：Pay&amp;Go 没绑手机号的 Mobile Number Required、系统维护公告、VIP 奖励待领取的 Congratulations!、扫码类渠道返回网页地址时的 Pay Now 提示、接口限流的 Notice!。</li>
+    <li><b>其他弹窗</b>：Pay&amp;Go 没绑手机号的 Mobile Number Required、系统维护公告、扫码类渠道返回网页地址时的 Pay Now 提示、接口限流的 Notice!。厅内充值不弹 VIP 奖励待领取弹窗（v14 起演示里去掉了）。</li>
     <li><b>点 Confirm 后</b>：每一单都先出全屏 loading（Connecting to 渠道名...）。演示里停 0.8 秒就进下一步；建单超时会提示 Connection timeout, please try again（线上是 10 秒，演示缩短为 3 秒）。</li>
     <li><b>内嵌付款页</b>：在 QRPh 二维码页之外，补了 AUB 二维码页、Hybrid 页和 Pay&amp;Go 现金码页（没有二维码：上面左边现金码、右边订单明细，下面是 How To Cash In 五步）。Pay&amp;Go 到账后过 3 秒才自动关闭面板（线上如此）。</li>
     <li><b>付款结果页</b>：先显示 1 秒 Confirming your deposit...（只有 Logo、这一行字和牌照），再换成充值成功页。</li>
@@ -1180,7 +1171,6 @@ img{display:block}
   <ol>
     <li>防沉迷 Notice 的正文：线上由运营在 OMS 防沉迷配置里填写，演示写的是灰色占位说明。</li>
     <li>eKYC Account Security 的插图和正文：插图没取到线上素材，用灰色占位块；正文由后端返回，演示写的是占位说明。</li>
-    <li>VIP 奖励待领取弹窗里奖品卡的排法细节、配色和字号：线上代码只查到卡片尺寸（80×100）和内容（奖品名在上、图标加金额在下）。</li>
     <li>协议页「滑到底部」按钮的底色：线上取主题色，具体色值没查到，演示用 #3A4250；图标是照描述画的。反洗钱弹窗里的耳机图标也是照描述画的。</li>
     <li>去绑定手机号、去 eKYC 认证、回首页、去 Responsible Gaming 设置页、打开客服、唤起 App 这些会离开充值面板的操作，演示只弹一条带括号的提示，例如「去绑定手机号页（平台页面，演示不做）」。</li>
     <li>第三方付款页和它的网址、AUB 和 Hybrid 页里的二维码、底图上的游戏大厅，都是示意。余额变化时的高亮只是演示提示，真实产品只刷新数字。</li>
@@ -1190,7 +1180,7 @@ img{display:block}
   <ol>
     <li>快捷金额 9 个档位里的后 3 个（₱3,000、₱5,000、₱10,000）。</li>
     <li>E-Voucher 充值成功的 ₱500；凭证码输 0000 0000 0000 看失败弹窗，输其他 12 位数字看成功弹窗。</li>
-    <li>VIP 奖励的 ₱100、Pay&amp;Go 的现金码 482913 和手续费 PHP 0.00、各付款页的单号、成功页的 User account（Matteo）。</li>
+    <li>Pay&amp;Go 的现金码 482913 和手续费 PHP 0.00、各付款页的单号、成功页的 User account（Matteo）。</li>
     <li>系统维护公告的标题和正文：线上取站点配置，演示用的是组件默认值 System Maintenance 和 System is under maintenance.。</li>
     <li>Bankcard 的 17 家银行：名单和顺序照 UAT 的 All Banks 截图。线上每张银行卡是后台配的图片（选中的样子也是图片自带的），演示没有这些图，用文字卡加统一的选中样式代替。</li>
   </ol>
@@ -1250,7 +1240,7 @@ img{display:block}
   const LAST=100; // 账号上次充值的金额（示例）：RECENT 角标标在这一档
 
   // ---------- 状态 ----------
-  const S0={bal:59.14,ch:'gcash',sub:{bankcard:0,otc:0,traxion:0},str:'100',amt:100,touched:false,agree:false,open:false,pane:'form',pending:null,tab:'game',noShow:false,noShowSaved:false,sess:0,skel:false,confirm:false,flow:null,iosWait:null,bk:null,doc:'terms',termsConfirm:true,backTo:null,vcode:'',vipDue:false,vipShown:false,okWait:false};
+  const S0={bal:59.14,ch:'gcash',sub:{bankcard:0,otc:0,traxion:0},str:'100',amt:100,touched:false,agree:false,open:false,pane:'form',pending:null,tab:'game',noShow:false,noShowSaved:false,sess:0,skel:false,confirm:false,flow:null,iosWait:null,bk:null,doc:'terms',termsConfirm:true,backTo:null,vcode:'',okWait:false};
   let S=JSON.parse(JSON.stringify(S0)), gen=0;
   const later=(ms,fn)=>{const g=gen;setTimeout(()=>{if(g===gen)fn();},ms);}; // 「重置」后旧的定时不再生效
   const on=id=>$('#'+id).checked, val=id=>$('#'+id).value; // 读模拟项
@@ -1281,7 +1271,7 @@ img{display:block}
   }
   function closePanel(){S.open=false;S.flow=null;S.confirm=false;S.bk=null;S.backTo=null;S.iosWait=null; // 关面板：没走完的充值流程、还开着的弹窗和 loading 一并收掉
     document.querySelectorAll('.dmask.on').forEach(d=>d.classList.remove('on'));loading(null);}
-  function settle(){guardPayGo();render();tryVip();} // 每次操作收尾：补上之前没弹成的没绑手机号弹窗，刷新界面，再看 VIP 奖励弹窗该不该弹
+  function settle(){guardPayGo();render();} // 每次操作收尾：补上之前没弹成的没绑手机号弹窗，再刷新界面
 
   // ---------- 金额 ----------
   const tiers=()=>on('simTiers')?[100,200,300,500,1000,2000,3000,5000,10000]:[100,200,300,500,1000,2000];
@@ -1358,7 +1348,7 @@ img{display:block}
 
   // ---------- 打开面板 ----------
   function openPanel(){
-    S.open=true;S.pane='form';S.sess++;S.skel=true;S.vipDue=false;S.vipShown=false;S.flow=null;S.confirm=false;S.bk=null;S.backTo=null;
+    S.open=true;S.pane='form';S.sess++;S.skel=true;S.flow=null;S.confirm=false;S.bk=null;S.backTo=null;
     $('#ring').style.display='none';$('#fBody').scrollTop=0;
     const sess=S.sess;
     if(on('simSysPop'))show('dSys'); // 系统维护公告：每次打开面板时弹
@@ -1366,11 +1356,7 @@ img{display:block}
       S.skel=false;
       if(!S.touched)setStr(String(badgeTier())); // 玩家没手动操作过：自动选中带角标的那一档
       autoSwitch();guardPayGo();render();fade();revealChip(false);nudge();centerSub(false);});
-    later(800,()=>{if(!S.open||S.sess!==sess)return;S.vipDue=true;tryVip();}); // VIP 奖励待领取：打开约 0.8 秒后自动弹
-  }
-  function tryVip(){ // 同一次打开只弹一次；有别的弹窗开着（例如系统维护公告）、不在充值表单或正在走充值流程时，等回到表单再弹
-    if(S.open&&S.tab==='game'&&S.pane==='form'&&!S.flow&&S.vipDue&&!S.vipShown&&!S.skel&&on('simVip')&&!modal()){S.vipShown=true;show('dVip');render();}
-  }
+  } // 厅内充值不弹 VIP 奖励待领取弹窗（v14 起去掉）
 
   // ---------- 渲染 ----------
   const amtIn=$('#amtIn'), vIn=$('#vIn'), subsBox=$('#subs'), tB=$('#tBody');
@@ -1497,13 +1483,11 @@ img{display:block}
       case 'banks-ok': if(!S.bk||subMaint(S.bk.ch))return; // 点 Confirm 才生效并回到充值表单；选中的是维护中的则没反应
         S.sub[S.bk.ch]=S.bk.i;S.bk=null;S.pane='form';afterPick();break;
       case 'banks-back': S.bk=null;S.pane='form';break; // 左上返回：不生效，直接回表单
-      // 渠道维护、没绑手机号、系统维护公告、VIP 奖励
+      // 渠道维护、没绑手机号、系统维护公告
       case 'maint-ok':{hide('dMaint');const f=firstAvail();if(f&&f!==S.ch){S.ch=f;afterPick();}settle();revealChip(true);return;} // 点按钮或 ✕：关闭并自动切到第一个可用渠道（切过去的那张卡不在眼前就滑进来）
       case 'phone-link': hide('dPhone');toast('去绑定手机号页（平台页面，演示不做）');break;
       case 'phone-x': hide('dPhone');break;
       case 'sys-ok': hide('dSys');break;
-      case 'vip-claim': hide('dVip');toast('奖励已领取（示意）');break;
-      case 'vip-x': hide('dVip');break;
       // 点 Deposit 后的各个弹窗
       case 'anti-continue': hide('dAnti');next();break; // Continue 或 ✕：继续后面的检查
       case 'anti-break': closePanel();toast('回到首页（平台页面，演示不做）');break; // Take a Break：关闭弹窗和面板（线上是回首页）
