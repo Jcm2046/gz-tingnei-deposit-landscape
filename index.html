@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<title>厅内充值 · 横版演示 v15</title>
+<title>厅内充值 · 横版演示 v16</title>
 <style>
 :root{--f:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro","Helvetica Neue",Roboto,"Segoe UI","PingFang SC",Arial,sans-serif;--gold:#eac070;--red:#de4444}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -206,12 +206,14 @@ img{display:block}
 .pay-back{font-size:12px;color:#5b6475;text-decoration:underline;margin-top:2px}
 .pay-tip{font-size:11px;color:#98a1b2}
 .tab-ok{background:linear-gradient(179.4deg,#090b12 .24%,#141a2a 33.2%,#141a2a 63.3%,#090b12 95.8%)}
-.ok2{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:44px;padding:8px 24px}
-.okc-l{width:340px;display:flex;flex-direction:column;align-items:center}
-.okc-r{width:358px;display:flex;flex-direction:column;align-items:center}
-.ok-logo{width:84px;height:51.7px}
-.shw{width:96px;height:96px;margin-top:12px}
-.shield{position:relative;width:188px;height:188px;overflow:hidden;filter:drop-shadow(0 14px 11px rgba(43,200,145,.04));transform:scale(.5106);transform-origin:0 0} /* 188 → 96 */
+/* v16：充值成功页照竖版排成单列（原来左右两栏），只把按钮提到信息卡上面：打勾盾牌 → Deposit Successful → 金额 → Back to GameZone → 信息卡 → 牌照行。
+   金额和按钮在首屏，信息卡和牌照行往下滑才看全；只有这一层上下滑（不显示滚动条、不把滚动传给外面），背景渐变画在外面那层上、不跟着滚 */
+.ok2{position:absolute;inset:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none}
+.ok2::-webkit-scrollbar{display:none}
+.ok-col{width:358px;margin:0 auto;display:flex;flex-direction:column;align-items:center;padding:8px 0 16px} /* 内容列宽 358、居中 */
+.ok-logo{position:absolute;left:24px;top:16px;width:68px;height:41.8px} /* Logo 不在内容列里，放在页面左上角；它定位在滚动层里，跟着内容一起滚 */
+.shw{flex:none;width:104px;height:104px;margin:-6px 0 -13px} /* 上下外边距是负的：盾牌的光晕和上下元素重叠 */
+.shield{position:relative;width:188px;height:188px;overflow:hidden;filter:drop-shadow(0 14px 11px rgba(43,200,145,.04));transform:scale(.5532);transform-origin:0 0} /* 188 → 104 */
 .shield img{position:absolute}
 .sh-v1{left:14px;top:14px;width:160px;height:160px}
 .sh-v2{left:34px;top:34px;width:120px;height:120px}
@@ -221,9 +223,9 @@ img{display:block}
 .sh-b{left:47.75px;top:50.24px;width:94.34px;height:102px}
 .sh-i{left:59px;top:54px;width:64px;height:75.73px;mix-blend-mode:overlay}
 .sh-c{left:72.35px;top:73.29px;width:51.71px;height:40.79px}
-.ok-t{margin-top:2px;font:700 18px/26px var(--f);color:#fff}
-.ok-amt{margin-top:14px;font:700 42px/50px var(--f);color:var(--gold)}
-.ok-card{width:358px;border:1px solid rgba(255,255,255,.28);border-radius:12px;background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.4)),rgba(255,255,255,.1);padding:2px 16px}
+.ok-t{flex:none;font:700 20px/26px var(--f);color:#fff}
+.ok-amt{flex:none;font:700 40px/46px var(--f);color:var(--gold)}
+.ok-card{flex:none;width:358px;margin-top:16px;border:1px solid rgba(255,255,255,.28);border-radius:12px;background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.4)),rgba(255,255,255,.1);padding:2px 16px}
 .ok-r{height:52px;display:flex;align-items:center;gap:8px}
 .ok-r+.ok-r{border-top:1px solid rgba(255,255,255,.12)}
 .ok-r .ic{width:20px;height:20px;display:grid;place-items:center;flex:none}
@@ -231,8 +233,9 @@ img{display:block}
 .ok-r .v{margin-left:auto;font:600 14px/20px var(--f);color:#f2f6f9;white-space:nowrap}
 .ok-r .pill{height:28px;padding:0 10px;border-radius:8px;background:rgba(251,252,255,.24);display:flex;align-items:center;color:#fff}
 .ok-r .tm{font-weight:400;font-size:13px}
-.ok-btn{width:358px;height:45.76px;border-radius:12.48px;font-size:16.64px;margin-top:16px}
+.ok-btn{flex:none;width:358px;height:45.76px;border-radius:12.48px;font-size:16.64px;margin-top:14px}
 .ok-lic{display:flex;align-items:center;gap:6.24px;padding-top:12px}
+.ok2 .ok-lic{flex:none;padding-top:14px} /* 成功页的牌照行；「确认中」那一页的牌照行不变 */
 .ok-lic span{font:400 10.4px/1 "Arial Rounded MT Bold",var(--f);color:#cacaca}
 .ok-lic .pg{width:32.07px;height:33.23px}
 .ok-lic .rg{width:105px;height:33.28px;margin-left:5.4px}
@@ -455,9 +458,9 @@ img{display:block}
 </head>
 <body>
 <div class="top">
-  <h1>【充提】厅内充值改造 · 横版演示 v15</h1>
-  <span class="sub">取消确认框、去掉 E-Voucher 等；点「模拟场景」切换</span>
-  <select class="ver" aria-label="对比旧版本" onchange="if(this.value)location.href=this.value"><option value="">对比旧版本</option><option value="v14/">v14 有确认框和 E-Voucher</option><option value="v13/">v13 凭证码在左、有 VIP 弹窗</option><option value="v12/">v12 有红字提示和 Rewards 行</option><option value="v11/">v11 没有二级渠道和各类弹窗</option><option value="v10/">v10 没有确认框</option><option value="v9/">v9 成功页金额在下</option><option value="v8/">v8 保障标识在底栏</option><option value="v7/">v7 交互对齐 Figma 方案</option><option value="v6/">v6 去 How To Deposit、渠道可滑</option><option value="v5/">v5 居中加宽</option><option value="v4/">v4 右侧窄抽屉 + 金额一排</option><option value="v3/">v3 底部居中两栏</option><option value="v2/">v2 右侧宽抽屉两栏</option><option value="v1/">v1 只换容器</option></select>
+  <h1>【充提】厅内充值改造 · 横版演示 v16</h1>
+  <span class="sub">成功页改单列、All Banks 去掉返回；点「模拟场景」切换</span>
+  <select class="ver" aria-label="对比旧版本" onchange="if(this.value)location.href=this.value"><option value="">对比旧版本</option><option value="v15/">v15 成功页左右两栏、All Banks 有返回</option><option value="v14/">v14 有确认框和 E-Voucher</option><option value="v13/">v13 凭证码在左、有 VIP 弹窗</option><option value="v12/">v12 有红字提示和 Rewards 行</option><option value="v11/">v11 没有二级渠道和各类弹窗</option><option value="v10/">v10 没有确认框</option><option value="v9/">v9 成功页金额在下</option><option value="v8/">v8 保障标识在底栏</option><option value="v7/">v7 交互对齐 Figma 方案</option><option value="v6/">v6 去 How To Deposit、渠道可滑</option><option value="v5/">v5 居中加宽</option><option value="v4/">v4 右侧窄抽屉 + 金额一排</option><option value="v3/">v3 底部居中两栏</option><option value="v2/">v2 右侧宽抽屉两栏</option><option value="v1/">v1 只换容器</option></select>
   <div class="ctl">
     <button id="simBtn" aria-expanded="false" aria-controls="simPanel" title="选择要模拟的情况">模拟场景 ▾<i id="simN"></i></button>
     <button class="pri" id="arrive" disabled>模拟到账（当前订单）</button>
@@ -565,9 +568,9 @@ img{display:block}
             <div class="agree" id="agree" data-act="agree"><span class="cb"><i><img src="assets/chip_check.svg" alt=""></i></span><p>I agree with the <u data-act="terms">Terms of Use</u> &amp; <u data-act="privacy">Privacy Policy</u>, and confirm that I am at least 21 years old.</p></div>
           </div>
         </section>
-        <!-- All Banks：竖版是底部抽屉（3 列），横版放进面板（6 列），点 Confirm 才生效 -->
+        <!-- All Banks：竖版是底部抽屉（3 列），横版放进面板（6 列），点 Confirm 才生效。v16：它是一层选择弹窗，表头没有返回；右上 ✕ 只关闭这一层、回到充值表单（临时选中的不生效），充值面板保持打开 -->
         <section class="pane banks" data-pane="banks">
-          <div class="hd"><button class="ib" data-act="banks-back" aria-label="返回"><span class="chev"><span><img src="assets/back.svg" alt=""></span></span></button><span class="ttl">All Banks</span><button class="ib" data-act="close" aria-label="关闭"><img src="assets/close.svg" alt=""></button></div>
+          <div class="hd g3"><span></span><span class="ttl">All Banks</span><button class="ib" data-act="banks-x" aria-label="关闭"><img src="assets/close.svg" alt=""></button></div>
           <div class="body" id="bkBody"><div class="bkg" id="bkg"></div></div>
           <div class="bkf"><button class="btn-red" data-act="banks-ok">Confirm</button></div>
         </section>
@@ -1034,25 +1037,23 @@ img{display:block}
           <p>Confirming your deposit...</p>
           <div class="ok-lic"><span>Officially Licensed by</span><img class="pg" src="assets/ok_pagcor.png" alt="PAGCOR"><img class="rg" src="assets/ok_21.png" alt="21+"></div>
         </div>
-        <!-- 横版：左边打勾和成功金额，右边充值信息、按钮和牌照，一屏放下 -->
+        <!-- 充值成功页（v16）：照竖版排成单列，只把按钮提到信息卡上面。金额和 Back to GameZone 在首屏，信息卡和牌照行往下滑查看；Logo 在页面左上角，跟着内容一起滚 -->
         <div class="ok2" id="okScroll">
-          <div class="okc-l">
-            <img class="ok-logo" src="assets/ok_gz_logo.svg" alt="GameZone">
-            <div class="ok-amt" id="okAmt">₱ 100.00</div>
+          <img class="ok-logo" src="assets/ok_gz_logo.svg" alt="GameZone">
+          <div class="ok-col">
             <div class="shw"><div class="shield">
               <img class="sh-v1" src="assets/ok_v1.svg" alt=""><img class="sh-v2" src="assets/ok_v2.svg" alt="">
               <img class="sh-s1" src="assets/ok_spark1.svg" alt=""><img class="sh-s2" src="assets/ok_spark2.svg" alt=""><img class="sh-s3" src="assets/ok_spark3.svg" alt="">
               <img class="sh-b" src="assets/ok_shield.svg" alt=""><img class="sh-i" src="assets/ok_intersect.svg" alt=""><img class="sh-c" src="assets/ok_check.svg" alt="">
             </div></div>
             <div class="ok-t">Deposit Successful</div>
-          </div>
-          <div class="okc-r">
+            <div class="ok-amt" id="okAmt">₱ 100.00</div>
+            <button class="btn-red ok-btn" data-act="back-gz">Back to GameZone</button>
             <div class="ok-card">
               <div class="ok-r"><span class="ic"><img src="assets/ok_ic_pay.svg" alt=""></span><span class="k">Type</span><span class="v pill" id="okType">GCash</span></div>
               <div class="ok-r"><span class="ic"><img src="assets/ok_ic_user.svg" alt=""></span><span class="k">User account</span><span class="v">Matteo</span></div>
               <div class="ok-r"><span class="ic"><img src="assets/ok_ic_time.svg" alt=""></span><span class="k">Time</span><span class="v tm" id="okTime"></span></div>
             </div>
-            <button class="btn-red ok-btn" data-act="back-gz">Back to GameZone</button>
             <div class="ok-lic"><span>Officially Licensed by</span><img class="pg" src="assets/ok_pagcor.png" alt="PAGCOR"><img class="rg" src="assets/ok_21.png" alt="21+"></div>
           </div>
         </div>
@@ -1061,13 +1062,19 @@ img{display:block}
   </div>
 </div>
 <div class="notes">
+  <h2>v16：在 v15 上改两处（11/25）</h2>
+  <ol>
+    <li><b>充值成功页改回竖版的单列</b>（原来左右两栏）：自上而下是打勾盾牌、Deposit Successful、金额、Back to GameZone 按钮、信息卡（Type、User account、Time）、牌照行，只把按钮提到了信息卡上面。金额和按钮在首屏，信息卡首屏露出第一行多一点，其余往下滑查看：手指、滚轮都能滑，不显示滚动条，滑动时外面的演示页不跟着动。Logo 放在页面左上角，跟着内容一起滚；背景不动。每次进成功页都从顶部开始。「确认中」那一页没改，Back to GameZone 的行为也没改。</li>
+    <li><b>All Banks 去掉返回</b>：All Banks 是一层选择弹窗（Traxion 的机构列表是同一个界面），表头左上角不再有返回，标题仍然居中，右上角 ✕ 保留。点 ✕ 只关闭 All Banks、回到充值表单，临时选中的格子不生效，充值面板保持打开（原来点 ✕ 会把整个充值面板关掉）。点格子只是临时选中、点 Confirm 才生效并回到表单，这两条没变。</li>
+  </ol>
+  <p class="dim">要看改之前的样子，在上面的「对比旧版本」里选 v15。另外按线上代码把 Mobile Number Required 核对了一遍，改了一处：Pay&amp;Go 在维护时不弹这个弹窗（演示里是「全部渠道维护」的时候，原来这时会弹一次），维护结束后照常弹。</p>
   <h2>v15：在 v14 上改七处（11/24 晚）</h2>
   <ol>
     <li><b>协议行默认勾选</b>：打开充值面板时，底部协议行默认是勾上的。是否默认勾选和平台一致，跟着平台的开关走：「模拟场景」里加了「协议默认勾选」一项（默认开），关掉后再打开面板就是不勾选。玩家自己取消勾选后点 Deposit，仍先弹协议 Tips，点 Agree 自动勾选并继续下单。</li>
     <li><b>取消 Confirm Deposit 确认框</b>（厅内横竖版都取消）：点 Deposit 后依次检查防沉迷、eKYC、协议勾选、反洗钱，都通过后直接出全屏 loading 并建单，再按渠道进入付款。原来点 Confirm 之后才发生的事（全屏 loading、iOS Safari 的 Tips、Pay Now 提示、进付款页），现在都在点 Deposit 通过检查之后发生。</li>
     <li><b>二维码付款页左栏固定</b>：QRPh 付款页（AUB、Hybrid 排法相同）左栏的二维码固定不动，只有右栏能上下滑；手指或滚轮落在左栏上时，页面和两栏都不动。</li>
     <li><b>LoadCentral、Bayad Center 说明卡</b>改成和二维码付款页一样的交互：左右两栏，左栏 How To Deposit 固定不动，右栏在卡片里上下滑（Bayad Center 原来是三栏横排，现在右栏里 Physical Store、Bayad App 上下排）。说明卡最高到首屏底边；右栏没滑到底时保障标识滑不出来，右栏到底后再往上滑，面板才整体上移、露出保障标识；往回滑时先把面板滑回顶部，再滚右栏。</li>
-    <li><b>Mobile Number Required 的出现条件</b>按线上代码改：只有 Pay&amp;Go 会弹，LoadCentral、Bayad Center 不弹。账号没绑手机号时，点 Pay&amp;Go 子渠道就弹（不用等到点 Deposit），关闭后仍停在原来选中的子渠道；Pay&amp;Go 是默认选中时（例如选 OTC 默认落在 Pay&amp;Go）也弹，关闭后自动改选第一个可用的其他子渠道（LoadCentral）。</li>
+    <li><b>Mobile Number Required 的出现条件</b>按线上代码改：只有 Pay&amp;Go 会弹，LoadCentral、Bayad Center 不弹。账号没绑手机号时，点 Pay&amp;Go 子渠道就弹（不用等到点 Deposit），关闭后仍停在原来选中的子渠道；Pay&amp;Go 是默认选中时（例如选 OTC 默认落在 Pay&amp;Go）也弹，关闭后自动改选第一个可用的其他子渠道（LoadCentral）。没绑手机号的主要是用 Google、Facebook、Telegram 等第三方登录、绑定手机号那步点了 Skip for now 的账号。</li>
     <li><b>去掉 E-Voucher</b>：横版渠道栏不显示 E-Voucher，兑换表单和成功、失败弹窗一起去掉。</li>
     <li><b>Pay Now 提示的出现条件</b>按线上代码核对：只在 QRPh（含走 QRPh 的 Bankcard）、Hybrid、Pay&amp;Go 建单返回网页地址时出现，排在全屏 loading 之后，这时订单已经建好。点 Pay Now 新开标签页付款，面板保持原样；点 ✕ 只关闭，面板、已选渠道和金额不变，再点 Deposit 会重新走一遍；点弹窗外面不关闭。它和 iOS Safari 的 Tips 不会在同一次提交里同时出现。这一版补上了 Pay&amp;Go：「模拟场景」里选「返回网页地址（弹 Pay Now）」时，Pay&amp;Go 也先弹这条提示。</li>
   </ol>
@@ -1084,11 +1091,11 @@ img{display:block}
     <li><b>去掉底部固定区的 Rewards 行</b>：「模拟场景」里的「有存款活动」一项也一起去掉。</li>
   </ol>
   <p class="dim">要看去掉之前的样子，在上面的「对比旧版本」里选 v12。</p>
-  <h2>v12：把线上竖版有、横版演示还缺的界面、弹窗和状态补齐（除了上面 v13、v14、v15 改掉的，其余保留）</h2>
-  <p><b>怎么看</b>：点右上角「模拟场景」，勾选或选择一种情况，再照常点充值走一遍。「重置」会把页面和全部模拟项恢复到刚打开的样子。已定的排版没动：面板 740 居中、表头 44、渠道一排、6 个快捷金额一排、保障标识横排三张小卡、协议 Tips、协议页、QRPh 两栏、教程、成功页两栏。</p>
+  <h2>v12：把线上竖版有、横版演示还缺的界面、弹窗和状态补齐（除了上面 v13、v14、v15、v16 改掉的，其余保留）</h2>
+  <p><b>怎么看</b>：点右上角「模拟场景」，勾选或选择一种情况，再照常点充值走一遍。「重置」会把页面和全部模拟项恢复到刚打开的样子。已定的排版没动：面板 740 居中、表头 44、渠道一排、6 个快捷金额一排、保障标识横排三张小卡、协议 Tips、协议页、QRPh 两栏、教程、成功页两栏（成功页在 v16 改成了单列）。</p>
   <h2>v12 补了什么</h2>
   <ol>
-    <li><b>二级渠道一排</b>：选 Bankcard 出现 17 家银行，选 OTC 出现 Pay&amp;Go、LoadCentral、Bayad Center，选 Traxion 出现 14 个机构。4 个及以上时最左边有 All，点开 All Banks（竖版是底部抽屉、3 列，横版放进面板、6 列），点格子只是临时选中，点 Confirm 才生效。这一排会把金额区往下挤：首屏只露出快捷金额的上半截，金额输入框要向下滑才看得到（照线上的堆叠顺序，没有另做排法）。</li>
+    <li><b>二级渠道一排</b>：选 Bankcard 出现 17 家银行，选 OTC 出现 Pay&amp;Go、LoadCentral、Bayad Center，选 Traxion 出现 14 个机构。4 个及以上时最左边有 All，点开 All Banks（竖版是底部抽屉、3 列，横版放进面板、6 列），点格子只是临时选中，点 Confirm 才生效（v16 起表头没有返回，右上 ✕ 只关闭 All Banks、回到充值表单）。这一排会把金额区往下挤：首屏只露出快捷金额的上半截，金额输入框要向下滑才看得到（照线上的堆叠顺序，没有另做排法）。</li>
     <li><b>快捷金额</b>：默认选中的那一档左上角有角标，有充值记录标 RECENT，没有充值记录标 HOT；可以切成 9 个档位（每排 6 个，自动换成两排）；打开面板的头 0.4 秒是加载占位（金额 6 个灰块、渠道 1 张灰卡）。右上角的 +N 奖励角标按已定口径不显示。</li>
     <li><b>金额输入框</b>：清空后显示 Min 10 - Max 100,000，清空按钮消失，底部固定区整条隐藏；金额不到 10、超过 100,000、或 Pay&amp;Go 的金额不是 100 的倍数时，点到别处后自动改成合法金额（v13 起输入框下方不再显示红字提示）。</li>
     <li><b>渠道维护</b>：维护中的渠道卡变暗并写 Under Maintenance，点它不切换渠道，而是弹 Under Maintenance 弹窗；全部渠道维护时常驻一条提示 Under Maintenance. Please switch Payment Methods。</li>
@@ -1184,8 +1191,8 @@ img{display:block}
   const LAST=100; // 账号上次充值的金额（示例）：RECENT 角标标在这一档
 
   // ---------- 状态 ----------
-  // agree：协议行勾没勾（每次打开面板按「协议默认勾选」模拟项重置，不记上次的）；agreeTouched：这次打开后玩家自己动过勾选；phone：没绑手机号弹窗是怎么弹出来的（click = 点 Pay&Go 子渠道，default = Pay&Go 是默认选中）；phoneKeep：默认选中时弹过、但没有可改选的子渠道，这次不再接着弹
-  const S0={bal:59.14,ch:'gcash',sub:{bankcard:0,otc:0,traxion:0},str:'100',amt:100,touched:false,agree:true,agreeTouched:false,open:false,pane:'form',pending:null,tab:'game',noShow:false,noShowSaved:false,sess:0,skel:false,flow:null,iosWait:null,bk:null,doc:'terms',termsConfirm:true,backTo:null,phone:null,phoneKeep:false,okWait:false};
+  // agree：协议行勾没勾（每次打开面板按「协议默认勾选」模拟项重置，不记上次的）；agreeTouched：这次打开后玩家自己动过勾选；phone：没绑手机号弹窗是怎么弹出来的（click = 点 Pay&Go 子渠道，default = Pay&Go 是默认选中）
+  const S0={bal:59.14,ch:'gcash',sub:{bankcard:0,otc:0,traxion:0},str:'100',amt:100,touched:false,agree:true,agreeTouched:false,open:false,pane:'form',pending:null,tab:'game',noShow:false,noShowSaved:false,sess:0,skel:false,flow:null,iosWait:null,bk:null,doc:'terms',termsConfirm:true,backTo:null,phone:null,okWait:false};
   let S=JSON.parse(JSON.stringify(S0)), gen=0;
   const later=(ms,fn)=>{const g=gen;setTimeout(()=>{if(g===gen)fn();},ms);}; // 「重置」后旧的定时不再生效
   const on=id=>$('#'+id).checked, val=id=>$('#'+id).value; // 读模拟项
@@ -1209,14 +1216,12 @@ img{display:block}
   // 1. 点 Pay&Go 子渠道时就弹（不用等到点 Deposit）：选中之前就拦下，不选中它，关闭后仍停在原来选中的子渠道（见点击处理里的 .sch）；
   // 2. Pay&Go 是默认选中时（例如选 OTC 时默认落在 Pay&Go、打开面板时上次选的就是它）也弹：关闭后自动改选第一个可用的其他子渠道（LoadCentral）。
   // 表单不在眼前时（有别的弹窗、在别的页面、正在走充值流程）先不弹，回到表单再弹
+  // v16（按线上代码核对）：Pay&Go 在维护时不弹（线上先判断维护态；演示里只有「全部渠道维护」会让子渠道进维护态），维护结束后照常弹
   const canPhone=()=>S.open&&S.tab==='game'&&S.pane==='form'&&!S.skel&&!S.flow&&!modal();
   function guardPayGo(){
-    if(!(isPayGo()&&on('simNoPhone')&&subMaint('otc')))S.phoneKeep=false; // 情况变了（换了子渠道、绑了手机号、维护结束）：之后照常弹
-    if(canPhone()&&isPayGo()&&on('simNoPhone')&&!S.phoneKeep){S.phone='default';show('dPhone');}}
+    if(canPhone()&&isPayGo()&&on('simNoPhone')&&!subMaint('otc')){S.phone='default';show('dPhone');}}
   function closePhone(){hide('dPhone'); // 点 Link Now 或 ✕ 关闭弹窗：点击触发的，选中状态不变；默认选中触发的，改选第一个可用的其他子渠道
-    if(S.phone==='default'&&isPayGo()&&on('simNoPhone')){
-      if(!subMaint('otc'))S.sub.otc=1;
-      else S.phoneKeep=true;} // 子渠道都在维护（全部渠道维护）、没有可改选的：选中状态不变，这次打开面板也不再接着弹（同线上：找不到备选项时选中状态不变）
+    if(S.phone==='default'&&isPayGo()&&on('simNoPhone')&&!subMaint('otc'))S.sub.otc=1; // 弹着的时候子渠道进了维护态（这时才勾上「全部渠道维护」）、没有可改选的：选中状态不变（同线上：找不到备选项时选中状态不变）；维护中也不会再接着弹
     S.phone=null;}
   function afterPick(){guardPayGo();if(document.activeElement!==amtIn)fixAmt();}
   function pickCh(ch){
@@ -1305,7 +1310,7 @@ img{display:block}
 
   // ---------- 打开面板 ----------
   function openPanel(){
-    S.open=true;S.pane='form';S.sess++;S.skel=true;S.flow=null;S.bk=null;S.backTo=null;S.phone=null;S.phoneKeep=false;
+    S.open=true;S.pane='form';S.sess++;S.skel=true;S.flow=null;S.bk=null;S.backTo=null;S.phone=null;
     S.agree=on('simAgreeDef');S.agreeTouched=false; // 协议行：每次打开面板都按平台开关重置（开关开着就默认勾选），不记上次的勾选（同线上）
     $('#ring').style.display='none';$('#fBody').scrollTop=0;
     const sess=S.sess;
@@ -1318,7 +1323,7 @@ img{display:block}
 
   // ---------- 渲染 ----------
   const amtIn=$('#amtIn'), subsBox=$('#subs'), tB=$('#tBody'), fBody=$('#fBody'), web=$('#web');
-  let amtKey='', subKey='', bkKey='', lastPane='form', infoKey='';
+  let amtKey='', subKey='', bkKey='', lastPane='form', infoKey='', okShown=false;
   const kbOn=()=>on('simKb')&&S.open&&S.tab==='game'&&S.pane==='form'&&basic()&&!S.skel&&!modal();
   function renderAmts(){const t=tiers(), b=badgeTier(), hot=on('simNew'), key=t.join()+'|'+b+'|'+hot;
     if(key!==amtKey){amtKey=key;$('#amts').innerHTML=t.map(v=>`<button class="amt" data-v="${v}">${v===b?`<img class="rb" src="${A}badge_${hot?'hot':'recent'}.png" alt="${hot?'HOT':'RECENT'}">`:''}₱ ${fmt(v,0)}</button>`).join('');}
@@ -1385,6 +1390,8 @@ img{display:block}
     $('#tabPay').classList.toggle('on',S.tab==='pay');
     $('#tabOk').classList.toggle('on',S.tab==='ok');
     $('#okWait').style.display=S.okWait?'':'none';$('#okScroll').style.display=S.okWait?'none':'';
+    const okNow=S.tab==='ok'&&!S.okWait; // v16：成功页能上下滑。每次显示出来（从「确认中」换过来的那一刻）都回到顶部，不留着上一笔滑到的位置
+    if(okNow&&!okShown)$('#okScroll').scrollTop=0;okShown=okNow;
     dev.classList.toggle('newtab',S.tab!=='game');
     $('#addr').textContent=S.tab==='pay'?CH[p?p.ch:S.ch].url:'gzone.ph/deposit/result';
     // 控制条
@@ -1438,7 +1445,7 @@ img{display:block}
       case 'all': S.bk={ch:S.ch,i:S.sub[S.ch]};S.pane='banks';$('#bkBody').scrollTop=0;break;
       case 'banks-ok': if(!S.bk||subMaint(S.bk.ch))return; // 点 Confirm 才生效并回到充值表单；选中的是维护中的则没反应
         S.sub[S.bk.ch]=S.bk.i;S.bk=null;S.pane='form';afterPick();break;
-      case 'banks-back': S.bk=null;S.pane='form';break; // 左上返回：不生效，直接回表单
+      case 'banks-x': S.bk=null;S.pane='form';break; // v16：表头没有返回了。右上 ✕ 只关闭 All Banks 这一层，回到充值表单；临时选中的格子不生效，充值面板保持打开
       // 渠道维护、没绑手机号、系统维护公告
       case 'maint-ok':{hide('dMaint');const f=firstAvail();if(f&&f!==S.ch){S.ch=f;afterPick();}settle();revealChip(true);return;} // 点按钮或 ✕：关闭并自动切到第一个可用渠道（切过去的那张卡不在眼前就滑进来）
       case 'phone-link': closePhone();toast('去绑定手机号页（平台页面，演示不做）');break; // Link Now：线上是跳去绑定手机号页（会离开游戏），演示只关闭弹窗并提示
